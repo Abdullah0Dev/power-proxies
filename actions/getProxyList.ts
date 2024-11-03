@@ -27,8 +27,8 @@ interface UserStatus {
 }
 
 interface ConnectionTestResponse {
-  IMEI: string | null;
-  NICK: string | null;
+  imei: string | null;
+  nick: string | null;
   results: ConnectionResult[];
 }
 
