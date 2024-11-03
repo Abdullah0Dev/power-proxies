@@ -56,12 +56,32 @@ export interface ProxyData {
   proxy_creds: ProxyCredentials;
 }
 
+export interface ActiveUserData {
+  HTTP_PORT: string;
+  IS_EXPIRED: number;
+  IS_OVER_QUOTA: number;
+  LOGIN: string;
+  OS: string;
+  PASSWORD: string;
+  PROXY_VALID_BEFORE: string;
+  RESET_SECURE_LINK: Record<string, any>[]; // Array of objects with unknown structure
+  SOCKS_PORT: string;
+  http_creds: string;
+  is_port_vpn_connected: null | boolean; // `null` or potentially a boolean if it might change
+  portID: string;
+  portName: string;
+  redirector: Record<string, any>[]; // Array of objects with unknown structure
+  socks5_creds: string;
+}
+export type ActiveUsers = Record<string, ActiveUserData[]>;
 export interface ProxyListRowProps {
   proxyData: ProxyData;
+  activeUserInfo: ActiveUsers;
 }
 
 export interface ProxyListTableProps {
   proxies: ProxyData[];
+  activeUserInfo: ActiveUsers;
 }
 
 export interface ApiError {

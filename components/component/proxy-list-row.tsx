@@ -395,7 +395,10 @@ function RotateIPModal({ isOpen, onClose, imei }: RotateIPModalProps) {
   );
 }
 
-export default function ProxyListRow({ proxyData }: ProxyListRowProps) {
+export default function ProxyListRow({
+  proxyData,
+  activeUserInfo,
+}: ProxyListRowProps) {
   const [rotateModalOpen, setRotateModalOpen] = useState(false);
   const [speedTestModalOpen, setSpeedTestModalOpen] = useState(false);
   const [connectionTestModalOpen, setConnectionTestModalOpen] = useState(false);
@@ -446,10 +449,24 @@ export default function ProxyListRow({ proxyData }: ProxyListRowProps) {
         {proxyData.net_details.EXT_IP}
       </TableCell>
       <TableCell className="py-4">
-        <div className="flex flex-col space-y-1">
-          <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-            HTTP {proxyData.proxy_creds.PORT}
-          </Badge>
+        <div className="flex flex-  space-y-1">
+          <div className="flex flex-col gap-y-2 w-32 items-center ">
+            <div className="flex gap-x-6">
+              <p className="font-bold"> HTTP </p>
+              <p className="">
+                {activeUserInfo["352733105770697"]?.[0]?.HTTP_PORT}
+              </p>
+            </div>
+            {/* <span className="h-px w-full bg-slate-500" /> */}
+            {`\n`}
+            <div className="flex gap-x-6">
+              <p className="font-bold"> SOCKS </p>
+              <p className="">
+                {activeUserInfo["352733105770697"]?.[0]?.SOCKS_PORT}
+              </p>
+            </div>
+          </div>
+
           {proxyData.proxy_creds.SOCKS_PORT && (
             <Badge
               variant="secondary"

@@ -11,7 +11,7 @@ import ProxyListRow from "@/components/component/proxy-list-row";
 import DashboardHeader from "@/components/component/dashboard-header";
 import { ProxyListTableProps } from "@/types";
 
-const ProxyListTable: FC<ProxyListTableProps> = ({ proxies }) => {
+const ProxyListTable: FC<ProxyListTableProps> = ({ proxies, activeUserInfo }) => {
   return (
     <>
       <DashboardHeader title="Proxy List" />
@@ -19,11 +19,11 @@ const ProxyListTable: FC<ProxyListTableProps> = ({ proxies }) => {
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-100">
-              <TableHead className="py-4 px-6">IMEI/ID</TableHead>
+              <TableHead className="py-4 px-6">ID</TableHead>
               <TableHead className="py-4 px-6">Status</TableHead>
               <TableHead className="py-4 px-6">Operator</TableHead>
               <TableHead className="py-4 px-6">External IP</TableHead>
-              <TableHead className="py-4 px-6">Ports</TableHead>
+              <TableHead className="py-4  px-14">Ports</TableHead>
               <TableHead className="py-4 px-6">Username/Password</TableHead>
               <TableHead className="py-4 px-6">Network Type</TableHead>
               <TableHead className="py-4 px-6">Ping Stats</TableHead>
@@ -33,7 +33,7 @@ const ProxyListTable: FC<ProxyListTableProps> = ({ proxies }) => {
           </TableHeader>
           <TableBody>
             {proxies.map((proxy, index) => (
-              <ProxyListRow key={index} proxyData={proxy} />
+              <ProxyListRow key={index} activeUserInfo={activeUserInfo ?? []} proxyData={proxy} />
             ))}
           </TableBody>
         </Table>

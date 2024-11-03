@@ -37,7 +37,7 @@ export async function fetchUserInfo()  {
   const data = await response.json();
   console.log(data.userStatus);
 
-  return data?.userStatus;
+  return data;
 }
 
 export async function rotateProxy(imei: string): Promise<RotateProxyResponse> {
