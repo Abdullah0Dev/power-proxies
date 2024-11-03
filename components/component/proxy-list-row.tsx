@@ -113,8 +113,8 @@ function ConnectionSpeedTestModal({
       const response = await fetchConnectionResults(imei);
 
       const formattedResponse: ConnectionTestResponse = {
-        imei: response.IMEI || null,
-        nick: response.NICK || null,
+        imei: response.imei || null,
+        nick: response.nick || null,
         results: response.results.map((result) => ({
           connections: result.connections,
           successRate: result.successRate,

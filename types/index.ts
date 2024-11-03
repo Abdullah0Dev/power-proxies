@@ -49,7 +49,7 @@ export interface ProxyData {
   IS_ROTATED: string;
   MSG: string;
   N: number;
-  STATE: "added" | "removed" | "pending";
+  STATE: "added" | "removed" | "pending"; // Add other possible states
   android: AndroidInfo;
   modem_details: ModemDetails;
   net_details: NetworkDetails;

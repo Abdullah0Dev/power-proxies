@@ -32,7 +32,7 @@ interface ConnectionTestResponse {
   results: ConnectionResult[];
 }
 
-export async function fetchUserInfo(): Promise<UserStatus | undefined> {
+export async function fetchUserInfo()  {
   const response = await fetch(`${process.env.BASE_URL}/show-user-info`);
   const data = await response.json();
   console.log(data.userStatus);
