@@ -2,8 +2,11 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "../../../components/component/dashboard-sidebar";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-
-export default async function Layout({ children }) {
+import React from "react";
+interface LayoutProps {
+  children: React.ReactNode
+} 
+export default async function Layout({ children }: LayoutProps) {
   const user = await currentUser();
   if (!user) redirect("/sign-in");
 
