@@ -99,11 +99,11 @@ export async function fetchSpeedTestData({
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        ipAddress: "188.245.37.125",
-        port: "7016",
+        // ipAddress: "188.245.37.125",
+        // port: "7016",
         imei: "860191063669325",
-        username: "proxy",
-        password: "proxy",
+        // username: "proxy",
+        // password: "proxy",
       }),
     });
 
