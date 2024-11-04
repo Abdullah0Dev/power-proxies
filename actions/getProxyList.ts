@@ -32,7 +32,7 @@ interface ConnectionTestResponse {
   results: ConnectionResult[];
 }
 
-export async function fetchUserInfo()  {
+export async function fetchUserInfo() {
   const response = await fetch(`${process.env.BASE_URL}/show-user-info`);
   const data = await response.json();
   console.log(data.userStatus);
@@ -46,13 +46,13 @@ export async function rotateProxy(imei: string): Promise<RotateProxyResponse> {
       `${process.env.BASE_URL}/rotate-ip/860191063669325`,
       {
         method: "POST",
-      },
+      }
     );
 
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(
-        `HTTP error! status: ${response.status}, message: ${errorText}`,
+        `HTTP error! status: ${response.status}, message: ${errorText}`
       );
     }
 
@@ -67,18 +67,18 @@ export async function rotateProxy(imei: string): Promise<RotateProxyResponse> {
     if (error instanceof Error) {
       if (error.name === "AbortError") {
         throw new Error(
-          "Request timed out. Please check your network connection.",
+          "Request timed out. Please check your network connection."
         );
       }
 
       if (error instanceof TypeError) {
         throw new Error(
-          "Network error. Please check your internet connection.",
+          "Network error. Please check your internet connection."
         );
       }
 
       throw new Error(
-        error.message || "Failed to rotate IP. Please try again later.",
+        error.message || "Failed to rotate IP. Please try again later."
       );
     }
 
@@ -86,7 +86,7 @@ export async function rotateProxy(imei: string): Promise<RotateProxyResponse> {
     throw new Error("An unexpected error occurred");
   }
 }
-
+const BASE_DEV_URL = `https://proxy-test-iqka.onrender.com`;
 export async function fetchSpeedTestData({
   ipAddress,
   port,
@@ -95,7 +95,7 @@ export async function fetchSpeedTestData({
   password,
 }: SpeedTestParams): Promise<SpeedTestResult> {
   try {
-    const response = await fetch(`${process.env.BASE_URL}/speed-test/`, {
+    const response = await fetch(`${BASE_DEV_URL}/speed-test/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -152,10 +152,10 @@ export async function fetchSpeedTestData({
 }
 
 export async function fetchConnectionResults(
-  imei: string,
+  imei: string
 ): Promise<ConnectionTestResponse> {
   const response = await fetch(
-    `${process.env.BASE_URL}/connection-results/860191063669325`,
+    `${process.env.BASE_URL}/connection-results/860191063669325`
   );
 
   const html = await response.text();
