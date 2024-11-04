@@ -11,6 +11,7 @@ import {
   SpeedTestResult,
   ConnectionResult,
 } from "@/types";
+import axios from "axios";
 
 interface UserStatus {
   GENTIME: string;
@@ -95,28 +96,26 @@ export async function fetchSpeedTestData({
   password,
 }: SpeedTestParams): Promise<SpeedTestResult> {
   try {
-    const response = await fetch(`${BASE_DEV_URL}/speed-test/`, {
-      method: "POST",
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
+    const response = await axios.post(
+      `https://proxy-test-iqka.onrender.com/speed-test/`,
+      {
+        imei: "860191063669325",
       },
-      body: JSON.stringify({
-        // ipAddress: "188.245.37.125",
-        // port: "7016",
-        imei: imei,
-        // username: "proxy",
-        // password: "proxy",
-      }),
-    });
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        },
+      }
+    );
     console.log(`IMEI: ${imei}`);
 
-    if (!response.ok) {
-      const errorText = await response.text();
+    if (response.status !== 200) {
+      const errorText = await response?.data;
       throw new Error(`HTTP error: ${errorText}`);
     }
 
-    const html = await response.text();
+    const html = response.data;
     const root = parse(html);
 
     // IMEI extraction

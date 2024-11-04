@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import axios from 'axios'
 import {
   Tooltip,
   TooltipContent,
@@ -210,6 +211,28 @@ function SpeedTestModal({
     password,
   };
 
+  const handleSpeedTest = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        `https://proxy-test-iqka.onrender.com/speed-test/`,
+        {
+          imei: "860191063669325",
+        },
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+          },
+        }
+      ); 
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error during speed test:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const fetchSpeedTest = async () => {
     setLoading(true);
     setError(null);
