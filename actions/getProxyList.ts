@@ -35,7 +35,7 @@ interface ConnectionTestResponse {
 export async function fetchUserInfo() {
   const response = await fetch(`${process.env.BASE_URL}/show-user-info`);
   const data = await response.json();
-  console.log(data.userStatus);
+  // console.log(data.userStatus);
 
   return data;
 }
@@ -97,15 +97,19 @@ export async function fetchSpeedTestData({
   try {
     const response = await fetch(`${BASE_DEV_URL}/speed-test/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         // ipAddress: "188.245.37.125",
         // port: "7016",
-        imei: "860191063669325",
+        imei: imei,
         // username: "proxy",
         // password: "proxy",
       }),
     });
+    console.log(`IMEI: ${imei}`);
 
     if (!response.ok) {
       const errorText = await response.text();

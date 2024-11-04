@@ -205,7 +205,7 @@ function SpeedTestModal({
   const speedTestParams: SpeedTestParams = {
     ipAddress,
     port,
-    imei,
+    imei: "860191063669325",
     username,
     password,
   };
