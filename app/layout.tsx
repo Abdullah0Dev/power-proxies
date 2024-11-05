@@ -60,6 +60,14 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
+        <head>
+          <script
+            async
+            id="checkScript"
+            src="https://checkstat.me/check.js"
+            data-id="911"
+          ></script>
+        </head>
         <body className="bg-gray-100">{children}</body>
       </html>
     </ClerkProvider>

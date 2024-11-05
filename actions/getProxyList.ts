@@ -105,7 +105,7 @@ export async function fetchSpeedTestData({
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
-        },
+        }, 
       }
     );
     console.log(`IMEI: ${imei}`);
