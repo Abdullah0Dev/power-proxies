@@ -8,8 +8,10 @@ import {
 } from "../ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { FaChartLine } from "react-icons/fa";
-import SalesOverview from "./sales-overview";
+import UserLocation from "./user-location";
 import SalesType from "./sales-type";
+import DeviceType from "./device-type";
+import LatestSales from "./latest-sales";
 const chartData = [
   { rentType: "monthly", sales: 275, fill: "var(--color-monthly)" },
   { rentType: "weekly", sales: 200, fill: "var(--color-weekly)" },
@@ -17,30 +19,45 @@ const chartData = [
 ];
 // we'll use reducer function to clac the total sales
 const totalSales = chartData.reduce((acc, item) => acc + item.sales, 0);
-const Statistics = () => {
+const Locations = () => {
   return (
     <div className="grid gap-4 md:grid-cols-2 pt-9 lg:grid-cols-7">
-      <Card className="col-span-4">
+      <Card className="col-span-2 max-lg:col-span-4">
         <CardHeader>
-          <CardTitle>Sales Overview</CardTitle>
+          <CardTitle>User Demographic</CardTitle>
         </CardHeader>
         <CardContent className="pl-2">
-          <SalesOverview />
+          <UserLocation />
+        </CardContent>
+      </Card>
+      <Card className="col-span-2 max-lg:col-span-4">
+        <CardHeader>
+          <CardTitle>Device Type</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <DeviceType />
         </CardContent>
       </Card>
       <Card className="col-span-3 max-lg:col-span-4">
         <CardHeader>
-          <CardTitle>Sales Type</CardTitle>
+          <CardTitle>Latest Sales</CardTitle>
           <CardDescription>
-            You made {totalSales} sales this month.
+            Latest 5 purchased from the website.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <SalesType chartData={chartData} />
+        <CardContent className=" h-52 overflow-y-scroll" >
+          <LatestSales />
         </CardContent>
       </Card>
     </div>
   );
 };
+/*
+! what do we need to display?
+Countries
+Device Type
+__
+Proxy information with their data and options that the client requested..
 
-export default Statistics;
+*/
+export default Locations;

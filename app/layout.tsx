@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://powerproxies.vercel.app"),
@@ -68,7 +69,16 @@ export default function RootLayout({
             data-id="911"
           ></script>
         </head>
-        <body className="bg-gray-100">{children}</body>
+        <body className="bg-gray -100">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </body>
       </html>
     </ClerkProvider>
   );

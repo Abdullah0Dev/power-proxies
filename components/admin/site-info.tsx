@@ -12,7 +12,7 @@ import { FaChartLine } from "react-icons/fa";
 const SiteInfo = () => {
   return (
     // Visitors, Total Revenue, Sales,
-    <div className="px-5">
+    <div className="">
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

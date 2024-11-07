@@ -33,7 +33,11 @@ documentation about this can be found on their website https://proxysmart.org/wi
 * بسم الله توكلت علي الله
 
 
-
+-> what do we need to show?
+1. last 10 people visited website showing: Device, Country, OS, Browser
+2. show user information and their setting with a small thing & speed test
+3. Sales overview charts - Visit Cluster by device
+4. users country - top 5 countries
 
 * => user proxies implements
 get the the email/username from the client -> then make a mongodb data base for this specific user which is gonna be with listing his own bought proxies with its data.. and make expire data.. then it deleted automatically -> then he need to renew the proxy
@@ -54,5 +58,5 @@ how many people use payment process using Willie vs coingate
 ? proxies information
  1. Nickname, Country, IMEI, proxy login/password, port { http, socks}, list for sale(true/false), last sale, time left for user, Total Income, status, Actions{quite, rotate ip}
  2. link to dashboard: http://188.245.37.125:7016
-
+https://youtu.be/pB3hX7le20c?list=PL6C03BCFE87398A78&t=2318
  -->

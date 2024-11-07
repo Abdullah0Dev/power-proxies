@@ -1,21 +1,22 @@
 import React from "react";
 import { Metadata } from "next";
 import Image from "next/image";
-import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { SidebarTrigger } from "../ui/sidebar";
 export const metadata: Metadata = {
   title: "Dashboard",
   description: "Example dashboard app built using the components.",
 };
 const Header = () => {
   return (
-    <div className="bg-white">
-      <div className="hidden flex-col md:flex">
+    <div className="bg -white">
+      <div className="  flex">
         <div className="flex-1 px-8  py-4">
           <div className="flex items-center justify-between space-y-2">
             <div className="flex items-center space-x-1">
+              <SidebarTrigger className="-ml-1" />
               <Image src="/logo.png" width={30} height={30} alt="Dashboard" />
-              <h2 className="text-3xl font-bold tracking-tight">
+              <h2 className="text-3xl font-bold max-md:hidden tracking-tight">
                 PowerProxies
               </h2>
             </div>
