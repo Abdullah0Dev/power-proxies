@@ -50,10 +50,8 @@ export const fetchMonthlyData = async () => {
           "Content-Type": "application/json",
         },
       }
-    );
-    const visitorData = response.data?.data?.total;
-    const total = visitorData.reduce((acc, item) => acc + item[1], 0);
-    return total;
+    ); 
+    return "test";
   } catch (error) {
     console.log(error);
 
