@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -8,8 +9,35 @@ import {
 } from "../ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { FaChartLine } from "react-icons/fa";
+import axios from "axios";
 
 const SiteInfo = () => {
+  const [monthlyVisitors, setMonthlyVisitors] = useState(0);
+  useEffect(() => {
+    const fetchMonthlyData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:4000/web-statistics/last-30-days",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(response.data?.data?.total);
+        const visitorData = response.data?.data?.total;
+        const total = visitorData.reduce((acc, item) => acc + item[1], 0);
+        console.log(`total visitors`, total);
+
+        setMonthlyVisitors(total ?? 3);
+      } catch (error) {
+        console.log(error);
+
+        return error;
+      }
+    };
+    fetchMonthlyData();
+  }, []);
   return (
     // Visitors, Total Revenue, Sales,
     <div className="">
@@ -43,7 +71,7 @@ const SiteInfo = () => {
                     </p>
                   </div>
                   <div className="status-tracker">
-                  <FaChartLine size={20} className="text-green-300" />
+                    <FaChartLine size={20} className="text-green-300" />
                   </div>
                 </div>
               </CardContent>
@@ -69,7 +97,7 @@ const SiteInfo = () => {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+2350</div>
+                <div className="text-2xl font-bold">+{monthlyVisitors}</div>
                 <p className="text-xs text-muted-foreground">
                   +180.1% from last month
                 </p>

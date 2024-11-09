@@ -41,6 +41,25 @@ export async function fetchUserInfo() {
   return data;
 }
 
+export const fetchMonthlyData = async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:4000/web-statistics/last-30-days",
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const visitorData = response.data?.data?.total;
+    const total = visitorData.reduce((acc, item) => acc + item[1], 0);
+    return total;
+  } catch (error) {
+    console.log(error);
+
+    return error;
+  }
+};
 export async function rotateProxy(imei: string): Promise<RotateProxyResponse> {
   try {
     const response = await fetch(
@@ -105,7 +124,7 @@ export async function fetchSpeedTestData({
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
-        }, 
+        },
       }
     );
     console.log(`IMEI: ${imei}`);

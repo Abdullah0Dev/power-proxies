@@ -5,6 +5,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import AdminSidebar from "@/components/admin/admin-sidebar";
+import TestSidebar from '@/components/admin/sidebar-test'
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -32,32 +34,19 @@ export default async function RootLayout({
   return (
     <>
       <SidebarProvider>
-        <AdminSidebar />
+      <TestSidebar />
         <main className="w-full overflow- x-hidden ">
-          
-          {/* <SidebarInset>
-            <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-              <div className="flex items-center gap-2 px-4">
-                <Separator orientation="vertical" className="mr-2 h-4" />
-                <Breadcrumb>
-                  <BreadcrumbList>
-                    <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href="#">
-                        Building Your Application
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator className="hidden md:block" />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
-              </div>
-            </header>
-          </SidebarInset> */}
+           
           {children}
         </main>
       </SidebarProvider>
+      {/* <div className="h-screen flex flex-row justify-start"> */}
+  
+      {/* <div className="bg-primary flex-1 p-4 text-white">
+          {children}
+      </div> */}
+    {/* </div> */}
     </>
   );
 }
+ 

@@ -12,14 +12,7 @@ const Header = () => {
     <div className="bg -white">
       <div className="  flex">
         <div className="flex-1 px-8  py-4">
-          <div className="flex items-center justify-between space-y-2">
-            <div className="flex items-center space-x-1">
-              <SidebarTrigger className="-ml-1" />
-              <Image src="/logo.png" width={30} height={30} alt="Dashboard" />
-              <h2 className="text-3xl font-bold max-md:hidden tracking-tight">
-                PowerProxies
-              </h2>
-            </div>
+          <div className="flex items-center justify-end space-y-2">
             <div className="flex items-center space-x-2">
               <div className="flex items-center">
                 <Avatar className="h-9 w-9">

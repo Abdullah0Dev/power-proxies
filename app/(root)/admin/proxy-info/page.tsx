@@ -32,9 +32,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Header } from "@/components/admin";
 const ProxyPage = () => {
   return (
-    <div>
+    <div className=" w-full h-full">
+        <Header />
       <Table>
         <TableCaption>
           <PaginationDemo />{" "}
