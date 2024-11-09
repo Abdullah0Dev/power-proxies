@@ -12,14 +12,14 @@ import {
 
 export default function ContactSupport() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-8">
+    <div className="min-h-screen light:bg-gradient-to-b from-blue-50 to-white p-8">
       <div className="max-w-2xl mx-auto space-y-12">
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-blue-900">Contact Support</h1>
           <p className="text-xl text-blue-600">We're here to help you 24/7</p>
         </div>
 
-        <Card className="shadow-xl border-blue-100 overflow-hidden">
+        <Card className="shadow-xl dark:border-blue-600 border-blue-100 overflow-hidden">
           <div className="bg-blue-600 p-6 text-white">
             <CardTitle className="text-3xl font-bold">Get in Touch</CardTitle>
             <CardDescription className="text-blue-100 mt-2">

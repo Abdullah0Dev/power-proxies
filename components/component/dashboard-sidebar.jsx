@@ -1,18 +1,29 @@
 "use client";
 import {
-  File,
   HelpCircle,
   ShoppingBag,
   User,
-  Settings,
   CreditCard,
-  BookOpen,
-  MessageSquare,
+  Bell,
+  ChevronsUpDown,
+  LogOut,
   Globe,
   Plus,
+  Sparkles,
+  BadgeCheck,
 } from "lucide-react";
 import Image from "next/image";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
@@ -25,8 +36,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { Alert } from "../ui/alert";
 
 // Menu items for different sections.
 const proxyManagementItems = [
@@ -68,14 +81,27 @@ const knowledgeDeskItems = [
   },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ user }) {
   const { open } = useSidebar();
   const pathname = usePathname();
   const pathnameList = pathname.split("/");
 
+  // const userEmail = user.primaryEmailAddress.emailAddress;
+  const userImage = user?.imageUrl;
+  const userName = user?.firstName + " " + user?.lastName;
+  const userEmail = user?.emailAddresses[0].emailAddress;
+  console.log(userImage, userName, userEmail);
+
+  const data = {
+    user: {
+      name: userName,
+      email: userEmail,
+      avatar: userImage,
+    },
+  };
   return (
     <Sidebar collapsible="icon">
-      <SidebarContent className="bg-white">
+      <SidebarContent className="bg-white dark:bg-darkMode-2">
         {/* Logo */}
         <div className="p-4 flex items-center gap-2">
           <Image
@@ -87,7 +113,7 @@ export function AppSidebar() {
             className="max-w-full h-auto"
           />
           {open && (
-            <span className="text-black font-bold text-xl">PowerProxy</span>
+            <span className="text -black font-bold text-xl">PowerProxy</span>
           )}
         </div>
 
@@ -172,7 +198,7 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarFooter className="border-t flex items-end">
+        {/* <SidebarFooter className="border-t flex items-end">
           <UserButton
             className={"size-12"}
             appearance={{
@@ -181,6 +207,91 @@ export function AppSidebar() {
               },
             }}
           />
+        </SidebarFooter> */}
+        <SidebarFooter className="absolute bottom-2">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuButton
+                    size="lg"
+                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                  >
+                    <Avatar className="h-8 w-8 rounded-lg">
+                      <AvatarImage
+                        src={data.user.avatar}
+                        alt={data.user.name}
+                      />
+                      <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-semibold">
+                        {data.user.name}
+                      </span>
+                      <span className="truncate text-xs">
+                        {data.user.email}
+                      </span>
+                    </div>
+                    <ChevronsUpDown className="ml-auto size-4" />
+                  </SidebarMenuButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                  side="bottom"
+                  align="end"
+                  sideOffset={4}
+                >
+                  <DropdownMenuLabel className="p-0 font-normal">
+                    <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                      <Avatar className="h-8 w-8 rounded-lg">
+                        <AvatarImage
+                          src={data.user.avatar}
+                          alt={data.user.name}
+                        />
+                        <AvatarFallback className="rounded-lg">
+                          CN
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span className="truncate font-semibold">
+                          {data.user.name}
+                        </span>
+                        <span className="truncate text-xs">
+                          {data.user.email}
+                        </span>
+                      </div>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuGroup>
+                    <Link href="/dashboard/account">
+                      <DropdownMenuItem>
+                        <BadgeCheck />
+                        Account
+                      </DropdownMenuItem>
+                    </Link>
+                    {/* /dashboard/proxy-renewals */}
+                    <Link href="/dashboard/proxy-renewals">
+                      <DropdownMenuItem>
+                        <CreditCard />
+                        Billing
+                      </DropdownMenuItem>
+                    </Link>
+                  </DropdownMenuGroup>
+                  <DropdownMenuSeparator />
+                  <Link   href="/" 
+                  onClick={() => alert("duh")
+                  }>
+                  <DropdownMenuItem >
+                    <LogOut />
+                    Log out
+                  </DropdownMenuItem>
+                  </Link>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </SidebarFooter>
       </SidebarContent>
     </Sidebar>

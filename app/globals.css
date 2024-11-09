@@ -112,7 +112,7 @@ html {
 }
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #3b82f6 #e2e8f0;
+  scrollbar-color: #3b82f6 transparent;
 }
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;

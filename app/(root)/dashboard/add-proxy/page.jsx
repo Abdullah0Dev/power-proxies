@@ -36,7 +36,7 @@ export default function ProxyConfiguration() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 ">
+    <div className="min-h-screen light:bg-gray-50 ">
       <DashboardHeader title="Add Proxy" />
       <div className="mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column */}

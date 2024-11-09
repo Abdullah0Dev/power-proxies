@@ -15,10 +15,10 @@ const ProxyListTable: FC<ProxyListTableProps> = ({ proxies, activeUserInfo }) =>
   return (
     <>
       <DashboardHeader title="Proxy List" />
-      <div className="custom-scrollbar overflow-x-auto bg-white rounded-lg shadow">
+      <div className="custom-scrollbar overflow-x-auto dark:bg-darkMode-1 bg-white rounded-lg shadow">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-100">
+            <TableRow className="bg-gray-100 dark:bg-darkMode-2">
               <TableHead className="py-4 px-6">ID</TableHead>
               <TableHead className="py-4 px-6">Status</TableHead>
               <TableHead className="py-4 px-6">Operator</TableHead>

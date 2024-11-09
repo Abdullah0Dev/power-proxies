@@ -2,6 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { Header } from "@/components/admin";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://powerproxies.vercel.app"),
@@ -69,14 +71,19 @@ export default function RootLayout({
             data-id="911"
           ></script>
         </head>
-        <body className="bg-gray -100">
+        <body className="light:bg-gray-100">
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <SidebarProvider className="flex flex-col   overflow-hidden w-full ">
+              <main className="relative">
+                {" "}
+                <>{children}</>
+              </main>
+            </SidebarProvider>
           </ThemeProvider>
         </body>
       </html>

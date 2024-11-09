@@ -44,7 +44,19 @@ get the the email/username from the client -> then make a mongodb data base for 
 
 * => finding the proxy that are not rented..
 if a proxy is not associated with a client so it's gonna be available.. if not it's already in use (in admin side brief)
-
+? => todays plan inshallah:
+1. finalize the website 
+  //• make the dark mode/light mode
+  • fix any problem or issue
+  • end the dashboard sidebar 
+2. backend selling workings
+  • enable the usr to purchase and make his own proxies based on his email
+  • make the analysis routers from CheckStat.net
+  • connect the frontend with the backend
+  • deploy the changes and make the client take a look but hide some to show it to him later in the week inshallah
+  • organize the selling based on client admin page which enable hi mto manage which proxy is available or not
+  • cool.... no let's have a chat   
+-> dashboard - logo, - Statistics
  Plans - goals inshallah
 // 1. do the client schema which is gonna be when a email exist it's gonna assign with an email.. so he can know what he have and so on... it's element is gonna be as the website elements
  2. plan what's gonna inside the admin page elements ->

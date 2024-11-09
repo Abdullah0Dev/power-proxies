@@ -98,7 +98,7 @@ function ErrorState({ message, onRetry }: ErrorStateProps) {
   );
 }
 
-function ConnectionSpeedTestModal({
+ export function ConnectionSpeedTestModal({
   isOpen,
   onClose,
   imei,
@@ -190,7 +190,7 @@ function ConnectionSpeedTestModal({
   );
 }
 
-function SpeedTestModal({
+export  function SpeedTestModal({
   isOpen,
   onClose,
   imei,
@@ -331,7 +331,7 @@ function SpeedTestModal({
   );
 }
 
-function RotateIPModal({ isOpen, onClose, imei }: RotateIPModalProps) {
+export function RotateIPModal({ isOpen, onClose, imei }: RotateIPModalProps) {
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState<RotateProxyResponse | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
@@ -449,7 +449,7 @@ export default function ProxyListRow({
   };
 
   return (
-    <TableRow className="hover:bg-blue-50 transition-colors duration-200">
+    <TableRow className="hover:bg-blue-50 dark:hover:bg-darkMode-2/60 transition-colors duration-200">
       <TableCell className="py-4">
         <div className="font-medium">{proxyData.modem_details.IMEI}</div>
       </TableCell>

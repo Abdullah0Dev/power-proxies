@@ -25,7 +25,7 @@ export default function AccountManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen light:bg-gray-50">
       <DashboardHeader title="Account" />
       <div className="max-w-7xl mx-auto  p-8">
         {/* Top Bar */}

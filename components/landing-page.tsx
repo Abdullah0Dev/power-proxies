@@ -48,14 +48,18 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen ">
+    <motion.div className="min-h-screen dark:bg-darkMode-1 ">
       <div className="bg-gradient-to-br from-blue-900 via-blue-700 to-teal-500">
         <header className="container mx-auto  px-4 py-16 md:py-32">
           <div className="pt-6 flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-8 md:mb-0">
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              <motion.h1
+                // initial={{opacity: 0, y: 10}}
+                // animate={{opacity: 1, y:  0}}
+                className="text-4xl md:text-5xl font-bold text-white mb-6"
+              >
                 Unlock the Internet with Fast & Secure Mobile Proxies
-              </h1>
+              </motion.h1>
               <p className="text-xl text-teal-100 mb-8">
                 Scrape public data without interruptions from CAPTCHAs or
                 blocks, manage multiple social media accounts, and verify ads
@@ -124,7 +128,8 @@ export default function LandingPage() {
                 <div className="absolute top-[8px] left-[13px] w-[90%] h-[97%] overflow-hidden rounded-lg">
                   <video
                     ref={videoRef}
-                    src="https://www.germanproxy.io/wp-content/uploads/2024/10/Proxy-Speedtest.mp4"
+                    src="/proxy-speed-test-vid.mp4"
+                    // src="https://www.germanproxy.io/wp-content/uploads/2024/10/Proxy-Speedtest.mp4"
                     autoPlay
                     loop
                     muted
@@ -138,7 +143,7 @@ export default function LandingPage() {
         </header>
       </div>
       <SectionWrapper>
-        <section className="bg-white py-16">
+        <section className="bg-white dark:bg-black/80 py-16">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">
               Trusted by Industry Leaders
@@ -169,7 +174,10 @@ export default function LandingPage() {
       <Features />
 
       <SectionWrapper>
-        <section id="pricing" className="bg-white py-16">
+        <section
+          id="pricing"
+          className="light:bg-white dark:bg-darkMode-1/80 py-16"
+        >
           <div className="container mx-auto px-4">
             <h2 className="text-4xl font-bold text-center mb-4">
               Pricing Plans
@@ -268,7 +276,10 @@ export default function LandingPage() {
       </SectionWrapper>
 
       <SectionWrapper>
-        <section className="bg-gray-100 py-16">
+        <section
+          id="reviews"
+          className="bg-gray-100 dark:bg-darkMode-2  py-16"
+        >
           <div className="container mx-auto px-4">
             <h2 className="text-4xl font-bold text-center mb-4">
               Testimonials
@@ -283,17 +294,22 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-white rounded-lg shadow-lg p-6"
+                  className="bg-white dark:bg-darkMode-1  rounded-lg shadow-lg p-6"
                 >
-                  <p className="text-gray-700 mb-4">{testimonial.content}</p>
+                  <p className="text-gray-700 dark:text-gray-400  mb-4">
+                    {testimonial.content}
+                  </p>
                   <div className="flex items-center">
                     <div className="mr-4">
-                      <Image
+                      <motion.img
                         src="/client-0-vcjg0fIb.jpg"
                         alt={testimonial.author}
                         width={50}
                         height={50}
                         className="rounded-full"
+                        whileHover={{ scale: 1.1 }} // Scale effect on hover
+                        transition={{ duration: 0.3 }} // Smooth transition for image hover
+                        loading="lazy"
                       />
                     </div>
                     <div>
@@ -303,10 +319,21 @@ export default function LandingPage() {
                   </div>
                   <div className="flex mt-2">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-5 h-5 text-yellow-400 fill-current"
-                      />
+                      // <Star
+                      //   key={i}
+                      //   className="w-5 h-5 text-yellow-400 fill-current"
+                      // />
+                      <motion.img
+                      loading="lazy"
+                      key={i}
+                      src={"/star.png"}
+                      alt="star"
+                      className="mx-px"
+                      width={20}
+                      height={20}
+                      whileHover={{ rotate: [0, 15, -15, 0], scale: 1.2 }} // Rotate effect on hover
+                      transition={{ duration: 0.3 }} // Transition for hover effect
+                    />
                     ))}
                   </div>
                 </motion.div>
@@ -316,7 +343,7 @@ export default function LandingPage() {
         </section>
       </SectionWrapper>
 
-      <section id="faq" className="bg-white py-16">
+      <section id="faq" className="light:bg-white  dark:bg-darkMode-1 py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-4">
             Frequently Asked Questions
@@ -333,13 +360,15 @@ export default function LandingPage() {
               {faqs.map((faq, index) => (
                 <AccordionItem key={index} value={`item-${index}`}>
                   <AccordionTrigger>{faq.question}</AccordionTrigger>
-                  <AccordionContent>{faq.answer}</AccordionContent>
+                  <AccordionContent className="dark:text-white/50">
+                    {faq.answer}
+                  </AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
           </div>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 }

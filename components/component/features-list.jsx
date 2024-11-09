@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-
+import Link from "next/link";
 const featureItemData = [
   {
     title: "Global Mobile Proxy Network",
@@ -45,7 +45,7 @@ const FeatureItem = ({ feature, index }) => {
       transition={{ duration: 0.5, delay: 0.1 }}
       className={`flex flex-col ${
         index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-      } items-center gap-8 bg-white rounded-xl shadow-lg overflow-hidden mb-16`}
+      } items-center gap-8 light: bg-white dark:bg-darkMode-2  rounded-xl shadow-lg overflow-hidden mb-16`}
     >
       <div className="md:w-1/2 p-8">
         <h3
@@ -54,7 +54,9 @@ const FeatureItem = ({ feature, index }) => {
         >
           {feature.title}
         </h3>
-        <p className="text-gray-600 mb-6">{feature.desc}</p>
+        <p className="light:text-gray-600 text-gray-400  mb-6">
+          {feature.desc}
+        </p>
         <button
           className="px-6 py-2 rounded-full text-white font-semibold transition-all duration-300 ease-in-out"
           style={{
@@ -62,7 +64,7 @@ const FeatureItem = ({ feature, index }) => {
             boxShadow: `0 4px 14px 0 ${feature.btnColor || "#2363B9"}66`,
           }}
         >
-          Learn More
+          <Link href="#pricing">Learn More</Link>
         </button>
       </div>
       <div
@@ -75,13 +77,13 @@ const FeatureItem = ({ feature, index }) => {
       >
         {feature.multiImg ? (
           // Container for overlaying multiple images
-          <div className="flex justify-center items-center h-full">
+          <div className="flex justify-center items-center  h-full">
             <Image
               src="/ccpa-1-BM4PN9l7.svg"
               alt="CCPA Compliance"
               width={100}
               height={100}
-              className="mx-2"
+              className="mx-2 "
             />
             <Image
               src="/iso-DuIEJ2_g.svg"
@@ -110,7 +112,7 @@ const FeatureItem = ({ feature, index }) => {
           />
         )}
         {/* Gradient overlay for visual effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white opacity-50"></div>
+        <div className="absolute inset-0 light:bg-gradient-to-r from-transparent to-white opacity-50"></div>
       </div>
     </motion.div>
   );
@@ -120,7 +122,8 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="bg-gradient-to-b from-gray-100 to-white py-16"
+      className="light:bg-gradient-to-b dark:bg-darkMode-1
+         from-gray-100 to-white py-16"
     >
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-4">Key Features</h2>

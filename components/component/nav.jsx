@@ -61,7 +61,7 @@ export default function Navbar() {
           </Link>
           <div className="hidden md:flex space-x-4">
             <Link
-              href="#"
+              href="/"
               className={`transition-colors duration-300 ${
                 isScrolled
                   ? "text-blue-900 hover:text-blue-700"
@@ -71,17 +71,27 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              href="#"
+              href="#features"
               className={`transition-colors duration-300 ${
                 isScrolled
                   ? "text-blue-900 hover:text-blue-700"
                   : "text-white hover:text-teal-300"
               }`}
             >
-              Services
+              Features
             </Link>
             <Link
-              href="#"
+              href="#pricing"
+              className={`transition-colors duration-300 ${
+                isScrolled
+                  ? "text-blue-900 hover:text-blue-700"
+                  : "text-white hover:text-teal-300"
+              }`}
+            >
+              Pricing
+            </Link>
+            <Link
+              href="#reviews"
               className={`transition-colors duration-300 ${
                 isScrolled
                   ? "text-blue-900 hover:text-blue-700"
@@ -91,24 +101,14 @@ export default function Navbar() {
               Reviews
             </Link>
             <Link
-              href="#"
+              href="#faq"
               className={`transition-colors duration-300 ${
                 isScrolled
                   ? "text-blue-900 hover:text-blue-700"
                   : "text-white hover:text-teal-300"
               }`}
             >
-              Contact
-            </Link>
-            <Link
-              href="#"
-              className={`transition-colors duration-300 ${
-                isScrolled
-                  ? "text-blue-900 hover:text-blue-700"
-                  : "text-white hover:text-teal-300"
-              }`}
-            >
-              Portfolio
+              FAQ
             </Link>
           </div>
           <div className="hidden md:flex items-center space-x-4">
@@ -189,7 +189,7 @@ export default function Navbar() {
               </svg>
             </button>
             <div className="flex flex-col space-y-4">
-              <Link
+              {/* <Link
                 href="#"
                 className="text-white hover:text-teal-300 transition-colors"
               >
@@ -230,7 +230,74 @@ export default function Navbar() {
                 className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded transition-colors text-center"
               >
                 Sign In
+              </Link> */}
+
+              <Link
+                href="/"
+                onClick={toggleMenu}
+                className={`transition-colors duration-300 `}
+              >
+                Home
               </Link>
+              <Link
+                onClick={toggleMenu}
+                href="#features"
+                className={`transition-colors duration-300 `}
+              >
+                Features
+              </Link>
+              <Link
+                href="#pricing"
+                onClick={toggleMenu}
+                className={`transition-colors duration-300 `}
+              >
+                Pricing
+              </Link>
+              <Link
+                href="#reviews"
+                onClick={toggleMenu}
+                className={`transition-colors duration-300 `}
+              >
+                Reviews
+              </Link>
+              <Link
+                href="#faq"
+                onClick={toggleMenu}
+                className={`transition-colors duration-300 `}
+              >
+                FAQ
+              </Link>
+
+              <div className="absolute bottom-5 w-[90%] ">
+                {isSignedIn ? (
+                  <div className="w-full rounded-2xl bg-teal-500 py-3 text-center ">
+                    <Link
+                      onClick={toggleMenu}
+                      href="/dashboard"
+                      className={`transition-colors duration-300  `}
+                    >
+                      Dashboard
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="flex  w-full justify-between items-center">
+                    <Link
+                      href="/sign-up"
+                      onClick={toggleMenu}
+                      className={` border-b border-white text-teal-300 font-bold py-2 px-2 e rounded  transition-colors  `}
+                    >
+                      New Account
+                    </Link>
+                    <Link
+                      onClick={toggleMenu}
+                      href="/sign-in"
+                      className={`bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-5 rounded transition-colors `}
+                    >
+                      Sign In
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
           </motion.div>
         )}

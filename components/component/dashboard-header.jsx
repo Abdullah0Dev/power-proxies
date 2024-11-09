@@ -18,7 +18,7 @@ const DashboardHeader = ({ title }) => {
           <Button
             variant="outline"
             size="sm"
-            className="text-black border-white hover:bg-blue-800"
+            className="text-black dark:text-white dark:bg-darkMode-2/80 dark:border-none dark:hover:bg-darkMode-2/90 border-white hover:bg-blue-800 hover:text-white"
           >
             Add Funds
           </Button>
