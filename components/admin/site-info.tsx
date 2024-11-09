@@ -26,7 +26,7 @@ const SiteInfo = () => {
         );
         console.log(response.data?.data?.total);
         const visitorData = response.data?.data?.total;
-        const total = visitorData.reduce((acc, item) => acc + item[1], 0);
+        const total = visitorData.reduce((acc: number, item: number[]) => acc + item[1], 0);
         console.log(`total visitors`, total);
 
         setMonthlyVisitors(total ?? 3);
