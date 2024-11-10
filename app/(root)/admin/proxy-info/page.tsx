@@ -35,9 +35,9 @@ import {
 import { Header } from "@/components/admin";
 const ProxyPage = () => {
   return (
-    <div className=" w-full h-full">
+    <div className=" w-auto  h-full ">
         <Header />
-      <Table>
+      <Table className="">
         <TableCaption>
           <PaginationDemo />{" "}
         </TableCaption>

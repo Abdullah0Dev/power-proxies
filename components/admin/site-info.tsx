@@ -10,6 +10,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { FaChartLine } from "react-icons/fa";
 import axios from "axios";
+import AnimatedCounter from "../component/AnimatedCounter";
 
 const SiteInfo = () => {
   const [monthlyVisitors, setMonthlyVisitors] = useState(0);
@@ -26,7 +27,10 @@ const SiteInfo = () => {
         );
         console.log(response.data?.data?.total);
         const visitorData = response.data?.data?.total;
-        const total = visitorData.reduce((acc: number, item: number[]) => acc + item[1], 0);
+        const total = visitorData.reduce(
+          (acc: number, item: number[]) => acc + item[1],
+          0
+        );
         console.log(`total visitors`, total);
 
         setMonthlyVisitors(total ?? 3);
@@ -65,7 +69,9 @@ const SiteInfo = () => {
               <CardContent>
                 <div className="flex justify-between items-end ">
                   <div className="">
-                    <div className="text-2xl font-bold">$45,231.89</div>
+                    <div className="text-2xl font-bold">
+                      $<AnimatedCounter from={0} to={45231.89} />
+                    </div>
                     <p className="text-xs text-slate-300">
                       +20.1% from last month
                     </p>

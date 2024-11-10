@@ -33,19 +33,18 @@ const menuItems = [
   // { id: 4, label: "Manage Tutorials", icon: AlarmPlusIcon, link: "/tutorials" },
 ];
 
-const TestSidebar = () => {
-  const [toggleCollapse, setToggleCollapse] = useState(false);
+const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
   const [isCollapsible, setIsCollapsible] = useState(false);
   const [ActiveTab, setActiveTab] = useState(1);
   const router = useRouter();
- 
+
   const activeMenu = useMemo(
     () => menuItems.find((menu) => menu.link === router.pathname),
     [router.pathname]
   );
 
   const wrapperClasses = classNames(
-    "h-screen px-4 pt-8 pb-4   bg- light dark:bg-darkMode-1 flex justify-between flex-col",
+    "h-screen px-4 pt-8 pb-4 bg- light dark:bg-darkMode-1 bg-[#f0f8ff] flex justify-between flex-col",
     {
       ["w-80"]: !toggleCollapse,
       ["w-20"]: toggleCollapse,
@@ -61,7 +60,7 @@ const TestSidebar = () => {
 
   const getNavItemClasses = (menu) => {
     return classNames(
-      "flex items-center cursor-pointer hover:bg-darkMode-2/50  rounded w-full overflow-hidden   whitespace-nowrap",
+      "flex items-center cursor-pointer dark:hover:bg-darkMode-2/50 hover:bg-darkMode-2/5  rounded w-full overflow-hidden   whitespace-nowrap",
       {
         ["bg-not-working"]: activeMenu?.id === menu.id,
       }
@@ -85,16 +84,15 @@ const TestSidebar = () => {
       <div
         className={
           wrapperClasses +
-          ` max-xl:hidden ${toggleCollapse === false && "min-w-60"} `
+          ` max-xl:hidden fixed ${toggleCollapse === false && "min-w- 60"} `
         }
         onMouseEnter={onMouseOver}
-
         onMouseLeave={onMouseOver}
         style={{ transition: "width 300ms cubic-bezier(0.2, 0, 0, 1) 0s" }}
       >
         <div className="flex flex-col">
           <div className="flex items-center justify-between relative">
-            <div className="flex items-center pl-1 gap-4">
+            <div className="flex items-center relative pl-1 gap-4">
               <Image
                 src={"/logo.png"}
                 alt={"logo"}
@@ -102,18 +100,21 @@ const TestSidebar = () => {
                 height={50}
                 className="max-w-full h-auto"
               />
-              <span
-                className={classNames("mt-2 text-xl font-medium text-text", {
-                  hidden: toggleCollapse,
-                })}
+              <h
+                className={classNames(
+                  "mt-2 flex text-xl font-medium text-text",
+                  {
+                    hidden: toggleCollapse,
+                  }
+                )}
               >
                 PowerProxies
-              </span>
+              </h>
             </div>
             {isCollapsible && (
               <button
                 className={collapseIconClasses}
-                onClick={handleSidebarToggle}
+                onClick={onToggleCollapse}
               >
                 <PanelLeft />
               </button>
@@ -189,7 +190,7 @@ const TestSidebar = () => {
                   <div
                     key={menu.id}
                     className={
-                      classes + ` ${ActiveTab === menu.id && "bg-[#3B82F6]"}`
+                      classes + ` ${ActiveTab === menu.id && " bg-[#3B82F6]  "}`
                     }
                   >
                     <Link
