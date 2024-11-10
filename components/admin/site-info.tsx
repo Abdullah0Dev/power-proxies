@@ -18,7 +18,7 @@ const SiteInfo = () => {
     const fetchMonthlyData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/web-statistics/last-30-days",
+          "https://proxy-test-iqka.onrender.com/web-statistics/last-30-days",
           {
             headers: {
               "Content-Type": "application/json",
@@ -103,7 +103,9 @@ const SiteInfo = () => {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+{monthlyVisitors}</div>
+                <div className="text-2xl font-bold">
+                  + <AnimatedCounter from={0} to={monthlyVisitors} />{" "}
+                </div>
                 <p className="text-xs text-muted-foreground">
                   +180.1% from last month
                 </p>

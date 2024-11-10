@@ -1,7 +1,10 @@
 "use client";
 import { TrendingUp } from "lucide-react";
+import countries from "i18n-iso-countries";
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import ReactCountryFlag from "react-country-flag";
+
 import {
   Card,
   CardContent,
@@ -16,42 +19,72 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "../ui/chart";
+import axios from "axios";
 export const description = "A mixed bar chart";
-const chartData = [
-  { browser: "egypt", visitors: 275, fill: "var(--color-egypt)" },
-  { browser: "netherlands", visitors: 200, fill: "var(--color-netherlands)" },
-  { browser: "france", visitors: 187, fill: "var(--color-france)" },
-  { browser: "unitedState", visitors: 173, fill: "var(--color-unitedState)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-];
-
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  egypt: {
-    label: "Egypt",
-    color: "hsl(var(--chart-1))",
-  },
-  netherlands: {
-    label: "NL",
-    color: "hsl(var(--chart-2))",
-  },
-  france: {
-    label: "France",
-    color: "hsl(var(--chart-3))",
-  },
-  unitedState: {
-    label: "US",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig;
-
+// user-country
+type CountryType = {
+  userCountry: String;
+  count: Number;
+  country: String;
+  iso: String;
+  latitude: Number;
+  longitude: Number;
+};
 const UserLocation = () => {
+  const [userCountry, setUserCountry] = useState<CountryType[]>([]);
+
+  useEffect(() => {
+    const fetchMonthlyData = async () => {
+      try {
+        const response = await axios.get(
+          "https://proxy-test-iqka.onrender.com/web-statistics/user-country",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(response.data?.data);
+        setUserCountry(response.data?.data);
+      } catch (error) {
+        console.log(error);
+
+        return error;
+      }
+    };
+    fetchMonthlyData();
+  }, []);
+  const chartData = userCountry.map((item) => ({
+    country: item.iso,
+    visitors: item.count,
+    fill: `var(--color-${item.iso})`,
+  }));
+  const chartConfig = {
+    visitors: {
+      label: "Visitors",
+    },
+    EG: {
+      label: "Egypt",
+      color: "hsl(var(--chart-1))",
+    },
+    NL: {
+      label: "NL",
+      color: "hsl(var(--chart-2))",
+    },
+    fr: {
+      label: "France",
+      color: "hsl(var(--chart-3))",
+    },
+    US: {
+      label: "US",
+      color: "hsl(var(--chart-4))",
+    },
+    other: {
+      label: "Other",
+      color: "hsl(var(--chart-5))",
+    },
+  } satisfies ChartConfig;
+
   return (
     <div>
       {" "}
@@ -65,7 +98,7 @@ const UserLocation = () => {
           }}
         >
           <YAxis
-            dataKey="browser"
+            dataKey="country"
             type="category"
             tickLine={false}
             tickMargin={10}

@@ -34,7 +34,7 @@ const Locations = () => {
         <CardHeader>
           <CardTitle>Device Type</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className=" ">
           <DeviceType />
         </CardContent>
       </Card>
