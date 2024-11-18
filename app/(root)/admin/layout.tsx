@@ -1,22 +1,7 @@
 "use client";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import AdminSidebar from "@/components/admin/admin-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import TestSidebar from "@/components/admin/sidebar-test";
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@radix-ui/react-separator";
-import { cookies } from "next/headers";
 import { useState } from "react";
 
 export default function RootLayout({

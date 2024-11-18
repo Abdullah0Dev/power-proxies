@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import axios from 'axios'
+import axios from "axios";
 import {
   Tooltip,
   TooltipContent,
@@ -29,6 +29,7 @@ import {
   XCircle,
 } from "lucide-react";
 import {
+  fetchClientPurchasedProxies,
   fetchConnectionResults,
   fetchSpeedTestData,
   rotateProxy,
@@ -98,7 +99,7 @@ function ErrorState({ message, onRetry }: ErrorStateProps) {
   );
 }
 
- export function ConnectionSpeedTestModal({
+export function ConnectionSpeedTestModal({
   isOpen,
   onClose,
   imei,
@@ -190,7 +191,7 @@ function ErrorState({ message, onRetry }: ErrorStateProps) {
   );
 }
 
-export  function SpeedTestModal({
+export function SpeedTestModal({
   isOpen,
   onClose,
   imei,
@@ -225,7 +226,7 @@ export  function SpeedTestModal({
             "Content-Type": "application/json",
           },
         }
-      ); 
+      );
       console.log(response.data);
     } catch (error) {
       console.error("Error during speed test:", error);
@@ -447,63 +448,89 @@ export default function ProxyListRow({
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+  interface ProxyCredentials {
+    username: string;
+    password: string;
+  }
+
+  interface UsageData {
+    assignedDate: string;
+    duration: string;
+    lastUsed: string;
+  }
+
+  interface ProxyData {
+    ID: string;
+    added_time: string;
+    external_IP: string;
+    is_online: string;
+    network_type: string;
+    operator: string;
+    port: { http: number; socks: number };
+    proxyCredentials: ProxyCredentials;
+    status: string;
+    usageData: UsageData;
+    validUntil: string;
+  }
+//  get real data and map throw - client proxies outside
+  const [clientProxies, setClientProxies] = useState<ProxyData[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const clientProxies = await fetchClientPurchasedProxies(); // Wait for the promise to resolve  
+        setClientProxies(clientProxies[0]?.proxyData);
+      } catch (error) {
+        console.error("Error fetching proxies:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <TableRow className="hover:bg-blue-50 dark:hover:bg-darkMode-2/60 transition-colors duration-200">
       <TableCell className="py-4">
-        <div className="font-medium">{proxyData.modem_details.IMEI}</div>
+        <div className="font-medium">{clientProxies[2]?.ID}</div>
       </TableCell>
       <TableCell className="py-4">
         <Badge
           variant="outline"
           className={
-            proxyData.STATE === "added"
+             clientProxies[2]?.status === "active"
               ? "bg-green-100 text-green-800"
               : "bg-red-100 text-red-800"
           }
         >
-          {proxyData.STATE === "added" ? "Active" : "Inactive"}
+          {clientProxies[2]?.status}
         </Badge>
       </TableCell>
       <TableCell className="py-4">
-        <div className="font-medium">{proxyData.net_details.CELLOP}</div>
+        <div className="font-medium">{clientProxies[2]?.operator}</div>
       </TableCell>
       <TableCell className="py-4 font-mono">
-        {proxyData.net_details.EXT_IP}
+        {clientProxies[2]?.external_IP}
       </TableCell>
       <TableCell className="py-4">
         <div className="flex flex-  space-y-1">
           <div className="flex flex-col gap-y-2 w-32 items-center ">
             <div className="flex gap-x-6">
               <p className="font-bold"> HTTP </p>
-              <p className="">
-                {activeUserInfo["352733105770697"]?.[0]?.HTTP_PORT}
-              </p>
+              <p className="">{clientProxies[2]?.port.http}</p>
             </div>
             {/* <span className="h-px w-full bg-slate-500" /> */}
             {`\n`}
             <div className="flex gap-x-6">
               <p className="font-bold"> SOCKS </p>
-              <p className="">
-                {activeUserInfo["352733105770697"]?.[0]?.SOCKS_PORT}
-              </p>
+              <p className="">{clientProxies[2]?.port.socks}</p>
             </div>
           </div>
-
-          {proxyData.proxy_creds.SOCKS_PORT && (
-            <Badge
-              variant="secondary"
-              className="bg-purple-100 text-purple-800"
-            >
-              SOCKS5 {proxyData.proxy_creds.SOCKS_PORT}
-            </Badge>
-          )}
         </div>
       </TableCell>
       <TableCell className="py-4">
         <div className="flex items-center space-x-2">
           <span className="truncate max-w-[100px]">
-            {proxyData.proxy_creds.LOGIN}/{proxyData.proxy_creds.PASS}
+            {clientProxies[2]?.proxyCredentials.username}/{" "}
+            {clientProxies[2]?.proxyCredentials.username}
           </span>
           <Button
             variant="ghost"
@@ -514,17 +541,14 @@ export default function ProxyListRow({
           </Button>
         </div>
       </TableCell>
-      <TableCell className="py-4">
-        {proxyData.net_details.CurrentNetworkType}
-      </TableCell>
-      <TableCell className="py-4">{proxyData.net_details.ping_stats}</TableCell>
+      <TableCell className="py-4">{clientProxies[2]?.network_type}</TableCell>
       <TableCell className="py-4 w-48">
         <div className="flex items-center space-x-2">
           <Clock className="h-4 w-4 text-blue-500 flex-shrink-0" />
-          <span className="text-sm">{proxyData.GENTIME}</span>
+          <span className="text-sm"> {clientProxies[2]?.added_time}</span>
         </div>
       </TableCell>
-      <TableCell className="py-4">
+      {/* <TableCell className="py-4">
         <div className="flex items-center space-x-2">
           <TooltipProvider>
             <Tooltip>
@@ -614,7 +638,7 @@ export default function ProxyListRow({
           imei={proxyData.android.IMEI}
           onClose={() => setRotateModalOpen(false)}
         />
-      </TableCell>
+      </TableCell> */}
     </TableRow>
   );
 }

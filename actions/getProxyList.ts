@@ -33,6 +33,34 @@ interface ConnectionTestResponse {
   results: ConnectionResult[];
 }
 
+export async function fetchAdminSideUserData() {
+  const response = await axios.get(
+    `http://localhost:4000/test-actions/show-user-info`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await response.data;
+  return data;
+}
+export async function fetchClientPurchasedProxies() {
+  const response = await axios.post(
+    `http://localhost:4000/test-actions/client-proxy-info/`,
+    {
+      email: "alhmadullah@dev.com",
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await response.data;
+  return data;
+}
+
 export async function fetchUserInfo() {
   const response = await fetch(`${process.env.BASE_URL}/show-user-info`);
   const data = await response.json();
@@ -50,7 +78,7 @@ export const fetchMonthlyData = async () => {
           "Content-Type": "application/json",
         },
       }
-    ); 
+    );
     return "test";
   } catch (error) {
     console.log(error);

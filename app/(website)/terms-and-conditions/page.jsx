@@ -5,7 +5,7 @@ export default function TermsAndConditions() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-teal-500 py-12 px-4 sm:px-6 lg:px-8 pt-20">
       <div className="max-w-6xl mx-auto">
-        <Card className="bg-white shadow-xl rounded-lg overflow-hidden">
+        <Card className="bg-white dark:bg-darkMode-1 shadow-xl rounded-lg overflow-hidden">
           <CardHeader className="bg-gray-50 border-b border-gray-200 p-6">
             <CardTitle className="text-3xl font-bold text-gray-900">
               Terms & Conditions

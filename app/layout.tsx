@@ -70,11 +70,12 @@ export default function RootLayout({
             src="https://checkstat.me/check.js"
             data-id="911"
           ></script>
+          <meta name="cryptomus" content="123bf6f0" />
         </head>
         <body className="light:bg-gray-100">
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -33,16 +33,88 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Header } from "@/components/admin";
+import { fetchAdminSideUserData } from "@/actions/getProxyList";
+type UserDataType = {
+  ID: string;
+  assignedUser: {
+    email: string | null;
+    expiryDate: Date | null;
+    last_sale: Date | string;
+    time_left_for_user: Date | string | null;
+    total_income: number;
+  };
+  status: string;
+  validUntil: Date;
+  operator: string;
+  port: {
+    http: number;
+    socks: number;
+  };
+  proxyCredentials: {
+    username: string;
+    password: string;
+  };
+  nickname: string;
+  external_IP: string;
+  added_time: string;
+  network_type: string;
+  is_online: string;
+};
+
 const ProxyPage = () => {
+  const [usersData, setUsersData] = useState<UserDataType[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetchAdminSideUserData();
+      console.log(`users data`, response);
+      setUsersData(response);
+    };
+    fetchData();
+  }, []);
+
+  // Define msToTime with a proper type
+  const msToTime = (duration: number): string => {
+    const seconds = Math.floor((duration / 1000) % 60),
+      minutes = Math.floor((duration / (1000 * 60)) % 60),
+      hours = Math.floor((duration / (1000 * 60 * 60)) % 24),
+      days = Math.floor(duration / (1000 * 60 * 60 * 24));
+
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  };
+
+  // Define remainingTimeForUser with a proper return type
+  const remainingTimeForUser = (index: number): string | undefined => {
+    if (index < 0 || index >= usersData.length) {
+      console.log("Invalid index");
+      return;
+    }
+
+    const validUntil = new Date(usersData[index]?.validUntil);
+    const lastSale = new Date(
+      usersData[index]?.assignedUser?.last_sale ?? Date.now()
+    );
+
+    // Ensure the validUntil date is valid before calculation
+    if (isNaN(validUntil.getTime())) {
+      console.log("Invalid validUntil date");
+      return;
+    }
+
+    const elapsedTime = Date.now() - lastSale; // Time elapsed since last sale in milliseconds
+    const remainingTime = validUntil.getTime() - Date.now(); // Time remaining until validity expires in milliseconds
+
+    // Convert the elapsed and remaining times to a human-readable format
+    const remainingTimeFormatted = msToTime(remainingTime);
+    return remainingTimeFormatted;
+  };
   return (
     <div className=" w-auto  h-full ">
-        <Header />
+      <Header />
       <Table className="">
         <TableCaption>
           <PaginationDemo />{" "}
         </TableCaption>
         <TableHeader>
-          {/* Nickname, Country, IMEI, proxy login/password, port { http, socks}, list for sale(true/false), last sale, time left for user, Total Income, status, Actions{quite, rotate ip} */}
           <TableRow className=" ">
             <TableHead className="w-[120px] text-center">Nickname</TableHead>
             <TableHead className="w-[150px] text-center">IMEI</TableHead>
@@ -74,27 +146,41 @@ const ProxyPage = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((_, index) => (
+          {usersData.map((item, index) => (
             <TableRow key={index} className="text-center">
-              <TableCell className="font-medium">innocent_officer</TableCell>
-              <TableCell>860191063638015</TableCell>
+              <TableCell className="font-medium">{item?.nickname}</TableCell>
+              <TableCell>{item?.ID}</TableCell>
               <TableCell>
-                abdullah <br />
-                server
+                {item?.proxyCredentials?.username} <br />
+                {item?.proxyCredentials?.password}
               </TableCell>
               <TableCell className=" ">
                 <div className="flex items-center  justify-between">
-                  <h3> 8003</h3> <h3> 5003</h3>
+                  <h3> {item?.port?.http}</h3> <h3> {item?.port?.socks}</h3>
                 </div>
               </TableCell>
               <TableCell>
                 {" "}
-                <Switch defaultChecked />{" "}
+                <Switch defaultChecked={item?.status === "available"} />{" "}
               </TableCell>
-              <TableCell>5-10-2024, 10:30</TableCell>
-              <TableCell>29 days, 12 hours</TableCell>
-              <TableCell>$1200</TableCell>
-              <TableCell className="text-blue-300">In Use</TableCell>
+              <TableCell>
+                {item?.assignedUser?.last_sale &&
+                typeof item?.assignedUser?.last_sale === "string"
+                  ? // Ensure `split("T")[1]` exists before trying to split it further
+                    item?.assignedUser?.last_sale
+                      .split("T")[1]
+                      ?.split(".")[0] || "No time available"
+                  : "No recent sales"}
+              </TableCell>
+              {/* time_left_for_user */}
+              <TableCell>
+                {" "}
+                {item.status === "in-use"
+                  ? remainingTimeForUser(index)
+                  : "available"}
+              </TableCell>
+              <TableCell>$ {item?.assignedUser?.total_income}</TableCell>
+              <TableCell className="text-blue-300">{item?.status}</TableCell>
               {/* actions */}
               <TableCell className="py-4">
                 <div className="flex items-center space-x-2">

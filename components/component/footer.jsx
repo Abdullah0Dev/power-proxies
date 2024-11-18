@@ -67,9 +67,9 @@ export default function Footer() {
               <li className="text-gray-300">
                 Email: support@mobileproxies.com
               </li>
-              <li className="text-gray-300">Phone: +1 (555) 123-4567</li>
+              <li className="text-gray-300">Phone: +316 (4674) 3991 </li>
               <li className="text-gray-300">
-                Address: 123 Proxy Street, Web City, 12345
+                Address: 123 Proxy Street, Groningen, The Netherlands
               </li>
             </ul>
           </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { CreditCard, Bitcoin, Globe, Shield, Zap, Star } from "lucide-react";
+import { CreditCard, Bitcoin, Globe, Shield, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,23 +20,18 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { testimonials } from "../../../data";
-import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { plans } from "../../../data";
 
-export default function BillingPage() {
-  const searchParams = useSearchParams();
-  const durationParam = searchParams.get("duration");
-  const [duration, setDuration] = useState(durationParam ? durationParam : "7");
+export default function BillingPage({ userEmail }) {
+  const [selectedPlan, setSelectedPlan] = useState(plans[1]); // Default to "7 Days" plan
   const [rotation, setRotation] = useState("5");
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
 
-  const durations = [
-    { value: "1", label: "1 Day", price: 9.99 },
-    { value: "7", label: "7 Days", price: 49.99 },
-    { value: "30", label: "30 Days", price: 149.99 },
-  ];
+  const handlePlanChange = (value) => {
+    const plan = plans.find((p) => p.value === value);
+    if (plan) setSelectedPlan(plan);
+  };
 
   const rotations = [
     { value: "1", label: "1 minute" },
@@ -48,8 +43,6 @@ export default function BillingPage() {
     { value: "45", label: "45 minutes" },
     { value: "60", label: "60 minutes" },
   ];
-
-  const currentPrice = durations.find((d) => d.value === duration)?.price;
 
   const benefits = [
     {
@@ -68,13 +61,6 @@ export default function BillingPage() {
       description: "Experience high-speed connections for seamless browsing",
     },
   ];
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Here you would typically handle the form submission,
-    // such as sending the data to your backend or a payment processor
-    console.log("Form submitted", { duration, rotation, paymentMethod });
-  };
 
   return (
     <div className="bg-gradient-to-br from-blue-900 via-blue-700 to-teal-500">
@@ -99,7 +85,7 @@ export default function BillingPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-6">
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-6">
                   <div>
                     <Label
                       htmlFor="duration"
@@ -107,19 +93,23 @@ export default function BillingPage() {
                     >
                       Duration
                     </Label>
-                    <Select onValueChange={setDuration} value={duration}>
+                    <Select
+                      onValueChange={handlePlanChange}
+                      value={selectedPlan.value}
+                    >
                       <SelectTrigger id="duration" className="w-full">
                         <SelectValue placeholder="Select duration" />
                       </SelectTrigger>
                       <SelectContent>
-                        {durations.map((d) => (
-                          <SelectItem key={d.value} value={d.value}>
-                            {d.label} - ${d.price}
+                        {plans.map((plan) => (
+                          <SelectItem key={plan.value} value={plan.value}>
+                            {plan.label} - ${plan.price}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
+
                   <div>
                     <Label
                       htmlFor="rotation"
@@ -140,6 +130,7 @@ export default function BillingPage() {
                       </SelectContent>
                     </Select>
                   </div>
+
                   <div>
                     <Label className="block text-sm font-medium text-gray-700 mb-2">
                       Payment Method
@@ -168,79 +159,25 @@ export default function BillingPage() {
                       </div>
                     </RadioGroup>
                   </div>
-                  {paymentMethod === "credit-card" && (
-                    <div className="space-y-4">
-                      <div>
-                        <Label
-                          htmlFor="card-number"
-                          className="block text-sm font-medium text-gray-700 mb-2"
-                        >
-                          Card Number
-                        </Label>
-                        <Input
-                          id="card-number"
-                          type="text"
-                          placeholder="1234 5678 9012 3456"
-                          required
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label
-                            htmlFor="expiry"
-                            className="block text-sm font-medium text-gray-700 mb-2"
-                          >
-                            Expiry Date
-                          </Label>
-                          <Input
-                            id="expiry"
-                            type="text"
-                            placeholder="MM/YY"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <Label
-                            htmlFor="cvc"
-                            className="block text-sm font-medium text-gray-700 mb-2"
-                          >
-                            CVC
-                          </Label>
-                          <Input
-                            id="cvc"
-                            type="text"
-                            placeholder="123"
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {paymentMethod === "bitcoin" && (
-                    <div>
-                      <Label
-                        htmlFor="bitcoin-address"
-                        className="block text-sm font-medium text-gray-700 mb-2"
-                      >
-                        Bitcoin Address
-                      </Label>
-                      <Input
-                        id="bitcoin-address"
-                        type="text"
-                        placeholder="Enter Bitcoin address"
-                        required
-                      />
-                    </div>
-                  )}
+
                   <div className="pt-4">
-                    <Button
-                      type="submit"
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                    <Link
+                      href={
+                        paymentMethod === "bitcoin"
+                          ? "/bitcoin-payment"
+                          : selectedPlan.link + "?prefilled_email=" + userEmail
+                      }
+                      passHref
                     >
-                      Pay ${currentPrice}
-                    </Button>
+                      <Button
+                        as="a"
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        Pay ${selectedPlan.price}
+                      </Button>
+                    </Link>
                   </div>
-                </form>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
@@ -276,52 +213,6 @@ export default function BillingPage() {
             </Card>
           </motion.div>
         </div>
-
-        <motion.section 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-16"
-        >
-          <h2 className="text-3xl font-bold text-white text-center mb-8">
-            What Our Customers Say
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card
-                key={index}
-                className="bg-white shadow-lg rounded-lg overflow-hidden"
-              >
-                <CardContent className="p-6">
-                  <p className="text-gray-700 mb-4">{testimonial.content}</p>
-                  <div className="flex items-center">
-                    <div className="mr-4">
-                      <Image
-                        src="/client-0-vcjg0fIb.jpg"
-                        alt={testimonial.author}
-                        width={50}
-                        height={50}
-                        className="rounded-full"
-                      />
-                    </div>
-                    <div>
-                      <p className="font-bold">{testimonial.author}</p>
-                      <p className="text-gray-600">{testimonial.position}</p>
-                    </div>
-                  </div>
-                  <div className="flex mt-2">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-5 h-5 text-yellow-400 fill-current"
-                      />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </motion.section>
       </main>
     </div>
   );

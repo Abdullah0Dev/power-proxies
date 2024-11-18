@@ -7,7 +7,53 @@ export const clientLogos = [
   { name: "Company 6", src: "yourlogo-IwLN6Qx9.png" },
 ];
 
+// Stripe Plans >> fill in your own priceId & link
+export const plans = [
+  {
+    link:
+      process.env.NODE_ENV === "development"
+        ? "https://buy.stripe.com/test_3cs9BX750bi6gqA146"
+        : "",
+    priceId:
+      process.env.NODE_ENV === "development"
+        ? "price_1QM5u2P5rD2RSXPgt6bTG6vE"
+        : "",
+    price: 5,
+    duration: "1 Day",
+    value: "1",
+    label: "1 Day",
+  },
+  {
+    link:
+      process.env.NODE_ENV === "development"
+        ? "https://buy.stripe.com/test_cN27tPblgeuib6gdQR"
+        : "",
+    priceId:
+      process.env.NODE_ENV === "development"
+        ? "price_1QM5u2P5rD2RSXPggu2dHM3J"
+        : "",
 
+    price: 25,
+    duration: "7 Day",
+    value: "7",
+    label: "7 Days",
+  },
+  {
+    link:
+      process.env.NODE_ENV === "development"
+        ? "https://buy.stripe.com/test_7sI01ncpk2LAb6g9AA"
+        : "",
+    priceId:
+      process.env.NODE_ENV === "development"
+        ? "price_1QM5u2P5rD2RSXPgF5S13xYC"
+        : "",
+
+    price: 65,
+    duration: "30 Day",
+    value: "30",
+    label: "30 Days",
+  },
+];
 export const ProfileInfo = [
   {
     name: "Jan",
@@ -57,7 +103,7 @@ export const ProfileInfo = [
     name: "Dec",
     total: Math.floor(Math.random() * 5000) + 1000,
   },
-]
+];
 export const pricingPlans = [
   {
     name: "Basic",

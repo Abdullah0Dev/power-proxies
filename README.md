@@ -47,14 +47,14 @@ if a proxy is not associated with a client so it's gonna be available.. if not i
 ? => todays plan inshallah:
 1. finalize the website 
   //• make the dark mode/light mode
-  • fix any problem or issue
-  • end the dashboard sidebar 
+  /• fix any problem or issue
+ // • end the dashboard sidebar 
 2. backend selling workings
   • enable the usr to purchase and make his own proxies based on his email
-  • make the analysis routers from CheckStat.net
+  //• make the analysis routers from CheckStat.net
   • connect the frontend with the backend
   • deploy the changes and make the client take a look but hide some to show it to him later in the week inshallah
-  • organize the selling based on client admin page which enable hi mto manage which proxy is available or not
+  • organize the selling based on client admin page which enable him to manage which proxy is available or not
   • cool.... no let's have a chat   
 -> dashboard - logo, - Statistics
  Plans - goals inshallah

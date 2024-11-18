@@ -16,6 +16,7 @@ const DashboardHeader = ({ title }) => {
             Balance: <span className="font-semibold">$0</span>
           </div>
           <Button
+          asChild={true}
             variant="outline"
             size="sm"
             className="text-black dark:text-white dark:bg-darkMode-2/80 dark:border-none dark:hover:bg-darkMode-2/90 border-white hover:bg-blue-800 hover:text-white"
@@ -23,6 +24,7 @@ const DashboardHeader = ({ title }) => {
             Add Funds
           </Button>
           <Button
+          asChild={true}
             variant="ghost"
             size="sm"
             className="text-white hover:bg-blue-800"

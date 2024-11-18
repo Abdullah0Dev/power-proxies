@@ -41,7 +41,7 @@ const SiteInfo = () => {
       }
     };
     fetchMonthlyData();
-  }, []);
+  }, [monthlyVisitors]);
   return (
     // Visitors, Total Revenue, Sales,
     <div className="">
@@ -104,7 +104,7 @@ const SiteInfo = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  + <AnimatedCounter from={0} to={monthlyVisitors} />{" "}
+                  +<AnimatedCounter from={0} to={monthlyVisitors} />{" "}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   +180.1% from last month
@@ -129,7 +129,9 @@ const SiteInfo = () => {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+12,234</div>
+                <div className="text-2xl font-bold">
+                  +<AnimatedCounter from={0} to={12234} />
+                </div>
                 <p className="text-xs text-muted-foreground">
                   +19% from last month
                 </p>
@@ -154,7 +156,9 @@ const SiteInfo = () => {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+573</div>
+                <div className="text-2xl font-bold">
+                  +<AnimatedCounter from={0} to={573} />
+                </div>
                 <p className="text-xs text-muted-foreground">
                   +201 since last hour
                 </p>

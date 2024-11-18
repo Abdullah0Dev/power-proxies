@@ -1,4 +1,5 @@
-import React, { FC } from "react";
+"use client";
+import React, { FC, useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -10,8 +11,27 @@ import { Button } from "@/components/ui/button";
 import ProxyListRow from "@/components/component/proxy-list-row";
 import DashboardHeader from "@/components/component/dashboard-header";
 import { ProxyListTableProps } from "@/types";
+import { fetchClientPurchasedProxies } from "@/actions/getProxyList";
 
-const ProxyListTable: FC<ProxyListTableProps> = ({ proxies, activeUserInfo }) => {
+const ProxyListTable: FC<ProxyListTableProps> = ({
+  proxies,
+  activeUserInfo,
+}) => {
+  const [clientProxies, setClientProxies] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const clientProxies = await fetchClientPurchasedProxies(); // Wait for the promise to resolve
+        console.log("Here we gooo", clientProxies);
+        console.log("Proxy Data:", clientProxies[0]?.proxyData); // Access proxyData safely
+        setClientProxies(clientProxies[0]?.proxyData);
+      } catch (error) {
+        console.error("Error fetching proxies:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <>
       <DashboardHeader title="Proxy List" />
@@ -25,15 +45,18 @@ const ProxyListTable: FC<ProxyListTableProps> = ({ proxies, activeUserInfo }) =>
               <TableHead className="py-4 px-6">External IP</TableHead>
               <TableHead className="py-4  px-14">Ports</TableHead>
               <TableHead className="py-4 px-6">Username/Password</TableHead>
-              <TableHead className="py-4 px-6">Network Type</TableHead>
-              <TableHead className="py-4 px-6">Ping Stats</TableHead>
+              <TableHead className="py-4 px-6">Network Type</TableHead> 
               <TableHead className="py-4 px-6 w-48">Added Time</TableHead>
               <TableHead className="py-4 px-6 text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {proxies.map((proxy, index) => (
-              <ProxyListRow key={index} activeUserInfo={activeUserInfo ?? []} proxyData={proxy} />
+              <ProxyListRow
+                key={index}
+                activeUserInfo={activeUserInfo ?? []}
+                proxyData={proxy}
+              />
             ))}
           </TableBody>
         </Table>

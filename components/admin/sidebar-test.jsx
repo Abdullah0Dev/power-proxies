@@ -35,9 +35,16 @@ const menuItems = [
 
 const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
   const [isCollapsible, setIsCollapsible] = useState(false);
-  const [ActiveTab, setActiveTab] = useState(1);
+  const [ActiveTab, setActiveTab] = useState(2);
   const router = useRouter();
 
+  useEffect(() => {
+    if (router.pathname === "http://localhost:3000/admin") {
+      setActiveTab(1);
+    } else {
+      setActiveTab(2);
+    }
+  }, [router.pathname]);
   const activeMenu = useMemo(
     () => menuItems.find((menu) => menu.link === router.pathname),
     [router.pathname]
@@ -96,7 +103,7 @@ const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
               <Image
                 src={"/logo.png"}
                 alt={"logo"}
-                width={45}
+                width={50}
                 height={50}
                 className="max-w-full h-auto"
               />
@@ -165,11 +172,14 @@ const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
         >
           <div className="flex flex-col">
             <div className="flex items-center justify-between relative">
-              <div className="flex items-center pl-1 gap-4">
+              <Link
+                href={"/"}
+                className="flex cursor-pointer items-center pl-1 gap-4"
+              >
                 <Image
                   src={"/logo.png"}
                   alt={"logo"}
-                  width={45}
+                  width={50}
                   height={50}
                   className="max-w-full h-auto"
                 />
@@ -180,7 +190,7 @@ const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
                 >
                   PowerProxies
                 </span>
-              </div>
+              </Link>
             </div>
 
             <div className="flex flex-col items-start mt-24">

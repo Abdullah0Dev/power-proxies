@@ -34,6 +34,7 @@ const AnimatedCounter = ({
     // If reduced motion is enabled in system's preferences
     if (window.matchMedia("(prefers-reduced-motion)").matches) {
       element.textContent = String(to);
+      
       return;
     }
 
@@ -42,7 +43,7 @@ const AnimatedCounter = ({
       ease: "easeOut",
       ...animationOptions,
       onUpdate(value) {
-        element.textContent = value.toFixed(0);
+        element.textContent = Math.floor(value).toLocaleString()
       },
     });
 
