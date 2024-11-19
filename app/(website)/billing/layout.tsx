@@ -16,7 +16,8 @@ export default async function RootLayout({
   const userEmail = "webminds.y1t@gmail.com" //user?.emailAddresses[0].emailAddress;
   return (
     <>
-      <BillingPage userEmail={userEmail} />
+      <BillingPage  /> 
+      {/* userEmail={userEmail} */}
     </>
   );
 }
