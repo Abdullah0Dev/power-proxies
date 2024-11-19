@@ -23,7 +23,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { plans } from "../../../data";
 
-export default function BillingPage({ userEmail }) {
+export default function BillingPage({ userEmail = "duh@gmali.co" }) {
   const [selectedPlan, setSelectedPlan] = useState(plans[1]); // Default to "7 Days" plan
   const [rotation, setRotation] = useState("5");
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
