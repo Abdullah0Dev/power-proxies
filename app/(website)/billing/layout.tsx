@@ -13,7 +13,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const user = await currentUser();
-  const userEmail = user?.emailAddresses[0].emailAddress;
+  const userEmail = "webminds.y1t@gmail.com" //user?.emailAddresses[0].emailAddress;
   return (
     <>
       <BillingPage userEmail={userEmail} />
