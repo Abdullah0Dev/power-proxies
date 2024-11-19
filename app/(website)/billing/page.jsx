@@ -217,4 +217,9 @@ const BillingPage = ({ userEmail = "default@example.com" }) => {
     </div>
   );
 };
+// Prop Validation
+BillingPage.propTypes = {
+  userEmail: PropTypes.string,
+};
+
 export default BillingPage;
