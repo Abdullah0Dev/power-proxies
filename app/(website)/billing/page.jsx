@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import PropTypes from "prop-types"; // For prop validation
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { CreditCard, Bitcoin, Globe, Shield, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -217,6 +218,7 @@ const BillingPage = ({ userEmail = "default@example.com" }) => {
     </div>
   );
 };
+
 // Prop Validation
 BillingPage.propTypes = {
   userEmail: PropTypes.string,
