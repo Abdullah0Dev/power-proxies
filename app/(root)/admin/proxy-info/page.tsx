@@ -100,7 +100,7 @@ const ProxyPage = () => {
       return;
     }
 
-    const elapsedTime = Date.now() - lastSale; // Time elapsed since last sale in milliseconds
+    // const elapsedTime = Date.now() - lastSale; // Time elapsed since last sale in milliseconds
     const remainingTime = validUntil.getTime() - Date.now(); // Time remaining until validity expires in milliseconds
 
     // Convert the elapsed and remaining times to a human-readable format
