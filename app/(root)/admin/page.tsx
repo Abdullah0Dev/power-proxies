@@ -9,7 +9,11 @@ import { IoWarningOutline } from "react-icons/io5";
 import { MdErrorOutline } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 
-const CustomIcon = (props) => {
+interface CustomIconProps {
+  isLoading?: boolean; // Optional boolean to indicate loading state
+  type?: "info" | "success" | "error" | "warning"; // Optional type for icon
+}
+const CustomIcon = (props: CustomIconProps) => {
   if (props.isLoading) return <FaSpinner />;
 
   switch (props.type) {
@@ -22,6 +26,7 @@ const CustomIcon = (props) => {
     case "warning":
       return <IoWarningOutline />;
     default:
+      "info";
       return <IoMdCheckmarkCircleOutline color={"green"} />;
   }
 };
@@ -50,7 +55,7 @@ const AdminPage = () => {
         >
           Notify!
         </button>
-        <ToastContainer
+        {/* <ToastContainer
           icon={CustomIcon}
           stacked
           position="bottom-right" // Or another position if you prefer
@@ -63,7 +68,7 @@ const AdminPage = () => {
           draggable
           pauseOnHover
           theme="light" // Set to "dark" if preferred
-        />
+        /> */}
       </div>
     </div>
   );
