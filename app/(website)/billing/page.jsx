@@ -168,9 +168,7 @@ const BillingPage = ({ userEmail = "abdulah@pro.com" }) => {
                       href={
                         paymentMethod === "bitcoin"
                           ? "/bitcoin-payment"
-                          : selectedPlan.link +
-                            "?prefilled_email=" +
-                            (userEmail ? userEmail : "")
+                          : selectedPlan.link + "?prefilled_email=" + userEmail
                       }
                       passHref
                     >

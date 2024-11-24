@@ -20,7 +20,7 @@ export default async function RootLayout({
   await addEmailToDatabase(userEmail);
   return (
     <>
-      <BillingPage userEmail={userEmail} />
+      <BillingPage userEmail={userEmail ?? "bruh@gmail.co"} />
       {/* */}
     </>
   );
