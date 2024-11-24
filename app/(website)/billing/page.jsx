@@ -223,9 +223,5 @@ const BillingPage = ({ userEmail = "abdulah@pro.com" }) => {
   );
 };
 
-// Prop Validation
-BillingPage.propTypes = {
-  userEmail: PropTypes.string,
-};
-
+// P 
 export default BillingPage;
