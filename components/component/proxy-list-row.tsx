@@ -41,6 +41,7 @@ import type {
   ConnectionTestResponse,
   RotateProxyResponse,
   ApiError,
+  ProxyData,
 } from "@/types";
 
 interface LoadingStateProps {
@@ -419,10 +420,7 @@ export function RotateIPModal({ isOpen, onClose, imei }: RotateIPModalProps) {
   );
 }
 
-export default function ProxyListRow({
-  proxyData,
-  activeUserInfo,
-}: ProxyListRowProps) {
+const ProxyListRow: React.FC<ProxyData> = (proxy) => {
   const [rotateModalOpen, setRotateModalOpen] = useState(false);
   const [speedTestModalOpen, setSpeedTestModalOpen] = useState(false);
   const [connectionTestModalOpen, setConnectionTestModalOpen] = useState(false);
@@ -472,80 +470,61 @@ export default function ProxyListRow({
     usageData: UsageData;
     validUntil: string;
   }
-//  get real data and map throw - client proxies outside
-  const [clientProxies, setClientProxies] = useState<ProxyData[]>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const clientProxies = await fetchClientPurchasedProxies(); // Wait for the promise to resolve  
-        setClientProxies(clientProxies[0]?.proxyData);
-      } catch (error) {
-        console.error("Error fetching proxies:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <TableRow className="hover:bg-blue-50 dark:hover:bg-darkMode-2/60 transition-colors duration-200">
       <TableCell className="py-4">
-        <div className="font-medium">{clientProxies[2]?.ID}</div>
+        <div className="font-medium">{proxy?.ID}</div>
       </TableCell>
       <TableCell className="py-4">
         <Badge
           variant="outline"
           className={
-             clientProxies[2]?.status === "active"
+            proxy?.status === "active"
               ? "bg-green-100 text-green-800"
               : "bg-red-100 text-red-800"
           }
         >
-          {clientProxies[2]?.status}
+          {proxy?.status}
         </Badge>
       </TableCell>
       <TableCell className="py-4">
-        <div className="font-medium">{clientProxies[2]?.operator}</div>
+        <div className="font-medium">{proxy?.operator}</div>
       </TableCell>
-      <TableCell className="py-4 font-mono">
-        {clientProxies[2]?.external_IP}
-      </TableCell>
+      <TableCell className="py-4 font-mono">{proxy?.external_IP}</TableCell>
       <TableCell className="py-4">
         <div className="flex flex-  space-y-1">
           <div className="flex flex-col gap-y-2 w-32 items-center ">
             <div className="flex gap-x-6">
               <p className="font-bold"> HTTP </p>
-              <p className="">{clientProxies[2]?.port.http}</p>
+              <p className="">{proxy?.port.http}</p>
             </div>
             {/* <span className="h-px w-full bg-slate-500" /> */}
             {`\n`}
             <div className="flex gap-x-6">
               <p className="font-bold"> SOCKS </p>
-              <p className="">{clientProxies[2]?.port.socks}</p>
+              <p className="">{proxy?.port.socks}</p>
             </div>
           </div>
         </div>
       </TableCell>
-      <TableCell className="py-4">
-        <div className="flex items-center space-x-2">
-          <span className="truncate max-w-[100px]">
-            {clientProxies[2]?.proxyCredentials.username}/{" "}
-            {clientProxies[2]?.proxyCredentials.username}
+      <TableCell className="">
+        <div className="flex items-center justify-center">
+          <span className=" max-w-[100px]">
+            {proxy?.proxyCredentials.username}/{" "}
+            {proxy?.proxyCredentials.username}
           </span>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-blue-600 hover:text-blue-700 hover:bg-blue-100"
-          >
-            <Key className="h-4 w-4" />
-          </Button>
         </div>
       </TableCell>
-      <TableCell className="py-4">{clientProxies[2]?.network_type}</TableCell>
+      <TableCell>
+        <div className=" flex items-center justify-center">
+          <span className=" max-w-[100px]">{proxy?.network_type}</span>
+        </div>
+      </TableCell>
       <TableCell className="py-4 w-48">
         <div className="flex items-center space-x-2">
           <Clock className="h-4 w-4 text-blue-500 flex-shrink-0" />
-          <span className="text-sm"> {clientProxies[2]?.added_time}</span>
+          <span className="text-sm"> {proxy?.added_time}</span>
         </div>
       </TableCell>
       {/* <TableCell className="py-4">
@@ -641,4 +620,6 @@ export default function ProxyListRow({
       </TableCell> */}
     </TableRow>
   );
-}
+};
+
+export default ProxyListRow;

@@ -24,8 +24,8 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { plans } from "../../../data";
 // { userEmail = "default@example.com" }
-const BillingPage = () => {
-  const userEmail = "default@example.com";
+const BillingPage = ({ userEmail = "abdulah@pro.com" }) => {
+  // const userEmail = "abdulah@pro.com";
   const [selectedPlan, setSelectedPlan] = useState(plans[1]); // Default to "7 Days" plan
   const [rotation, setRotation] = useState("5");
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
@@ -77,12 +77,12 @@ const BillingPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Card className="bg-white shadow-xl rounded-lg overflow-hidden">
-              <CardHeader className="bg-gray-50 border-b border-gray-200 p-6">
-                <CardTitle className="text-2xl font-bold text-gray-900">
+            <Card className="light:bg-white shadow-xl rounded-lg overflow-hidden">
+              <CardHeader className="light:bg-gray-50 border-b border-gray-200 p-6">
+                <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
                   Billing Details
                 </CardTitle>
-                <CardDescription className="text-gray-600">
+                <CardDescription className="text-gray-600 dark:text-gray-500">
                   Complete your purchase
                 </CardDescription>
               </CardHeader>
@@ -91,7 +91,7 @@ const BillingPage = () => {
                   <div>
                     <Label
                       htmlFor="duration"
-                      className="block text-sm font-medium text-gray-700 mb-2"
+                      className="block text-sm font-medium text-gray-700  dark:text-gray-500 mb-2"
                     >
                       Duration
                     </Label>
@@ -115,7 +115,7 @@ const BillingPage = () => {
                   <div>
                     <Label
                       htmlFor="rotation"
-                      className="block text-sm font-medium text-gray-700 mb-2"
+                      className="block text-sm font-medium text-gray-700  dark:text-gray-500 mb-2"
                     >
                       IP Rotation Interval
                     </Label>
@@ -134,7 +134,7 @@ const BillingPage = () => {
                   </div>
 
                   <div>
-                    <Label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Label className="block text-sm font-medium text-gray-700  dark:text-gray-500 mb-2">
                       Payment Method
                     </Label>
                     <RadioGroup
@@ -152,13 +152,14 @@ const BillingPage = () => {
                           Credit Card
                         </Label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      {/* <div className="flex items-center space-x-2">
                         <RadioGroupItem value="bitcoin" id="bitcoin" />
                         <Label htmlFor="bitcoin" className="flex items-center">
                           <Bitcoin className="w-5 h-5 mr-2" />
                           Bitcoin
                         </Label>
-                      </div>
+                      </div> */}
+                      {/* <p className="text-xs text-gray-400">more payment methods coming soon...</p> */}
                     </RadioGroup>
                   </div>
 
@@ -189,9 +190,9 @@ const BillingPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Card className="sticky top-16 bg-white shadow-xl rounded-lg overflow-hidden">
-              <CardHeader className="bg-gray-50 border-b border-gray-200 p-6">
-                <CardTitle className="text-2xl font-bold text-gray-900">
+            <Card className="sticky top-16 light:bg-white shadow-xl rounded-lg overflow-hidden">
+              <CardHeader className="light:bg-gray-50 border-b border-gray-200 p-6">
+                <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
                   Why Choose Our Mobile Proxies?
                 </CardTitle>
               </CardHeader>
@@ -199,14 +200,16 @@ const BillingPage = () => {
                 <ul className="space-y-4">
                   {benefits.map((benefit, index) => (
                     <li key={index} className="flex items-start">
-                      <div className="flex-shrink-0 text-blue-500 mr-3">
+                      <div className="flex-shrink-0   text-blue-500 mr-3">
                         {benefit.icon}
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-lg font-semibold dark:text-white/90 text-gray-900">
                           {benefit.title}
                         </h3>
-                        <p className="text-gray-600">{benefit.description}</p>
+                        <p className="text-gray-600 dark:text-gray-500">
+                          {benefit.description}
+                        </p>
                       </div>
                     </li>
                   ))}

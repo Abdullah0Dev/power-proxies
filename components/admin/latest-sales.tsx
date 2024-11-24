@@ -1,77 +1,48 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-const LatestSales = () => {
+import { Latest5PurchasedType } from "@/app/(root)/admin/page";
+
+const LatestSales: React.FC<Latest5PurchasedType> = ({ lastSales }) => {
+  // Ensure `lastSales` is always an array
+  const salesData = Array.isArray(lastSales) ? lastSales : [];
+
+  if (salesData.length === 0) {
+    // Show fallback UI if no sales data is available
+    return <p className="text-muted-foreground">No recent sales available.</p>;
+  }
+
   return (
-    <div className="space-y-8 ">
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src="/avaters/01.png" alt="Avatar" />
-          <AvatarFallback>OM</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">
-            Olivia Martin - <span className="text-[#C6E3DF]"> monthly</span>{" "}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            olivia.martin@email.com
-          </p>
+    <div className="space-y-8">
+      {salesData.map((item, index) => (
+        <div className="flex items-center" key={index}>
+          <Avatar className="h-9 w-9">
+            <AvatarImage
+              src={
+                item.user_image ??
+                "https://power-proxies.vercel.app/avaters/01.png"
+              }
+              alt={item.username}
+            />
+            <AvatarFallback>OM</AvatarFallback>
+          </Avatar>
+          <div className="ml-4 space-y-1">
+            <p className="text-sm font-medium leading-none">
+              {item.username} -{" "}
+              <span
+                className={`${
+                  item.sale_period === "month" ? "text-[#C6E3DF]" : ""
+                } ${item.sale_period === "week" ? "text-[#3B82F6]" : ""} ${
+                  item.sale_period === "day" ? "text-[#264754]" : ""
+                }`}
+              >
+                {item.sale_period}
+              </span>
+            </p>
+            <p className="text-sm text-muted-foreground">{item.user_email}</p>
+          </div>
+          <div className="ml-auto font-medium">+${item.sale_amount}</div>
         </div>
-        <div className="ml-auto font-medium">+$1,999.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="flex h-9 w-9 items-center justify-center space-y-0 border">
-          <AvatarImage src="/avaters/02.png" alt="Avatar" />
-          <AvatarFallback>JL</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">
-            Jackson Lee - <span className="text-[#3B82F6]"> Weekly</span>{" "}
-          </p>
-          <p className="text-sm text-muted-foreground">jackson.lee@email.com</p>
-        </div>
-        <div className="ml-auto font-medium">+$39.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src="/avaters/03.png" alt="Avatar" />
-          <AvatarFallback>IN</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">
-            Isabella Nguyen - <span className="text-[#3B82F6]"> Weekly</span>{" "}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            isabella.nguyen@email.com
-          </p>
-        </div>
-        <div className="ml-auto font-medium">+$299.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src="/avaters/04.png" alt="Avatar" />
-          <AvatarFallback>WK</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">
-            William Kim - <span className="text-[#264754]"> Daily</span>{" "}
-          </p>
-          <p className="text-sm text-muted-foreground">will@email.com</p>
-        </div>
-        <div className="ml-auto font-medium">+$99.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src="/avaters/05.png" alt="Avatar" />
-          <AvatarFallback>SD</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">
-            Sofia Davis - <span className="text-[#3B82F6]"> Weekly</span>{" "}
-          </p>
-          <p className="text-sm text-muted-foreground">sofia.davis@email.com</p>
-        </div>
-        <div className="ml-auto font-medium">+$39.00</div>
-      </div>
+      ))}
     </div>
   );
 };

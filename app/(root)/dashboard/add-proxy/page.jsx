@@ -10,17 +10,17 @@ import { useRouter } from "next/navigation";
 import DashboardHeader from "@/components/component/dashboard-header";
 
 const countries = [
-  { name: "United Kingdom", proxies: 18, code: "GB" },
-  { name: "United States", proxies: 4, code: "US" },
-  { name: "France", proxies: 3, code: "FR" },
-  { name: "Spain", proxies: 24, code: "ES" },
-  { name: "Australia", proxies: 7, code: "AU" },
-  { name: "Germany", proxies: 13, code: "DE" },
-  { name: "Brazil", proxies: 1, code: "BR" },
-  { name: "Ukraine", proxies: 18, code: "UA" },
+  // { name: "United Kingdom", proxies: 18, code: "GB" },
+  // { name: "United States", proxies: 4, code: "US" },
+  // { name: "France", proxies: 3, code: "FR" },
+  // { name: "Spain", proxies: 24, code: "ES" },
+  // { name: "Australia", proxies: 7, code: "AU" },
+  // { name: "Germany", proxies: 13, code: "DE" },
+  { name: "Netherlands", proxies: 10, code: "NL" },
+  // { name: "Ukraine", proxies: 18, code: "UA" },
 ];
 
-const restockingCountries = ["EC", "NL", "AT", "IE"];
+const restockingCountries = ["US", "GB", "AU", "FR"];
 
 export default function ProxyConfiguration() {
   const [step, setStep] = useState(1);
@@ -78,7 +78,7 @@ export default function ProxyConfiguration() {
                         </div>
                         <span className="text-xs text-center">{label}</span>
                       </div>
-                    ),
+                    )
                   )}
                 </div>
                 <div className="absolute top-4 left-0 w-full h-0.5 bg-gray-200">
@@ -99,7 +99,7 @@ export default function ProxyConfiguration() {
                     variant="outline"
                     className={`flex flex-col items-center justify-center h-24 ${
                       selectedCountry === country.name
-                        ? "border-blue-600 bg-blue-50"
+                        ? "border-blue-600 dark:border-darkMode-2  bg-blue-50 dark:bg-darkMode-1"
                         : ""
                     }`}
                     onClick={() => handleCountrySelect(country.name)}

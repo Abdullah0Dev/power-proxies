@@ -10,14 +10,11 @@ import {
 import { Button } from "@/components/ui/button";
 import ProxyListRow from "@/components/component/proxy-list-row";
 import DashboardHeader from "@/components/component/dashboard-header";
-import { ProxyListTableProps } from "@/types";
+import { ProxyData, ProxyListTableProps } from "@/types";
 import { fetchClientPurchasedProxies } from "@/actions/getProxyList";
 
-const ProxyListTable: FC<ProxyListTableProps> = ({
-  proxies,
-  activeUserInfo,
-}) => {
-  const [clientProxies, setClientProxies] = useState([]);
+const ProxyListTable: FC<ProxyListTableProps> = () => {
+  const [clientProxies, setClientProxies] = useState<ProxyData[]>([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -45,42 +42,17 @@ const ProxyListTable: FC<ProxyListTableProps> = ({
               <TableHead className="py-4 px-6">External IP</TableHead>
               <TableHead className="py-4  px-14">Ports</TableHead>
               <TableHead className="py-4 px-6">Username/Password</TableHead>
-              <TableHead className="py-4 px-6">Network Type</TableHead> 
+              <TableHead className="py-4 px-6">Network Type</TableHead>
               <TableHead className="py-4 px-6 w-48">Added Time</TableHead>
               <TableHead className="py-4 px-6 text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {proxies.map((proxy, index) => (
-              <ProxyListRow
-                key={index}
-                activeUserInfo={activeUserInfo ?? []}
-                proxyData={proxy}
-              />
+            {clientProxies.map((proxy, index) => (
+              <ProxyListRow key={index}  proxy={proxy} />
             ))}
           </TableBody>
         </Table>
-      </div>
-
-      <div className="flex justify-between items-center mt-4 px-4">
-        <div className="text-sm text-gray-600">
-          Showing 1 to {proxies.length} of {proxies.length} entries
-        </div>
-        <div className="flex space-x-2">
-          <Button
-            variant="outline"
-            disabled
-            className="text-gray-400 border-gray-300"
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            className="text-blue-600 border-blue-300 hover:bg-blue-50"
-          >
-            Next
-          </Button>
-        </div>
       </div>
     </>
   );

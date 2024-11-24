@@ -20,7 +20,7 @@ export interface NetworkDetails {
   ping_stats: string;
 }
 
-export interface ProxyCredentials {
+export interface ProxyCredential {
   LOGIN: string;
   PASS: string;
   HOST: string;
@@ -39,21 +39,32 @@ export interface ProxyInfo {
   android: AndroidInfo;
   modem_details: ModemDetails;
   net_details: NetworkDetails;
-  proxy_creds: ProxyCredentials;
+  proxy_creds: ProxyCredential;
+}
+
+interface ProxyCredentials {
+  username: string;
+  password: string;
+}
+
+interface UsageData {
+  assignedDate: string;
+  duration: string;
+  lastUsed: string;
 }
 
 export interface ProxyData {
-  GENTIME: string;
-  IS_LOCKED: string;
-  IS_REBOOTING: string;
-  IS_ROTATED: string;
-  MSG: string;
-  N: number;
-  STATE: "added" | "removed" | "pending"; // Add other possible states
-  android: AndroidInfo;
-  modem_details: ModemDetails;
-  net_details: NetworkDetails;
-  proxy_creds: ProxyCredentials;
+  ID: string;
+  added_time: string;
+  external_IP: string;
+  is_online: string;
+  network_type: string;
+  operator: string;
+  port: { http: number; socks: number };
+  proxyCredentials: ProxyCredentials;
+  status: string;
+  usageData: UsageData;
+  validUntil: string;
 }
 
 export interface ActiveUserData {

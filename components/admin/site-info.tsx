@@ -11,8 +11,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { FaChartLine } from "react-icons/fa";
 import axios from "axios";
 import AnimatedCounter from "../component/AnimatedCounter";
-
-const SiteInfo = () => {
+import {
+  fetchAdminSideUserData,
+  fetchSalesOverview,
+} from "@/actions/getProxyList";
+type SiteInfoType = {
+  totalIncome: number;
+  numberOfSales: number;
+  lastSale: string;
+};
+const SiteInfo: React.FC<SiteInfoType> = ({
+  lastSale,
+  numberOfSales,
+  totalIncome,
+}) => {
   const [monthlyVisitors, setMonthlyVisitors] = useState(0);
   useEffect(() => {
     const fetchMonthlyData = async () => {
@@ -25,6 +37,7 @@ const SiteInfo = () => {
             },
           }
         );
+
         console.log(response.data?.data?.total);
         const visitorData = response.data?.data?.total;
         const total = visitorData.reduce(
@@ -70,11 +83,11 @@ const SiteInfo = () => {
                 <div className="flex justify-between items-end ">
                   <div className="">
                     <div className="text-2xl font-bold">
-                      $<AnimatedCounter from={0} to={45231.89} />
+                      $<AnimatedCounter from={0} to={totalIncome} />
                     </div>
-                    <p className="text-xs text-slate-300">
+                    {/* <p className="text-xs text-slate-300">
                       +20.1% from last month
-                    </p>
+                    </p> */}
                   </div>
                   <div className="status-tracker">
                     <FaChartLine size={20} className="text-green-300" />
@@ -106,9 +119,9 @@ const SiteInfo = () => {
                 <div className="text-2xl font-bold">
                   +<AnimatedCounter from={0} to={monthlyVisitors} />{" "}
                 </div>
-                <p className="text-xs text-muted-foreground">
+                {/* <p className="text-xs text-muted-foreground">
                   +180.1% from last month
-                </p>
+                </p> */}
               </CardContent>
             </Card>
             <Card>
@@ -130,18 +143,16 @@ const SiteInfo = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  +<AnimatedCounter from={0} to={12234} />
+                  +<AnimatedCounter from={0} to={numberOfSales} />
                 </div>
-                <p className="text-xs text-muted-foreground">
+                {/* <p className="text-xs text-muted-foreground">
                   +19% from last month
-                </p>
+                </p> */}
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Active Now
-                </CardTitle>
+                <CardTitle className="text-sm font-medium">Last Sale</CardTitle>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -156,12 +167,10 @@ const SiteInfo = () => {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">
-                  +<AnimatedCounter from={0} to={573} />
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  +201 since last hour
-                </p>
+                <div className="text-2xl font-bold">{lastSale}</div>
+                {/* <p className="text-xs text-muted-foreground">
+                √ great progress
+                </p> */}
               </CardContent>
             </Card>
           </div>

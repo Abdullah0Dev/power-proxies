@@ -109,9 +109,11 @@ export default function LandingPage() {
                   3G, 4G, 5G and LTE coverage available
                 </li>
               </ul>
+              <Link href={"/billing"}>
               <button className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">
                 Get Started
               </button>
+              </Link>
             </div>
             <div className="md:w-1/2 flex justify-center items-center">
               {/* Display the SVG frame */}

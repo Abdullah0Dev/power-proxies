@@ -1,5 +1,6 @@
 "use client";
 import React, { ReactNode, useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
 import {
   Table,
   TableBody,
@@ -60,12 +61,29 @@ type UserDataType = {
   network_type: string;
   is_online: string;
 };
-
+const socket = io("https://powerproxies-backups.onrender.com");
 const ProxyPage = () => {
   const [usersData, setUsersData] = useState<UserDataType[]>([]);
+  const [notification, setNotification] = useState("");
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetchAdminSideUserData();
+      socket.on("payment-success", (data) => {
+        console.log("notification received", data);
+        setNotification(data?.message);
+        // cleanup on component unmount
+        return () => {
+          socket.off("payment-success");
+        };
+      });
+      socket.on("proxy-expired", (data) => {
+        console.log("notification received", data);
+        setNotification(data?.message);
+        // cleanup on component unmount
+        return () => {
+          socket.off("proxy-expired");
+        };
+      });
       console.log(`users data`, response);
       setUsersData(response);
     };

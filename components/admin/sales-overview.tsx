@@ -1,14 +1,5 @@
 "use client";
-import { TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -17,22 +8,22 @@ import {
 } from "@/components/ui/chart";
 export const description = "An area chart with gradient fill";
 
-const chartData = [
-  { month: "January", sales: 0 },
-  { month: "February", sales: 50 },
-  { month: "March", sales: 20 },
-  { month: "April", sales: 130 },
-  { month: "May", sales: 100 },
-  { month: "June", sales: 50 },
-];
+// const chartData = [
+//   { month: "January", sales: 0 },
+//   { month: "February", sales: 50 },
+//   { month: "March", sales: 20 },
+//   { month: "April", sales: 130 },
+//   { month: "May", sales: 100 },
+//   { month: "June", sales: 50 },
+// ];
 const chartConfig = {
   sales: {
-    label: "Sales",
+    label: "Earned",
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
-const SalesOverview = () => {
+const SalesOverview = ({ chartData }) => {
   return (
     <ChartContainer config={chartConfig}>
       <AreaChart
@@ -41,6 +32,7 @@ const SalesOverview = () => {
         margin={{
           left: 12,
           right: 12,
+          top: 10,
         }}
       >
         <CartesianGrid vertical={false} />

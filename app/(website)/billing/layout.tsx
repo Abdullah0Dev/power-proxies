@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { currentUser } from "@clerk/nextjs/server";
 import BillingPage from "./page";
+import { redirect } from "next/navigation";
+import { addEmailToDatabase } from "@/actions/getProxyList";
 
 export const metadata: Metadata = {
   title: "Power Proxy",
@@ -13,11 +15,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const user = await currentUser();
-  const userEmail = "webminds.y1t@gmail.com" //user?.emailAddresses[0].emailAddress;
+  if (!user) redirect("/sign-in");
+  const userEmail = user?.emailAddresses[0].emailAddress;
+  await addEmailToDatabase(userEmail);
   return (
     <>
-      <BillingPage  /> 
-      {/* userEmail={userEmail} */}
+      <BillingPage userEmail={userEmail} />
+      {/* */}
     </>
   );
 }

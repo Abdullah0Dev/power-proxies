@@ -1,6 +1,8 @@
 "use server";
 import { parse } from "node-html-parser";
 import { HTMLElement } from "node-html-parser";
+import { currentUser } from "@clerk/nextjs/server";
+
 import {
   AndroidInfo,
   ModemDetails,
@@ -35,7 +37,19 @@ interface ConnectionTestResponse {
 
 export async function fetchAdminSideUserData() {
   const response = await axios.get(
-    `http://localhost:4000/test-actions/show-user-info`,
+    `https://powerproxies-backups.onrender.com/test-actions/show-user-info`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await response.data;
+  return data;
+}
+export async function fetchSalesOverview() {
+  const response = await axios.get(
+    `https://powerproxies-backups.onrender.com/test-actions/sales-overview`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -46,11 +60,57 @@ export async function fetchAdminSideUserData() {
   return data;
 }
 export async function fetchClientPurchasedProxies() {
+  const user = await currentUser();
+  const email = user?.emailAddresses[0].emailAddress;
   const response = await axios.post(
-    `http://localhost:4000/test-actions/client-proxy-info/`,
+    `https://powerproxies-backups.onrender.com/test-actions/client-proxy-info/`,
     {
-      email: "alhmadullah@dev.com",
+      email,
     },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await response.data;
+  return data;
+}
+
+export async function addEmailToDatabase(email: string) {
+  // Fetch the current user and extract the email
+  // const user = await currentUser();
+  // const email = user?.emailAddresses[0]?.emailAddress;
+
+  // Ensure email exists before making the request
+  if (!email) {
+    throw new Error("Email is required.");
+  }
+
+  // Make the POST request
+  try {
+    const response = await axios.post(
+      "https://powerproxies-backups.onrender.com/test-actions/new-client-email/",
+      { email }, // Email in the request body
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Return the response data
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error adding email to database:", error);
+    throw error;
+  }
+}
+
+export async function fetchLatestPurchases() {
+  const response = await axios.get(
+    `https://powerproxies-backups.onrender.com/test-actions/sales-overview/`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -72,7 +132,7 @@ export async function fetchUserInfo() {
 export const fetchMonthlyData = async () => {
   try {
     const response = await axios.get(
-      "http://localhost:4000/web-statistics/last-30-days",
+      "https://powerproxies-backups.onrender.com/web-statistics/last-30-days",
       {
         headers: {
           "Content-Type": "application/json",
