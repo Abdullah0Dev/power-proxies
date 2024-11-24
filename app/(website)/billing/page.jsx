@@ -168,7 +168,9 @@ const BillingPage = ({ userEmail = "abdulah@pro.com" }) => {
                       href={
                         paymentMethod === "bitcoin"
                           ? "/bitcoin-payment"
-                          : selectedPlan.link + "?prefilled_email=" + userEmail
+                          : selectedPlan.link +
+                            "?prefilled_email=" +
+                            (userEmail ? userEmail : "")
                       }
                       passHref
                     >
@@ -223,5 +225,5 @@ const BillingPage = ({ userEmail = "abdulah@pro.com" }) => {
   );
 };
 
-// P 
+// P
 export default BillingPage;
