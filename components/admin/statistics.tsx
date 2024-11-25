@@ -8,7 +8,7 @@ import {
 } from "../ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { FaChartLine } from "react-icons/fa";
-import SalesOverview from "./sales-overview";
+import SalesOverview  from "./sales-overview";
 import SalesType from "./sales-type";
 // const chartData = [
 //   { rentType: "monthly", sales: 275, fill: "var(--color-monthly)" },
@@ -17,7 +17,21 @@ import SalesType from "./sales-type";
 // ];
 // we'll use reducer function to clac the total sales
 // const totalSales = chartData.reduce((acc, item) => acc + item.sales, 0);
-const Statistics = ({chartData, salesOverviewChartData}) => {
+// ChartDataType
+interface ChartData {
+  month: string;
+  sales: number;
+}
+interface ChartSalesData {
+  rentType: string;
+  fill: string;
+  sales: number;
+}
+export interface ChartDataType {
+  chartData: ChartSalesData[]; // Proper typing for the chartData prop
+  salesOverviewChartData: ChartSalesData[];
+}
+const Statistics: React.FC<ChartDataType> = ({chartData, salesOverviewChartData}) => {
   return (
     <div className="grid gap-4 md:grid-cols-2 pt-9 lg:grid-cols-7">
       <Card className="col-span-4">

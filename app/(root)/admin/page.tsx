@@ -61,7 +61,7 @@ const months = [
 ];
 
 // Process sales data to accumulate sales by month
-const processSalesData = (fullSalesOverview: Sale[]): ChartDataItem[] => {
+const processSalesData = (fullSalesOverview: Sale[]): ChartSalesData[] => {
   const salesByMonth = Array(12).fill(0);
 
   fullSalesOverview.forEach((item) => {
@@ -79,6 +79,8 @@ const processSalesData = (fullSalesOverview: Sale[]): ChartDataItem[] => {
   return salesByMonth.map((sales, index) => ({
     month: months[index],
     sales,
+    rentType: "",
+    fill: "",
   }));
 };
 
@@ -104,14 +106,18 @@ type LatestPurchasedProxies = {
 export interface Latest5PurchasedType {
   lastSales: LatestPurchasedProxies[];
 }
+interface ChartSalesData {
+  rentType: string;
+  fill: string;
+  sales: number;
+}
 const AdminPage = () => {
   const [eventData, setEventData] = useState<{
     message: string;
     type: "success" | "error";
   } | null>(null);
-
   const [salesTypeData, setSalesTypeData] = useState<SalesTypeDataItem[]>([]);
-  const [chartSalesData, setChartSalesData] = useState<ChartDataItem[]>([]);
+  const [chartSalesData, setChartSalesData] = useState<ChartSalesData[]>([]);
   const [totalIncome, setTotalIncome] = useState<number>(0);
   const [lastSale, setLastSale] = useState<string>("");
   const [numberOfSales, setNumberOfSales] = useState<number>(0);

@@ -22,8 +22,25 @@ const chartConfig = {
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
-
-const SalesOverview = ({ chartData }) => {
+interface ChartData {
+  month: string;
+  sales: number;
+}
+interface ChartSalesData {
+  rentType: string;
+  fill: string;
+  sales: number;
+}
+// const chartData = [
+//   { rentType: "monthly", sales: 275, fill: "var(--color-monthly)" },
+//   { rentType: "weekly", sales: 200, fill: "var(--color-weekly)" },
+//   { rentType: "daily", sales: 187, fill: "var(--color-daily)" },
+// ];
+// SalesOverview component with correct prop typing
+export interface ChartDataType {
+  chartData: ChartSalesData[]; 
+}
+const SalesOverview = ({ chartData }: ChartDataType) => {
   return (
     <ChartContainer config={chartConfig}>
       <AreaChart
