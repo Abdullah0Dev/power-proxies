@@ -34,8 +34,7 @@ import {
   fetchSpeedTestData,
   rotateProxy,
 } from "@/actions/getProxyList";
-import type {
-  ProxyListRowProps,
+import type { 
   SpeedTestParams,
   SpeedTestResult,
   ConnectionTestResponse,
@@ -419,8 +418,11 @@ export function RotateIPModal({ isOpen, onClose, imei }: RotateIPModalProps) {
     </Dialog>
   );
 }
+interface ProxyListRowProps {
+  proxy: ProxyData;
+}
 
-const ProxyListRow: React.FC<ProxyData> = (proxy) => {
+const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
   const [rotateModalOpen, setRotateModalOpen] = useState(false);
   const [speedTestModalOpen, setSpeedTestModalOpen] = useState(false);
   const [connectionTestModalOpen, setConnectionTestModalOpen] = useState(false);

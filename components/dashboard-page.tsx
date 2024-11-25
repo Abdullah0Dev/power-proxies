@@ -53,7 +53,7 @@ const ProxyListTable: FC<ProxyListTableProps> = () => {
             ))}
           </TableBody>
         </Table>
-      </div>
+    </div>
     </>
   );
 };
