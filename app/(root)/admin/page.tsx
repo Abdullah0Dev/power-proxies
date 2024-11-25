@@ -129,18 +129,18 @@ const AdminPage = () => {
         const filteredChartData = processSalesData(fullSalesOverview);
         setChartSalesData(filteredChartData);
         console.log(filteredChartData);
-        
 
         const salesNumber = fullSalesOverview.length;
         const totalProxyIncome = fullSalesOverview.reduce(
-          (acc, item) => acc + item.sale_amount,
+          (acc: number, item: Sale) => acc + item.sale_amount,
           0
         );
 
-        const lastSaleTime = fullSalesOverview.reduce((latest, current) =>
-          new Date(current.sale_date) > new Date(latest.sale_date)
-            ? current
-            : latest
+        const lastSaleTime = fullSalesOverview.reduce(
+          (latest: Sale, current: Sale) =>
+            new Date(current.sale_date) > new Date(latest.sale_date)
+              ? current
+              : latest
         );
 
         const timeDifference =
