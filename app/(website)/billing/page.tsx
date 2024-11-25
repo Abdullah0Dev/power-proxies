@@ -23,11 +23,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { plans } from "../../../data";
-interface BillingPageProps {
-  userEmail: string;
-}
 
-const BillingPage: React.FC<BillingPageProps> = () => {
+const BillingPage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
