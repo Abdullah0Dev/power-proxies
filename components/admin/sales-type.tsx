@@ -31,7 +31,7 @@ const chartConfig = {
     color: "#3B82F6",
   },
   daily: {
-    label: "Dayly",
+    label: "Daily",
     color: "hsl(var(--chart-3))",
   },
 } satisfies ChartConfig;
