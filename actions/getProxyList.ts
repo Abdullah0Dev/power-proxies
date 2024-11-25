@@ -7,7 +7,7 @@ import {
   AndroidInfo,
   ModemDetails,
   NetworkDetails,
-  ProxyCredentials,
+  ProxyCredential,
   RotateProxyResponse,
   SpeedTestParams,
   SpeedTestResult,
@@ -26,7 +26,7 @@ interface UserStatus {
   android: AndroidInfo;
   modem_details: ModemDetails;
   net_details: NetworkDetails;
-  proxy_creds: ProxyCredentials;
+  proxy_creds: ProxyCredential;
 }
 
 interface ConnectionTestResponse {
