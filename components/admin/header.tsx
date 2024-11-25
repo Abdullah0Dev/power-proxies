@@ -30,7 +30,7 @@ const Header = () => {
   ];
 
   // Function to handle server change
-  const handleServerChange = async (serverId) => {
+  const handleServerChange = async (serverId: string) => {
     // Update selected server in frontend state
     setSelectedServer(serverId);
 
