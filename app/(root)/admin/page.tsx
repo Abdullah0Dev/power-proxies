@@ -220,9 +220,9 @@ const AdminPage = () => {
         entry.sales += 1;
       } else {
         acc.push({
-          rentType: `${period}ly`,
+          rentType: `${period === "day" ? "dai" : period}ly`,
           sales: 1,
-          fill: `var(--color-${period}ly)`,
+          fill: `var(--color-${period === "day" ? "dai" : period}ly)`,
         });
       }
 
