@@ -40,7 +40,6 @@ const BillingPage = () => {
     const plan = plans.find((p) => p.value === value);
     if (plan) setSelectedPlan(plan);
   };
-
   const rotations = [
     { value: "1", label: "1 minute" },
     { value: "3", label: "3 minutes" },
@@ -109,11 +108,14 @@ const BillingPage = () => {
                         <SelectValue placeholder="Select duration" />
                       </SelectTrigger>
                       <SelectContent>
-                        {plans.map((plan) => (
-                          <SelectItem key={plan.value} value={plan.value}>
-                            {plan.label} - ${plan.price}
-                          </SelectItem>
-                        ))}
+                        {plans.map((plan) => {
+                          console.log(selectedPlan.link);
+                          return (
+                            <SelectItem key={plan.value} value={plan.value}>
+                              {plan.label} - ${plan.price}
+                            </SelectItem>
+                          );
+                        })}
                       </SelectContent>
                     </Select>
                   </div>
@@ -171,11 +173,7 @@ const BillingPage = () => {
 
                   <div className="pt-4">
                     <Link
-                      href={
-                        paymentMethod === "bitcoin"
-                          ? "/bitcoin-payment"
-                          : selectedPlan.link + "?prefilled_email=" + userEmail
-                      }
+                      href={selectedPlan.link + "?prefilled_email=" + userEmail}
                       passHref
                     >
                       <Button
