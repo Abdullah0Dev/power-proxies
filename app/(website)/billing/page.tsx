@@ -1,7 +1,7 @@
 "use client";
 
-import PropTypes from "prop-types"; // For prop validation
-import { useState } from "react";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { CreditCard, Bitcoin, Globe, Shield, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,14 +23,23 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { plans } from "../../../data";
-// { userEmail = "default@example.com" }
-const BillingPage = ({ userEmail = "abdulah@pro.com" }) => {
+interface BillingPageProps {
+  userEmail: string;
+}
+
+const BillingPage: React.FC<BillingPageProps> = () => {
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("email");
+    setUserEmail(storedEmail);
+  }, []);
   // const userEmail = "abdulah@pro.com";
   const [selectedPlan, setSelectedPlan] = useState(plans[1]); // Default to "7 Days" plan
   const [rotation, setRotation] = useState("5");
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
 
-  const handlePlanChange = (value) => {
+  const handlePlanChange = (value: string) => {
     const plan = plans.find((p) => p.value === value);
     if (plan) setSelectedPlan(plan);
   };
@@ -173,7 +182,7 @@ const BillingPage = ({ userEmail = "abdulah@pro.com" }) => {
                       passHref
                     >
                       <Button
-                        as="a"
+                        // as="a"
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                       >
                         Pay ${selectedPlan.price}
