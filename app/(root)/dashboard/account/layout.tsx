@@ -2,6 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import React from "react";
 import AccountManagement from "./page";
+import ClientSideStorage from "@/components/component/ClientSideStorage";
 
 export default async function Layout() {
   const user = await currentUser();
@@ -13,22 +14,36 @@ export default async function Layout() {
   // Serialize the user object manually
   const formattedUser = {
     id: user.id,
-    firstName: user.firstName ?? '',
-    lastName: user.lastName ?? '',
+    firstName: user.firstName ?? "",
+    lastName: user.lastName ?? "",
     emailAddresses: user.emailAddresses.map((email) => ({
-      emailAddress: email.emailAddress ?? ''
+      emailAddress: email.emailAddress ?? "",
     })),
-    imageUrl: user.imageUrl ?? '',
+    imageUrl: user.imageUrl ?? "",
     externalAccounts: user.externalAccounts?.map((account) => ({
       verification: account?.verification ?? null,
     })),
     passwordEnabled: user.passwordEnabled ?? false,
   };
 
+  const userImage = formattedUser?.imageUrl;
+  const userName = formattedUser?.firstName + " " + formattedUser?.lastName;
+  const userEmail = formattedUser?.emailAddresses[0].emailAddress;
+  const isGoogleAuth = formattedUser?.externalAccounts?.some(
+    (identity) =>
+      identity?.verification !== null &&
+      identity?.verification?.strategy === "oauth_google"
+  );
   // This ensures that we only send plain objects with serializable data
   return (
     <main>
-      <AccountManagement user={formattedUser} />
+      <AccountManagement />
+      <ClientSideStorage
+        fullName={userName}
+        userImage={userImage}
+        userEmail={userEmail}
+        isGoogleAuth={isGoogleAuth}
+      />
     </main>
   );
 }

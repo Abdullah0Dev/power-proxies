@@ -29,44 +29,27 @@ import { MdOutlineManageHistory } from "react-icons/md";
 import Link from "next/link";
 import { UserResource } from "@clerk/types";
 
-interface AccountManagementProps {
-  user: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    emailAddresses: { emailAddress: string }[];
-    imageUrl: string;
-    externalAccounts?: {
-      verification: { strategy: string } | null;
-    }[];
-    passwordEnabled: boolean;
-  };
-}
-
-export default function AccountManagement({ user }: AccountManagementProps) {
+export default function AccountManagement() {
   const [copied, setCopied] = useState(false);
-  // const userEmail = user.primaryEmailAddress.emailAddress;
-  const userImage = user?.imageUrl;
-  const userName = user?.firstName + " " + user?.lastName;
-  const userEmail = user?.emailAddresses[0].emailAddress;
-  console.log(userImage, userName, userEmail);
-  // Check if the user signed in with Google
-  const externalAccounts = user.externalAccounts || [];
-  const isGoogleAuth = user?.externalAccounts?.some(
-    (identity) =>
-      identity?.verification !== null &&
-      identity?.verification?.strategy === "oauth_google"
-  );
-  const hasPassword = user.passwordEnabled;
+  const [userData, setUserData] = useState<{
+    fullName: string;
+    userImage: string;
+    userEmail: string;
+    isGoogleAuth: boolean;
+  } | null>(null); // Set initial value as null
 
-  console.log("User data:", user);
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
-  const [proxyUsage, setProxyUsage] = useState(
-    "for Inow tostagram & TikTok, and maybe Amazon"
-  );
-  const [accessedWebsites, setAccessedWebsites] = useState(
-    "instagram.com, tiktok.com, amazon.com"
-  );
+  useEffect(() => {
+    const storedUserData = localStorage.getItem("userData");
+
+    if (storedUserData) {
+      setUserData(JSON.parse(storedUserData)); // Parse the data into an object
+    }
+  }, []);
+
+  if (!userData) return <div>Loading...</div>; // Show loading state if userData is null
+
+  // Destructure the user data
+  const { fullName, userEmail, isGoogleAuth } = userData;
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -97,7 +80,7 @@ export default function AccountManagement({ user }: AccountManagementProps) {
             <CardContent className="space-y-4">
               <div>
                 <Label className="text-sm text-gray-600">Account Name</Label>
-                <div className="font-semibold">{userName}</div>
+                <div className="font-semibold">{fullName}</div>
               </div>
               <Label className="text-sm text-gray-600">Address</Label>
               <div className="flex items-center">
