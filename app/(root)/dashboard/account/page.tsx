@@ -30,7 +30,19 @@ import Link from "next/link";
 import { UserResource } from "@clerk/types";
 
 interface AccountManagementProps {
-  user: UserResource;
+  user: {
+    id: string;
+    firstName: string | null;
+    lastName: string | null;
+    emailAddresses: { emailAddress: string }[];
+    imageUrl: string;
+    externalAccounts?: {
+      verification: {
+        strategy: string;
+      } | null;
+    }[];
+    passwordEnabled: boolean;
+  };
 }
 
 export default function AccountManagement({ user }: AccountManagementProps) {
