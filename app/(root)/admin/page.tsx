@@ -122,7 +122,7 @@ const AdminPage = () => {
   const [lastSale, setLastSale] = useState<string>("");
   const [numberOfSales, setNumberOfSales] = useState<number>(0);
   const [last5Purchased, setLast5Purchased] = useState([]);
-  const socket = io("http://localhost:4000");
+  const socket = io("https://powerproxies-backups.onrender.com");
 
   useEffect(() => {
     const fetchSalesOverviewData = async () => {
