@@ -214,13 +214,13 @@ const AdminPage = () => {
   const chartData = salesTypeData.reduce<ProcessedChartDataItem[]>(
     (acc, item) => {
       const period = item.sale_period;
-      const entry = acc.find((data) => data.rentType === `${period}ly`);
+      const entry = acc.find((data) => data.rentType === `${period}`);
 
       if (entry) {
         entry.sales += 1;
       } else {
         acc.push({
-          rentType: `${period}`,
+          rentType: period,
           sales: 1,
           fill: `var(--color-${period})`,
         });

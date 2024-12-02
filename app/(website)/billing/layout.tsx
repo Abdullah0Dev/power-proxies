@@ -16,7 +16,8 @@ export default async function RootLayout({
   await addEmailToDatabase(userEmail);
   return (
     <>
-      <ClientSideStorage email={userEmail} />
+      <ClientSideStorage
+       email={userEmail} />
 
       {/* <BillingPage userEmail={userEmail} /> */}
       {children}
