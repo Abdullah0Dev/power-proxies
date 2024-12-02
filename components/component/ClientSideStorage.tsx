@@ -4,11 +4,11 @@ import { useEffect } from "react";
 
 // Type for the props
 interface ClientSideStorageProps {
-  fullName: string;
-  userImage: string;
+  fullName?: string;
+  userImage?: string;
   userName?: string;
-  userEmail: string;
-  isGoogleAuth: boolean;
+  userEmail?: string;
+  isGoogleAuth?: boolean;
   email?: string;
 }
 
