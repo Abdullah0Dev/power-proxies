@@ -1,7 +1,7 @@
 "use client";
 import classNames from "classnames";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useMemo, useEffect } from "react";
 import {
   Sheet,
@@ -18,10 +18,18 @@ import {
   LogOut,
   MenuIcon,
   PanelLeft,
+  Icon,
 } from "lucide-react";
 import Image from "next/image";
 
-const menuItems = [
+type MenuItem = {
+  id: number;
+  label: string;
+  link: string;
+  icon: React.ComponentType<any>; // Expecting a React component (Icon)
+};
+
+const menuItems: MenuItem[] = [
   { id: 1, label: "Dashboard", icon: GitPullRequestDraft, link: "/admin" },
   {
     id: 2,
@@ -29,29 +37,36 @@ const menuItems = [
     icon: ChartNoAxesCombined,
     link: "/admin/proxy-info",
   },
-  // { id: 3, label: "Manage Users", icon: AlarmPlusIcon, link: "/users" },
-  // { id: 4, label: "Manage Tutorials", icon: AlarmPlusIcon, link: "/tutorials" },
 ];
 
-const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
+interface TestSidebarProps {
+  toggleCollapse: boolean;
+  onToggleCollapse: () => void;
+}
+
+const TestSidebar: React.FC<TestSidebarProps> = ({
+  toggleCollapse,
+  onToggleCollapse,
+}) => {
   const [isCollapsible, setIsCollapsible] = useState(false);
   const [ActiveTab, setActiveTab] = useState(2);
-  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (router.pathname === "http://localhost:3000/admin") {
+    if (pathname === "/admin") {
       setActiveTab(1);
     } else {
       setActiveTab(2);
     }
-  }, [router.pathname]);
+  }, [pathname]);
+
   const activeMenu = useMemo(
-    () => menuItems.find((menu) => menu.link === router.pathname),
-    [router.pathname]
+    () => menuItems.find((menu) => menu.link === pathname),
+    [pathname]
   );
 
   const wrapperClasses = classNames(
-    "h-screen px-4 pt-8 pb-4 bg- light dark:bg-darkMode-1 bg-[#f0f8ff] flex justify-between flex-col",
+    "h-screen px-4 pt-8 pb-4 bg-light dark:bg-darkMode-1 bg-[#f0f8ff] flex justify-between flex-col",
     {
       ["w-80"]: !toggleCollapse,
       ["w-20"]: toggleCollapse,
@@ -65,9 +80,9 @@ const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
     }
   );
 
-  const getNavItemClasses = (menu) => {
+  const getNavItemClasses = (menu: MenuItem) => {
     return classNames(
-      "flex items-center cursor-pointer dark:hover:bg-darkMode-2/50 hover:bg-darkMode-2/5  rounded w-full overflow-hidden   whitespace-nowrap",
+      "flex items-center cursor-pointer dark:hover:bg-darkMode-2/50 hover:bg-darkMode-2/5 rounded w-full overflow-hidden whitespace-nowrap",
       {
         ["bg-not-working"]: activeMenu?.id === menu.id,
       }
@@ -79,19 +94,18 @@ const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
   };
 
   const handleSidebarToggle = () => {
-    setToggleCollapse(!toggleCollapse);
+    onToggleCollapse();
   };
 
   return (
     <Sheet>
       <SheetTrigger className="absolute top-5 left-5 hidden max-xl:flex ">
-        {" "}
-        <MenuIcon />{" "}
+        <MenuIcon />
       </SheetTrigger>
       <div
         className={
           wrapperClasses +
-          ` max-xl:hidden fixed ${toggleCollapse === false && "min-w- 60"} `
+          ` max-xl:hidden fixed ${toggleCollapse === false && "min-w-60"} `
         }
         onMouseEnter={onMouseOver}
         onMouseLeave={onMouseOver}
@@ -107,7 +121,7 @@ const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
                 height={50}
                 className="max-w-full h-auto"
               />
-              <h
+              <h1
                 className={classNames(
                   "mt-2 flex text-xl font-medium text-text",
                   {
@@ -116,7 +130,7 @@ const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
                 )}
               >
                 PowerProxies
-              </h>
+              </h1>
             </div>
             {isCollapsible && (
               <button
@@ -130,7 +144,12 @@ const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
 
           <div className="flex flex-col items-start mt-24">
             {menuItems.map(({ icon: Icon, ...menu }) => {
-              const classes = getNavItemClasses(menu);
+              const classes = getNavItemClasses({
+                icon: Icon,
+                id: 5,
+                label: "/bluh",
+                link: "323",
+              });
               return (
                 <div
                   key={menu.id}
@@ -151,7 +170,6 @@ const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
                             "text-md font-medium text-text-light"
                           )}
                         >
-                          {/* 1250 */}
                           {menu.label}
                         </span>
                       )}
@@ -195,7 +213,12 @@ const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
 
             <div className="flex flex-col items-start mt-24">
               {menuItems.map(({ icon: Icon, ...menu }) => {
-                const classes = getNavItemClasses(menu);
+                const classes = getNavItemClasses({
+                  icon: Icon,
+                  id: 5,
+                  label: "/bluh",
+                  link: "323",
+                });
                 return (
                   <div
                     key={menu.id}
@@ -219,7 +242,6 @@ const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
                               "text-md font-medium text-text-light"
                             )}
                           >
-                            {/* 1250 */}
                             {menu.label}
                           </span>
                         )}
@@ -231,7 +253,14 @@ const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
             </div>
           </div>
 
-          <div className={`${getNavItemClasses({})} px-3 py-3`}>
+          <div
+            className={`${getNavItemClasses({
+              icon: Icon,
+              id: 5,
+              label: "/bluh",
+              link: "323",
+            })} px-3 py-3`}
+          >
             <div style={{ width: "2.5rem" }}>
               <LogOut />
             </div>
@@ -245,7 +274,14 @@ const TestSidebar = ({ toggleCollapse, onToggleCollapse }) => {
           </div>
         </SheetContent>
 
-        <div className={`${getNavItemClasses({})} px-3 py-3`}>
+        <div
+          className={`${getNavItemClasses({
+            icon: Icon,
+            id: 5,
+            label: "/bluh",
+            link: "323",
+          })} px-3 py-3`}
+        >
           <div style={{ width: "2.5rem" }}>
             <LogOut />
           </div>

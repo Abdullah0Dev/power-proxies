@@ -32,9 +32,10 @@ import {
   fetchClientPurchasedProxies,
   fetchConnectionResults,
   fetchSpeedTestData,
+  getProxyVPNSetting,
   rotateProxy,
 } from "@/actions/getProxyList";
-import type { 
+import type {
   SpeedTestParams,
   SpeedTestResult,
   ConnectionTestResponse,
@@ -56,10 +57,6 @@ interface SpeedTestModalProps {
   isOpen: boolean;
   onClose: () => void;
   imei: string;
-  username: string;
-  password: string;
-  ipAddress: string;
-  port: string;
 }
 
 interface ConnectionSpeedTestModalProps {
@@ -191,49 +188,15 @@ export function ConnectionSpeedTestModal({
   );
 }
 
-export function SpeedTestModal({
-  isOpen,
-  onClose,
-  imei,
-  username,
-  password,
-  ipAddress,
-  port,
-}: SpeedTestModalProps) {
+export function SpeedTestModal({ isOpen, onClose, imei }: SpeedTestModalProps) {
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState<SpeedTestResult | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
 
   const speedTestParams: SpeedTestParams = {
-    ipAddress,
-    port,
-    imei: "860191063669325",
-    username,
-    password,
+    imei,
   };
 
-  const handleSpeedTest = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.post(
-        `https://proxy-test-iqka.onrender.com/speed-test/`,
-        {
-          imei: "860191063669325",
-        },
-        {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error during speed test:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
   const fetchSpeedTest = async () => {
     setLoading(true);
     setError(null);
@@ -427,26 +390,36 @@ const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
   const [speedTestModalOpen, setSpeedTestModalOpen] = useState(false);
   const [connectionTestModalOpen, setConnectionTestModalOpen] = useState(false);
 
-  const handleDownloadVPNSettings = () => {
-    const vpnSettings = `
-      [VPN]
-      Name=Proxy VPN
-      Type=L2TP
-      Server=
-      Username=
-      Password=
-      L2TPIPsecPSK=your_preshared_key
-    `;
+  const handleDownloadVPNSettings = async () => {
+    const data = await getProxyVPNSetting(proxy.port.portID);
+    console.log(data?.downloadUrl);
+    if (data?.downloadUrl && proxy.port.portID) {
+      // Use window.location.assign() to navigate to the URL
+      window.location.assign(data.downloadUrl);
+    } else {
+      console.log("Download URL not available");
+    }
 
-    const blob = new Blob([vpnSettings], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "vpn_settings.conf";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    // const vpnSettings = `
+    //   [VPN]
+    //   Name=Proxy VPNƒ
+    //   Type=L2TP
+    //   Server=
+    //   Username=
+    //   Password=
+    //   L2TPIPsecPSK=your_preshared_key
+    // `;
+    // // http://188.245.37.125:7016/modem/bw_report_port/portpWBOgzOf
+
+    // const blob = new Blob([vpnSettings], { type: "text/plain" });
+    // const url = URL.createObjectURL(blob);
+    // const a = document.createElement("a");
+    // a.href = url;
+    // a.download = "vpn_settings.conf";
+    // document.body.appendChild(a);
+    // a.click();
+    // document.body.removeChild(a);
+    // URL.revokeObjectURL(url);
   };
   interface ProxyCredentials {
     username: string;
@@ -529,7 +502,7 @@ const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
           <span className="text-sm"> {proxy?.added_time}</span>
         </div>
       </TableCell>
-      {/* <TableCell className="py-4">
+      <TableCell className="py-4">
         <div className="flex items-center space-x-2">
           <TooltipProvider>
             <Tooltip>
@@ -603,23 +576,19 @@ const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
         <SpeedTestModal
           isOpen={speedTestModalOpen}
           onClose={() => setSpeedTestModalOpen(false)}
-          imei={proxyData.android.IMEI}
-          username={proxyData.proxy_creds.LOGIN}
-          password={proxyData.proxy_creds.PASS}
-          ipAddress={proxyData.net_details.EXT_IP}
-          port={proxyData.proxy_creds.PORT}
+          imei={proxy.ID}
         />
         <ConnectionSpeedTestModal
           isOpen={connectionTestModalOpen}
           onClose={() => setConnectionTestModalOpen(false)}
-          imei={proxyData.android.IMEI}
+          imei={proxy.ID}
         />
         <RotateIPModal
           isOpen={rotateModalOpen}
-          imei={proxyData.android.IMEI}
+          imei={proxy.ID}
           onClose={() => setRotateModalOpen(false)}
         />
-      </TableCell> */}
+      </TableCell>
     </TableRow>
   );
 };

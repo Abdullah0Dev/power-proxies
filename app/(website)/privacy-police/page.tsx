@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
-export default function PrivacyPolicy() {
+const PrivacyPolicy: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-teal-500 py-12 px-4 sm:px-6 lg:px-8 pt-20">
       <div className="max-w-6xl mx-auto">
@@ -179,4 +179,6 @@ export default function PrivacyPolicy() {
       </footer>
     </div>
   );
-}
+};
+
+export default PrivacyPolicy;

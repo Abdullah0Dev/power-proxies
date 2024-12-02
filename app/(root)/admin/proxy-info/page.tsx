@@ -275,10 +275,6 @@ const ProxyPage = () => {
                   isOpen={false}
                   onClose={() => console.log("on close")}
                   imei={"asdf"}
-                  username={"asdf"}
-                  password={"asdf"}
-                  ipAddress={"asdf"}
-                  port={"asdf"}
                 />
                 <ConnectionSpeedTestModal
                   isOpen={false}

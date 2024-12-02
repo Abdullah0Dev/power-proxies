@@ -1,9 +1,14 @@
 "use client";
+
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
-const DashboardHeader = ({ title }) => {
+interface DashboardHeaderProps {
+  title: string; // Define the expected type for the `title` prop
+}
+
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({ title }) => {
   return (
     <div className="mb-4 flex justify-between items-center bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 rounded-lg">
       <h1 className="text-2xl font-bold flex items-center">
@@ -16,7 +21,7 @@ const DashboardHeader = ({ title }) => {
             Balance: <span className="font-semibold">$0</span>
           </div>
           <Button
-          asChild={true}
+            asChild={true}
             variant="outline"
             size="sm"
             className="text-black dark:text-white dark:bg-darkMode-2/80 dark:border-none dark:hover:bg-darkMode-2/90 border-white hover:bg-blue-800 hover:text-white"
@@ -24,7 +29,7 @@ const DashboardHeader = ({ title }) => {
             Add Funds
           </Button>
           <Button
-          asChild={true}
+            asChild={true}
             variant="ghost"
             size="sm"
             className="text-white hover:bg-blue-800"

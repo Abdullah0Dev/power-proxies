@@ -9,6 +9,27 @@ Masters123!
 
 <!--  -->
 
+Modem
+860191063669325 Abdullah
+
+Port ID:
+portpWBOgzOf
+
+Port Name \*
+friendly_court
+
+HTTP Port _ (8001-8999) _
+8006
+
+Socks Port _(5001-5999) _
+5006
+
+Proxy Login \*
+thaiduongme
+
+Proxy Password \*
+thaiduong123
+
 https://dashboard.coronium.io/
 this website use same API tool
 for managing proxies
@@ -45,17 +66,17 @@ get the the email/username from the client -> then make a mongodb data base for 
 * => finding the proxy that are not rented..
 if a proxy is not associated with a client so it's gonna be available.. if not it's already in use (in admin side brief)
 ? => todays plan inshallah:
-1. finalize the website 
+1. finalize the website
   //• make the dark mode/light mode
   /• fix any problem or issue
- // • end the dashboard sidebar 
+ // • end the dashboard sidebar
 2. backend selling workings
   • enable the usr to purchase and make his own proxies based on his email
   //• make the analysis routers from CheckStat.net
   • connect the frontend with the backend
   • deploy the changes and make the client take a look but hide some to show it to him later in the week inshallah
   • organize the selling based on client admin page which enable him to manage which proxy is available or not
-  • cool.... no let's have a chat   
+  • cool.... no let's have a chat
 -> dashboard - logo, - Statistics
  Plans - goals inshallah
 // 1. do the client schema which is gonna be when a email exist it's gonna assign with an email.. so he can know what he have and so on... it's element is gonna be as the website elements
@@ -71,4 +92,6 @@ how many people use payment process using Willie vs coingate
  1. Nickname, Country, IMEI, proxy login/password, port { http, socks}, list for sale(true/false), last sale, time left for user, Total Income, status, Actions{quite, rotate ip}
  2. link to dashboard: http://188.245.37.125:7016
 https://youtu.be/pB3hX7le20c?list=PL6C03BCFE87398A78&t=2318
+
+recover code:G6JTHDD7R87S84N9893VL85V - williow
  -->

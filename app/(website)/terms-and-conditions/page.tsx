@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
-export default function TermsAndConditions() {
+const TermsAndConditions: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-teal-500 py-12 px-4 sm:px-6 lg:px-8 pt-20">
       <div className="max-w-6xl mx-auto">
@@ -210,11 +210,8 @@ export default function TermsAndConditions() {
               <p>
                 10.1. PowerProxy will process the User's personal data in
                 accordance with the statutory provisions on data protection – in
-                particular the General Data Protection Regulation (GDPR).
-              </p>
-              <p>
-                10.2. Detailed information on data processing can be found in
-                our separate Privacy Policy.
+                particular the General Data Protection Regulation (GDPR). For
+                further information, please refer to our Privacy Policy.
               </p>
             </section>
 
@@ -223,38 +220,21 @@ export default function TermsAndConditions() {
                 11. Final Provisions
               </h2>
               <p>
-                11.1. The contractual relationship shall be governed exclusively
-                by the laws of the European Union and the country where
-                PowerProxy is established, to the exclusion of the UN Convention
-                on Contracts for the International Sale of Goods.
+                11.1. If any provision of these GTC is or becomes invalid, this
+                shall not affect the validity of the remaining provisions.
               </p>
               <p>
-                11.2. Should individual provisions of these GTC including this
-                provision be or become invalid in whole or in part, the validity
-                of the remaining provisions shall remain unaffected.
+                11.2. The place of jurisdiction is, insofar as legally
+                permissible, the registered office of PowerProxy.
               </p>
-              <p>
-                11.3. If the user is a merchant, a legal entity under public law
-                or a special fund under public law, the place of jurisdiction
-                for all disputes arising from and in connection with contracts
-                concluded under these GTC shall be the registered office of
-                PowerProxy.
+              <p> 
               </p>
             </section>
           </CardContent>
         </Card>
       </div>
-      <footer className="mt-8 text-center text-white">
-        <p>
-          &copy; {new Date().getFullYear()} PowerProxy. All rights reserved.
-        </p>
-        <Link
-          href="/"
-          className="text-teal-300 hover:text-teal-100 transition-colors"
-        >
-          Back to Home
-        </Link>
-      </footer>
     </div>
   );
-}
+};
+
+export default TermsAndConditions;

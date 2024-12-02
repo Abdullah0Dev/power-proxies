@@ -1,4 +1,5 @@
 "use client";
+
 import {
   HelpCircle,
   ShoppingBag,
@@ -39,20 +40,19 @@ import {
 import { UserButton, useUser } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Alert } from "../ui/alert";
+import React from "react";
 
-// Menu items for different sections.
-const proxyManagementItems = [
-  {
-    title: "Your Proxies",
-    icon: Globe,
-    link: "main",
-  },
-  {
-    title: "Add New Proxies",
-    icon: Plus,
-    link: "/dashboard/add-proxy",
-  },
+// Types for menu items
+interface MenuItem {
+  title: string;
+  icon: React.ElementType;
+  link: string;
+}
+
+// Menu items for different sections
+const proxyManagementItems: MenuItem[] = [
+  { title: "Your Proxies", icon: Globe, link: "main" },
+  { title: "Add New Proxies", icon: Plus, link: "/dashboard/add-proxy" },
   {
     title: "Billing & Renewals",
     icon: CreditCard,
@@ -60,37 +60,32 @@ const proxyManagementItems = [
   },
 ];
 
-const accountItems = [
-  {
-    title: "Your Account",
-    icon: User,
-    link: "/dashboard/account",
-  },
-  {
-    title: "Purchases",
-    icon: ShoppingBag,
-    link: "/dashboard/purchases",
-  },
+const accountItems: MenuItem[] = [
+  { title: "Your Account", icon: User, link: "/dashboard/account" },
+  { title: "Purchases", icon: ShoppingBag, link: "/dashboard/purchases" },
 ];
 
-const knowledgeDeskItems = [
-  {
-    title: "Contact Support",
-    link: "/dashboard/support",
-    icon: HelpCircle,
-  },
+const knowledgeDeskItems: MenuItem[] = [
+  { title: "Contact Support", icon: HelpCircle, link: "/dashboard/support" },
 ];
 
-export function AppSidebar({ user }) {
+interface AppSidebarProps {
+  user: {
+    firstName: string;
+    lastName: string;
+    imageUrl?: string;
+    emailAddresses: { emailAddress: string }[];
+  };
+}
+
+export const AppSidebar: React.FC<AppSidebarProps> = ({ user }) => {
   const { open } = useSidebar();
   const pathname = usePathname();
   const pathnameList = pathname.split("/");
 
-  // const userEmail = user.primaryEmailAddress.emailAddress;
-  const userImage = user?.imageUrl;
-  const userName = user?.firstName + " " + user?.lastName;
-  const userEmail = user?.emailAddresses[0].emailAddress;
-  console.log(userImage, userName, userEmail);
+  const userName = `${user?.firstName} ${user?.lastName}`;
+  const userEmail = user?.emailAddresses?.[0]?.emailAddress || "";
+  const userImage = user?.imageUrl || "";
 
   const data = {
     user: {
@@ -99,6 +94,7 @@ export function AppSidebar({ user }) {
       avatar: userImage,
     },
   };
+
   return (
     <Sidebar collapsible="icon">
       <SidebarContent className="bg-white dark:bg-darkMode-2">
@@ -106,14 +102,14 @@ export function AppSidebar({ user }) {
         <div className="p-4 flex items-center gap-2">
           <Image
             priority
-            src={"/logo.png"}
-            alt={"logo"}
+            src="/logo.png"
+            alt="logo"
             width={45}
             height={50}
             className="max-w-full h-auto"
           />
           {open && (
-            <span className="text -black font-bold text-xl">PowerProxy</span>
+            <span className="text-  font-bold text-xl">PowerProxy</span>
           )}
         </div>
 
@@ -198,16 +194,8 @@ export function AppSidebar({ user }) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        {/* <SidebarFooter className="border-t flex items-end">
-          <UserButton
-            className={"size-12"}
-            appearance={{
-              elements: {
-                userButtonAvatarBox: open ? "rounded-md" : "size-8 rounded-md",
-              },
-            }}
-          />
-        </SidebarFooter> */}
+
+        {/* Footer */}
         <SidebarFooter className="absolute bottom-2">
           <SidebarMenu>
             <SidebarMenuItem>
@@ -263,7 +251,6 @@ export function AppSidebar({ user }) {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-
                   <DropdownMenuGroup>
                     <Link href="/dashboard/account">
                       <DropdownMenuItem>
@@ -271,7 +258,6 @@ export function AppSidebar({ user }) {
                         Account
                       </DropdownMenuItem>
                     </Link>
-                    {/* /dashboard/proxy-renewals */}
                     <Link href="/dashboard/proxy-renewals">
                       <DropdownMenuItem>
                         <CreditCard />
@@ -280,13 +266,11 @@ export function AppSidebar({ user }) {
                     </Link>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
-                  <Link   href="/" 
-                  onClick={() => alert("duh")
-                  }>
-                  <DropdownMenuItem >
-                    <LogOut />
-                    Log out
-                  </DropdownMenuItem>
+                  <Link href="/" onClick={() => alert("duh")}>
+                    <DropdownMenuItem>
+                      <LogOut />
+                      Log out
+                    </DropdownMenuItem>
                   </Link>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -296,4 +280,4 @@ export function AppSidebar({ user }) {
       </SidebarContent>
     </Sidebar>
   );
-}
+};

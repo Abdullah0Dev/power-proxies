@@ -27,7 +27,37 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-const ProxyListTable = ({ proxies }) => {
+
+// Type definition for the proxy object
+interface Proxy {
+  modem_details: {
+    IMEI: string;
+    NICK: string;
+    MODEL: string;
+    MODEL_SHOWN: string;
+  };
+  net_details: {
+    EXT_IP: string;
+    LOCAL_IP: string;
+    COUNTRY: string;
+    CELLOP: string;
+    CurrentNetworkType: string;
+    SIGNAL_STRENGTH: string;
+  };
+  proxy_creds: {
+    HTTP_PORT: string;
+    SOCKS_PORT: string | null;
+  };
+  IS_LOCKED: string;
+  IS_REBOOTING: string;
+  IS_ROTATED: string;
+}
+
+interface ProxyListTableProps {
+  proxies: Proxy[];
+}
+
+const ProxyListTable: React.FC<ProxyListTableProps> = ({ proxies }) => {
   return (
     <Table>
       <TableHeader>

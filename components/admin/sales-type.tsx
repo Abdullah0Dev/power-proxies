@@ -15,22 +15,22 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import React  from "react";
+import React from "react";
 export const description = "A pie chart with a label list";
 
 const chartConfig = {
   sales: {
     label: "Sales",
   },
-  monthly: {
+  month: {
     label: "Monthly",
     color: "#C6E3DF",
   },
-  weekly: {
+  week: {
     label: "Weekly",
     color: "#3B82F6",
   },
-  daily: {
+  day: {
     label: "Daily",
     color: "hsl(var(--chart-3))",
   },

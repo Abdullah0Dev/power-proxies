@@ -23,7 +23,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import DashboardHeader from "@/components/component/dashboard-header";
 
 // Mock data for demonstration
-const mockProxies = [
+interface Proxy {
+  id: number;
+  country: string;
+  ports: number;
+  timeLeft: string;
+  flag: string;
+}
+
+const mockProxies: Proxy[] = [
   { id: 1, country: "United States", ports: 2, timeLeft: "15d 7h", flag: "US" },
   { id: 2, country: "Germany", ports: 1, timeLeft: "3d 12h", flag: "DE" },
   { id: 3, country: "Japan", ports: 3, timeLeft: "27d 5h", flag: "JP" },
@@ -32,21 +40,22 @@ const mockProxies = [
 ];
 
 export default function ProxyRenewals() {
-  const [selectedProxies, setSelectedProxies] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("All Countries");
-  const [showExpiringOnly, setShowExpiringOnly] = useState(false);
-  const [donglesPerPage, setDonglesPerPage] = useState("5");
+  const [selectedProxies, setSelectedProxies] = useState<number[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [selectedCountry, setSelectedCountry] =
+    useState<string>("All Countries");
+  const [showExpiringOnly, setShowExpiringOnly] = useState<boolean>(false);
+  const [donglesPerPage, setDonglesPerPage] = useState<string>("5");
 
-  const handleProxySelect = (proxyId) => {
+  const handleProxySelect = (proxyId: number): void => {
     setSelectedProxies((prev) =>
       prev.includes(proxyId)
         ? prev.filter((id) => id !== proxyId)
-        : [...prev, proxyId],
+        : [...prev, proxyId]
     );
   };
 
-  const handleSelectAll = (checked) => {
+  const handleSelectAll = (checked: boolean): void => {
     if (checked) {
       setSelectedProxies(mockProxies.map((proxy) => proxy.id));
     } else {
@@ -84,7 +93,7 @@ export default function ProxyRenewals() {
               <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full md:w-auto">
                 <Select
                   value={selectedCountry}
-                  onValueChange={setSelectedCountry}
+                  onValueChange={(value) => setSelectedCountry(value)}
                 >
                   <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue placeholder="All Countries" />
@@ -104,7 +113,9 @@ export default function ProxyRenewals() {
                   <Checkbox
                     id="expiring-soon"
                     checked={showExpiringOnly}
-                    onCheckedChange={(checked) => setShowExpiringOnly(checked)}
+                    onCheckedChange={(checked) =>
+                      setShowExpiringOnly(!!checked)
+                    }
                   />
                   <label
                     htmlFor="expiring-soon"
@@ -140,7 +151,7 @@ export default function ProxyRenewals() {
                 <TableRow>
                   <TableHead className="w-[50px]">
                     <Checkbox
-                      onCheckedChange={handleSelectAll}
+                      onCheckedChange={(checked) => handleSelectAll(!!checked)}
                       checked={selectedProxies.length === mockProxies.length}
                     />
                   </TableHead>
@@ -205,7 +216,7 @@ export default function ProxyRenewals() {
                 <span className="text-sm text-gray-600">Dongles per page:</span>
                 <Select
                   value={donglesPerPage}
-                  onValueChange={setDonglesPerPage}
+                  onValueChange={(value) => setDonglesPerPage(value)}
                 >
                   <SelectTrigger className="w-[70px]">
                     <SelectValue placeholder="5" />

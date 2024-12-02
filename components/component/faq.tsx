@@ -4,7 +4,12 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-const faqs = [
+type FAQ = {
+  question: string;
+  answer: string;
+};
+
+const faqs: FAQ[] = [
   {
     question: "What exactly are mobile proxies?",
     answer:
@@ -43,9 +48,10 @@ const faqs = [
 ];
 
 export default function FAQ() {
-  const [openFAQ, setOpenFAQ] = useState(null);
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
 
-  const toggleFAQ = (index) => setOpenFAQ(openFAQ === index ? null : index);
+  const toggleFAQ = (index: number) =>
+    setOpenFAQ(openFAQ === index ? null : index);
 
   return (
     <section className="bg-white py-16">

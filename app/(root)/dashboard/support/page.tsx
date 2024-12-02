@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function ContactSupport() {
+const ContactSupport: React.FC = () => {
   return (
     <div className="min-h-screen light:bg-gradient-to-b from-blue-50 to-white p-8">
       <div className="max-w-2xl mx-auto space-y-12">
@@ -80,4 +80,6 @@ export default function ContactSupport() {
       </div>
     </div>
   );
-}
+};
+
+export default ContactSupport;

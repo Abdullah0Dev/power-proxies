@@ -60,7 +60,7 @@ export interface ProxyData {
   is_online: string;
   network_type: string;
   operator: string;
-  port: { http: number; socks: number };
+  port: { http: number; socks: number; portName: string; portID: string };
   proxyCredentials: ProxyCredentials;
   status: string;
   usageData: UsageData;
@@ -108,11 +108,7 @@ export interface RotateProxyResponse {
 }
 
 export interface SpeedTestParams {
-  ipAddress: string;
-  port: string;
   imei: string;
-  username: string;
-  password: string;
 }
 
 export interface SpeedTestResult {

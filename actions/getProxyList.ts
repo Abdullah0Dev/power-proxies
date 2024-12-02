@@ -47,6 +47,103 @@ export async function fetchAdminSideUserData() {
   const data = await response.data;
   return data;
 }
+export async function fetchLatestSubscriptionAndPayment(email: string) {
+  try {
+    const response = await axios.get(
+      `https://powerproxies-backups.onrender.com/payment/purchases`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        params: {
+          email, // Use the provided email parameter
+        },
+      }
+    );
+
+    // Retrieve the unified list of purchases
+    const purchases = response.data.purchases;
+
+    if (purchases && purchases.length > 0) {
+      // Map over the purchases to format the data
+      const formattedPurchases = purchases.map((purchase: any) => {
+        // Format billing cycle dates if present
+        const billingCycle =
+          purchase.billingCycle &&
+          `${new Date(
+            purchase.billingCycle.start * 1000
+          ).toLocaleDateString()} to ${new Date(
+            purchase.billingCycle.end * 1000
+          ).toLocaleDateString()}`;
+
+        return {
+          receiptID: purchase.id,
+          purpose: purchase.type, // 'subscription' or 'one-time'
+          imei: purchase.imei || "N/A", // Show "N/A" if IMEI is not available
+          status: purchase.status,
+          price: purchase.amount, // Unified `amount` field for both
+          currency: purchase.currency.toUpperCase(),
+          date:
+            billingCycle ||
+            new Date(purchase.created * 1000).toLocaleDateString(), // Billing cycle or created date
+          description: purchase.description || "No description provided",
+        };
+      });
+
+      console.log("Formatted Purchases", formattedPurchases);
+
+      return formattedPurchases;
+    } else {
+      throw new Error("No purchases found for this email.");
+    }
+  } catch (error) {
+    console.error("Error fetching purchases:", error);
+    throw error;
+  }
+}
+
+export async function fetchLatestPayments(email: string) {
+  try {
+    const response = await axios.get(
+      `https://powerproxies-backups.onrender.com/payment/one-time-payments`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        params: {
+          email, // Use the provided email parameter
+        },
+      }
+    );
+
+    // Assuming the response contains the formatted subscription data
+    const payments = response.data.oneTimePayments;
+
+    if (payments && payments.length > 0) {
+      // Map over the payments to return them as an array of purchase objects
+      const purchases = payments.map((payment: any) => {
+        return {
+          receiptID: payment.id,
+          purpose: "Test", // This is static ('payment')
+          imei: payment.imei || "jsd",
+          status: payment.status,
+          price: payment.amount,
+          date: `${payment.created} `, // Display billing period
+        };
+      });
+
+      console.log("Formatted Payments", purchases);
+
+      return purchases;
+    } else {
+      throw new Error("No payments found for this email.");
+    }
+  } catch (error) {
+    console.error("Error fetching payment:", error);
+    throw error;
+  }
+}
+
 export async function fetchSalesOverview() {
   const response = await axios.get(
     `https://powerproxies-backups.onrender.com/test-actions/sales-overview`,
@@ -108,9 +205,90 @@ export async function addEmailToDatabase(email: string) {
   }
 }
 
+export async function handleSubscriptionLink(email: string, priceId: string) {
+  // Validate input
+  if (!email || !priceId) {
+    throw new Error("Email and Price ID are required.");
+  }
+
+  try {
+    // Send the POST request
+    const response = await axios.post(
+      "https://powerproxies-backups.onrender.com/payment/create-subscription",
+      {
+        email,
+        priceId,
+        imei: "bruh", // Replace "bruh" with the actual IMEI logic if needed
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("Subscription created successfully:", response.data.url);
+
+    // Return the response data
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    if (axios.isAxiosError(error)) {
+      console.error("Axios error:", error.response?.data || error.message);
+    } else {
+      console.error("Unexpected error:", error);
+    }
+  }
+}
+export async function handlePaymentTestLink(email: string) {
+  // Validate input
+  if (!email) {
+    throw new Error("Email are required.");
+  }
+
+  try {
+    // Send the POST request
+    const response = await axios.post(
+      "https://powerproxies-backups.onrender.com/payment/create-payment-session",
+      {
+        email,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("Subscription created successfully:", response.data.url);
+
+    // Return the response data
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    if (axios.isAxiosError(error)) {
+      console.error("Axios error:", error.response?.data || error.message);
+    } else {
+      console.error("Unexpected error:", error);
+    }
+  }
+}
+
 export async function fetchLatestPurchases() {
   const response = await axios.get(
     `https://powerproxies-backups.onrender.com/test-actions/sales-overview/`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await response.data;
+  return data;
+}
+export async function getProxyVPNSetting(portID: string) {
+  const response = await axios.get(
+    `https://powerproxies-backups.onrender.com/test-actions/ovpn/${portID}`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -194,17 +372,13 @@ export async function rotateProxy(imei: string): Promise<RotateProxyResponse> {
 }
 const BASE_DEV_URL = `https://proxy-test-iqka.onrender.com`;
 export async function fetchSpeedTestData({
-  ipAddress,
-  port,
   imei,
-  username,
-  password,
 }: SpeedTestParams): Promise<SpeedTestResult> {
   try {
     const response = await axios.post(
       `https://proxy-test-iqka.onrender.com/speed-test/`,
       {
-        imei: "860191063669325",
+        imei,
       },
       {
         headers: {

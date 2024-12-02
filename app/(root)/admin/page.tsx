@@ -122,7 +122,7 @@ const AdminPage = () => {
   const [lastSale, setLastSale] = useState<string>("");
   const [numberOfSales, setNumberOfSales] = useState<number>(0);
   const [last5Purchased, setLast5Purchased] = useState([]);
-  const socket = io("https://powerproxies-backups.onrender.com");
+  const socket = io("http://localhost:4000");
 
   useEffect(() => {
     const fetchSalesOverviewData = async () => {
@@ -220,11 +220,12 @@ const AdminPage = () => {
         entry.sales += 1;
       } else {
         acc.push({
-          rentType: `${period === "day" ? "dai" : period}ly`,
+          rentType: `${period}`,
           sales: 1,
-          fill: `var(--color-${period === "day" ? "dai" : period}ly)`,
+          fill: `var(--color-${period})`,
         });
       }
+      console.log(acc, "acc");
 
       return acc;
     },
@@ -257,6 +258,7 @@ const AdminPage = () => {
           pauseOnFocusLoss
           draggable
           pauseOnHover
+          stacked
           theme="light"
         />
       </div>

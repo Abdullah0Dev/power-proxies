@@ -11,29 +11,27 @@ export const clientLogos = [
 export const plans = [
   {
     link: "https://buy.stripe.com/test_3cs9BX750bi6gqA146",
-    priceId: "price_1QM5u2P5rD2RSXPgt6bTG6vE",
+    priceId: "price_1QQm0dP5rD2RSXPgbknhV9wT",
     price: 5,
-    duration: "1 Day",
+    duration: "day", // Test Payment
     value: "1",
-    label: "1 Day",
+    label: "1 Day Test",
   },
   {
     link: "https://buy.stripe.com/test_cN27tPblgeuib6gdQR",
     priceId: "price_1QM5u2P5rD2RSXPggu2dHM3J",
-
     price: 25,
-    duration: "7 Day",
+    duration: "week", // Subscription
     value: "7",
-    label: "7 Days",
+    label: "7 Days Subscription",
   },
   {
     link: "https://buy.stripe.com/test_7sI01ncpk2LAb6g9AA",
     priceId: "price_1QM5u2P5rD2RSXPgF5S13xYC",
-
     price: 65,
-    duration: "30 Day",
+    duration: "month", // Subscription
     value: "30",
-    label: "30 Days",
+    label: "30 Days Subscription",
   },
 ];
 export const ProfileInfo = [

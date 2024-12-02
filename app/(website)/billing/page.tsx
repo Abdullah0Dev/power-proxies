@@ -23,6 +23,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { plans } from "../../../data";
+import {
+  handlePaymentTestLink,
+  handleSubscriptionLink,
+} from "@/actions/getProxyList";
 
 const BillingPage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -35,7 +39,7 @@ const BillingPage = () => {
   const [selectedPlan, setSelectedPlan] = useState(plans[1]); // Default to "7 Days" plan
   const [rotation, setRotation] = useState("5");
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
-
+  const [loadingPaymentLink, setLoadingPaymentLink] = useState(false);
   const handlePlanChange = (value: string) => {
     const plan = plans.find((p) => p.value === value);
     if (plan) setSelectedPlan(plan);
@@ -68,7 +72,36 @@ const BillingPage = () => {
       description: "Experience high-speed connections for seamless browsing",
     },
   ];
+  // handle payment
 
+  const handlePayment = async () => {
+    try {
+      setLoadingPaymentLink(true);
+      let subscriptionData;
+      // Call the function to handle the subscription and get the URL
+      if (selectedPlan.duration === "day") {
+        subscriptionData = await handlePaymentTestLink(userEmail as string);
+        console.log("Bruh, what's happing");
+        
+      } else {
+        subscriptionData = await handleSubscriptionLink(
+          userEmail as string,
+          selectedPlan.priceId
+        );
+      }
+
+      // Redirect to the Stripe Checkout URL
+      if (subscriptionData.url) {
+        window.location.href = subscriptionData.url; // Redirect to Stripe Checkout
+      } else {
+        console.error("Subscription URL not found in response.");
+      }
+    } catch (error) {
+      console.error("Error creating subscription:", error);
+    } finally {
+      setLoadingPaymentLink(false); // Stop loading state
+    }
+  };
   return (
     <div className="bg-gradient-to-br from-blue-900 via-blue-700 to-teal-500">
       <main className="container mx-auto px-4 py-12 pt-28">
@@ -112,7 +145,7 @@ const BillingPage = () => {
                           console.log(selectedPlan.link);
                           return (
                             <SelectItem key={plan.value} value={plan.value}>
-                              {plan.label} - ${plan.price}
+                              {plan.label} - €{plan.price}
                             </SelectItem>
                           );
                         })}
@@ -172,17 +205,43 @@ const BillingPage = () => {
                   </div>
 
                   <div className="pt-4">
-                    <Link
-                      href={selectedPlan.link + "?prefilled_email=" + userEmail}
-                      passHref
+                    <Button
+                      onClick={handlePayment}
+                      disabled={loadingPaymentLink} // Disable button while loading
+                      className={`w-full ${
+                        loadingPaymentLink
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      } text-white flex justify-center items-center`}
                     >
-                      <Button
-                        // as="a"
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                      >
-                        Pay ${selectedPlan.price}
-                      </Button>
-                    </Link>
+                      {!loadingPaymentLink ? (
+                        <p>Pay €{selectedPlan.price}</p>
+                      ) : (
+                        <div className="flex items-center">
+                          <svg
+                            className="animate-spin h-5 w-5 mr-2 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                            ></path>
+                          </svg>
+                          <p>Loading...</p>
+                        </div>
+                      )}
+                    </Button>
                   </div>
                 </div>
               </CardContent>

@@ -2,7 +2,17 @@ import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import Link from "next/link";
-const featureItemData = [
+
+interface FeatureItemData {
+  title: string;
+  desc: string;
+  image?: string;
+  multiImg?: boolean;
+  btnColor?: string;
+  width?: number;
+}
+
+const featureItemData: FeatureItemData[] = [
   {
     title: "Global Mobile Proxy Network",
     desc: "Unlock access to a vast network of over 33 million mobile proxies across 190+ countries, providing unmatched global reach and versatility for all your scraping and automation needs. Whether you're targeting localized content or scaling your operations worldwide, our proxies deliver reliable, fast connections from diverse geolocations, ensuring you stay ahead of the competition and overcome geographic restrictions effortlessly.",
@@ -33,8 +43,13 @@ const featureItemData = [
   },
 ];
 
-const FeatureItem = ({ feature, index }) => {
-  const ref = useRef(null);
+interface FeatureItemProps {
+  feature: FeatureItemData;
+  index: number;
+}
+
+const FeatureItem: React.FC<FeatureItemProps> = ({ feature, index }) => {
+  const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
@@ -45,7 +60,7 @@ const FeatureItem = ({ feature, index }) => {
       transition={{ duration: 0.5, delay: 0.1 }}
       className={`flex flex-col ${
         index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-      } items-center gap-8 light: bg-white dark:bg-darkMode-2  rounded-xl shadow-lg overflow-hidden mb-16`}
+      } items-center gap-8 light: bg-white dark:bg-darkMode-2 rounded-xl shadow-lg overflow-hidden mb-16`}
     >
       <div className="md:w-1/2 p-8">
         <h3
@@ -54,9 +69,7 @@ const FeatureItem = ({ feature, index }) => {
         >
           {feature.title}
         </h3>
-        <p className="light:text-gray-600 text-gray-400  mb-6">
-          {feature.desc}
-        </p>
+        <p className="light:text-gray-600 text-gray-400 mb-6">{feature.desc}</p>
         <button
           className="px-6 py-2 rounded-full text-white font-semibold transition-all duration-300 ease-in-out"
           style={{
@@ -69,21 +82,20 @@ const FeatureItem = ({ feature, index }) => {
       </div>
       <div
         style={{
-          backgroundImage: "url('/grid-HpNlL527.png')", // Background image for the container
-          backgroundSize: "cover", // Ensures the image covers the entire background
-          backgroundRepeat: "no-repeat", // Prevents the background from repeating
+          backgroundImage: "url('/grid-HpNlL527.png')",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
         }}
         className="flex justify-center items-center bg-image h-full md:w-1/2 relative md:h-auto"
       >
         {feature.multiImg ? (
-          // Container for overlaying multiple images
-          <div className="flex justify-center items-center  h-full">
+          <div className="flex justify-center items-center h-full">
             <Image
               src="/ccpa-1-BM4PN9l7.svg"
               alt="CCPA Compliance"
               width={100}
               height={100}
-              className="mx-2 "
+              className="mx-2"
             />
             <Image
               src="/iso-DuIEJ2_g.svg"
@@ -101,29 +113,26 @@ const FeatureItem = ({ feature, index }) => {
             />
           </div>
         ) : (
-          // Single image overlay on top of the background
           <Image
-            src={feature.image}
+            src={feature.image || ""}
             alt={feature.title}
-            width={feature.width ? feature.width : 400}
-            height={feature.width ? feature.width : 400}
+            width={feature.width || 400}
+            height={feature.width || 400}
             objectFit="cover"
             className="rounded-xl"
           />
         )}
-        {/* Gradient overlay for visual effect */}
         <div className="absolute inset-0 light:bg-gradient-to-r from-transparent to-white opacity-50"></div>
       </div>
     </motion.div>
   );
 };
 
-export default function Features() {
+const Features: React.FC = () => {
   return (
     <section
       id="features"
-      className="light:bg-gradient-to-b dark:bg-darkMode-1
-         from-gray-100 to-white py-16"
+      className="light:bg-gradient-to-b dark:bg-darkMode-1 from-gray-100 to-white py-16"
     >
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-4">Key Features</h2>
@@ -138,4 +147,6 @@ export default function Features() {
       </div>
     </section>
   );
-}
+};
+
+export default Features;

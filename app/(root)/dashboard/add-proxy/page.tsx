@@ -1,42 +1,58 @@
 "use client";
-import React, { useState } from "react";
-import { Globe, CreditCard, Wallet, Lock, Info, Bell } from "lucide-react";
+
+import React, { useEffect, useState } from "react";
+import { Globe, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import DashboardHeader from "@/components/component/dashboard-header";
+import Link from "next/link";
+import { plans } from "@/data";
 
-const countries = [
-  // { name: "United Kingdom", proxies: 18, code: "GB" },
-  // { name: "United States", proxies: 4, code: "US" },
-  // { name: "France", proxies: 3, code: "FR" },
-  // { name: "Spain", proxies: 24, code: "ES" },
-  // { name: "Australia", proxies: 7, code: "AU" },
-  // { name: "Germany", proxies: 13, code: "DE" },
-  { name: "Netherlands", proxies: 10, code: "NL" },
-  // { name: "Ukraine", proxies: 18, code: "UA" },
-];
+interface Country {
+  name: string;
+  proxies: number;
+  code: string;
+}
 
-const restockingCountries = ["US", "GB", "AU", "FR"];
+const countries: Country[] = [{ name: "Netherlands", proxies: 10, code: "NL" }];
+
+const restockingCountries: string[] = ["US", "GB", "AU", "FR"];
 
 export default function ProxyConfiguration() {
-  const [step, setStep] = useState(1);
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const [carrier, setCarrier] = useState(null);
-  const [portQuantity, setPortQuantity] = useState(1);
-  const [couponCode, setCouponCode] = useState("");
+  const [step, setStep] = useState<number>(1);
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState(plans[1]); // Default to "7 Days" plan
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
   const router = useRouter();
-  const handleCountrySelect = (country) => {
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("email");
+    setUserEmail(storedEmail);
+  }, []);
+
+  const handlePlanChange = (value: string) => {
+    const plan = plans.find((p) => p.value === value);
+    if (plan) setSelectedPlan(plan);
+  };
+
+  const handleCountrySelect = (country: string) => {
     setSelectedCountry(country);
     setStep(2);
     router.push("#details");
   };
 
   return (
-    <div className="min-h-screen light:bg-gray-50 ">
+    <div className="min-h-screen light:bg-gray-50">
       <DashboardHeader title="Add Proxy" />
       <div className="mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column */}
@@ -49,14 +65,6 @@ export default function ProxyConfiguration() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center text-sm text-blue-600 mb-4">
-                <span className="font-semibold mr-2">PREMIUM & PRIVATE</span>
-                <Button variant="link" className="p-0">
-                  <Info className="h-4 w-4 mr-1" />
-                  Show information
-                </Button>
-              </div>
-
               <div className="relative mb-8">
                 <div className="flex justify-between mb-2">
                   {["Choose Location", "Configure Proxy", "Pay for Proxy"].map(
@@ -99,7 +107,7 @@ export default function ProxyConfiguration() {
                     variant="outline"
                     className={`flex flex-col items-center justify-center h-24 ${
                       selectedCountry === country.name
-                        ? "border-blue-600 dark:border-darkMode-2  bg-blue-50 dark:bg-darkMode-1"
+                        ? "border-blue-600 dark:border-darkMode-2 bg-blue-50 dark:bg-darkMode-1"
                         : ""
                     }`}
                     onClick={() => handleCountrySelect(country.name)}
@@ -145,40 +153,29 @@ export default function ProxyConfiguration() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <h3
-                  id="details"
-                  className="text-lg font-semibold text-blue-900 mb-4"
-                >
-                  Carrier
-                </h3>
-                <RadioGroup
-                  value={carrier || ""}
-                  onValueChange={(value) => setCarrier(value)}
-                >
-                  <div className="flex space-x-4">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="SFR" id="SFR" />
-                      <Label htmlFor="SFR">SFR</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Free" id="Free" />
-                      <Label htmlFor="Free">Free</Label>
-                    </div>
-                  </div>
-                </RadioGroup>
-
-                <h3 className="text-lg font-semibold text-blue-900 mt-6 mb-4">
-                  Choose Tariff Plan
-                </h3>
-                {carrier ? (
-                  <p className="text-blue-600">
-                    Tariff plans for {carrier} will be displayed here.
-                  </p>
-                ) : (
-                  <p className="text-red-500">
-                    Please select a Carrier to view Tariff Plans.
-                  </p>
-                )}
+                <div>
+                  <Label
+                    htmlFor="duration"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-500 mb-2"
+                  >
+                    Duration
+                  </Label>
+                  <Select
+                    onValueChange={handlePlanChange}
+                    value={selectedPlan.value}
+                  >
+                    <SelectTrigger id="duration" className="w-full">
+                      <SelectValue placeholder="Select duration" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {plans.map((plan) => (
+                        <SelectItem key={plan.value} value={plan.value}>
+                          {plan.label} - ${plan.price}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </CardContent>
             </Card>
           )}
@@ -193,75 +190,45 @@ export default function ProxyConfiguration() {
             <h3 className="font-semibold text-blue-900 mb-4">Order summary</h3>
             <div className="space-y-2 mb-6">
               <div className="flex justify-between">
-                <span className="text-gray-600">Plan:</span>
+                <span className="text-gray-600">Country:</span>
                 <span className="font-semibold">
                   {selectedCountry || "Not selected"}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Price:</span>
+                <span className="text-gray-600">Plan:</span>
                 <span className="font-semibold">
-                  $ {selectedCountry ? "19.99" : ""}
+                  {selectedPlan.label || "Not selected"}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Port quantity:</span>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      setPortQuantity(Math.max(1, portQuantity - 1))
-                    }
-                  >
-                    -
-                  </Button>
-                  <span className="w-8 text-center">{portQuantity}</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPortQuantity(portQuantity + 1)}
-                  >
-                    +
-                  </Button>
-                </div>
+                <span className="text-gray-600">Price:</span>
+                <span className="font-semibold">
+                  ${selectedPlan.price || "0"}
+                </span>
               </div>
-            </div>
-
-            <div className="flex space-x-2 mb-6">
-              <Input
-                type="text"
-                placeholder="Enter coupon code"
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value)}
-              />
-              <Button variant="outline">Apply</Button>
             </div>
 
             <div className="flex justify-between font-semibold text-lg mb-6">
               <span>Total:</span>
-              <span>
-                $ {selectedCountry ? (19.99 * portQuantity).toFixed(2) : "0"}
-              </span>
+              <span>${selectedPlan.price || "0"}</span>
             </div>
-
             <div className="space-y-4">
-              <Button
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                disabled={!selectedCountry}
-              >
-                <CreditCard className="mr-2 h-4 w-4" /> Pay with Card
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full"
-                disabled={!selectedCountry}
-              >
-                <Wallet className="mr-2 h-4 w-4" /> Pay with Account Balance
-              </Button>
+              <div className="pt-4">
+                <Link
+                  href={`${selectedPlan.link}?prefilled_email=${userEmail}`}
+                  passHref
+                >
+                  <Button
+                    disabled={!selectedCountry || !selectedPlan}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    Checkout
+                  </Button>
+                </Link>
+              </div>
             </div>
-
-            <div className="flex justify-center items-center mt-4 text-sm text-blue-600">
+            <div className="flex justify-center items-center -bottom-9 relative text-sm text-blue-600">
               <Lock className="mr-1 h-4 w-4" /> Secure Checkout
             </div>
           </CardContent>

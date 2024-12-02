@@ -12,6 +12,7 @@ body {
   }
 }
 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -130,3 +131,5 @@ html {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #2563eb;
 }
+
+ 
