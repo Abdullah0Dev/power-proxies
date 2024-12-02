@@ -32,14 +32,12 @@ import { UserResource } from "@clerk/types";
 interface AccountManagementProps {
   user: {
     id: string;
-    firstName: string | null;
-    lastName: string | null;
+    firstName: string;
+    lastName: string;
     emailAddresses: { emailAddress: string }[];
     imageUrl: string;
     externalAccounts?: {
-      verification: {
-        strategy: string;
-      } | null;
+      verification: { strategy: string } | null;
     }[];
     passwordEnabled: boolean;
   };

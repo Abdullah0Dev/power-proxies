@@ -6,23 +6,26 @@ import AccountManagement from "./page";
 export default async function Layout() {
   const user = await currentUser();
 
-  if (!user) redirect("/sign-in");
+  if (!user) {
+    redirect("/sign-in");
+  }
 
-  // Flatten the `user` object to remove non-serializable data
+  // Serialize the user object manually
   const formattedUser = {
     id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
+    firstName: user.firstName ?? '',
+    lastName: user.lastName ?? '',
     emailAddresses: user.emailAddresses.map((email) => ({
-      emailAddress: email.emailAddress,
+      emailAddress: email.emailAddress ?? ''
     })),
-    imageUrl: user.imageUrl,
+    imageUrl: user.imageUrl ?? '',
     externalAccounts: user.externalAccounts?.map((account) => ({
-      verification: account.verification,
+      verification: account?.verification ?? null,
     })),
-    passwordEnabled: user.passwordEnabled,
+    passwordEnabled: user.passwordEnabled ?? false,
   };
 
+  // This ensures that we only send plain objects with serializable data
   return (
     <main>
       <AccountManagement user={formattedUser} />
