@@ -13,6 +13,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
+import { Spotlight } from "./ui/Spotlight";
+// import { Spotlight } from "./ui/Spotlight";
 
 export default function LandingPage() {
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
@@ -49,15 +51,12 @@ export default function LandingPage() {
 
   return (
     <motion.div className="min-h-screen dark:bg-darkMode-1 ">
+      <Spotlight className="h-[80vh] w-[50vw] top-10 left-full" fill="blue" />
       <div className="bg-gradient-to-br from-blue-900 via-blue-700 to-teal-500">
-        <header className="container mx-auto  px-4 py-16 md:py-32">
-          <div className="pt-6 flex flex-col md:flex-row items-center">
+        <header className="container mx-auto px-4 py-16 md:py-32">
+          <div className="pt-6 flex flex-col md:flex-row items-center gap-8">
             <div className="md:w-1/2 mb-8 md:mb-0">
-              <motion.h1
-                // initial={{opacity: 0, y: 10}}
-                // animate={{opacity: 1, y:  0}}
-                className="text-4xl md:text-5xl font-bold text-white mb-6"
-              >
+              <motion.h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
                 Unlock the Internet with Fast & Secure Mobile Proxies
               </motion.h1>
               <p className="text-xl text-teal-100 mb-8">
@@ -110,40 +109,26 @@ export default function LandingPage() {
                 </li>
               </ul>
               <Link href={"/billing"}>
-              <button className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">
-                Get Started
-              </button>
+                <button className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                  Get Started
+                </button>
               </Link>
             </div>
             <div className="md:w-1/2 flex justify-center items-center">
-              {/* Display the SVG frame */}
-              <div className="relative w-64 h-auto">
+              <div className="relative w-[30vw] max-xl:w-[40vw] max-sm:w-[86vw] max-lg:w-[78vw]">
                 <Image
-                  src="/frame.svg"
+                  src="/5g-proxy-DWArAP9q.png"
                   alt="Mobile frame"
-                  width={256}
-                  height={512}
+                  width={320}
+                  height={640}
                   className="w-full h-auto"
                 />
-
-                {/* Overlay the video */}
-                <div className="absolute top-[8px] left-[13px] w-[90%] h-[97%] overflow-hidden rounded-lg">
-                  <video
-                    ref={videoRef}
-                    src="/proxy-speed-test-vid.mp4"
-                    // src="https://www.germanproxy.io/wp-content/uploads/2024/10/Proxy-Speedtest.mp4"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover rounded-[25px]"
-                  />
-                </div>
               </div>
             </div>
           </div>
         </header>
       </div>
+
       <SectionWrapper>
         <section className="bg-white dark:bg-black/80 py-16">
           <div className="container mx-auto px-4">
@@ -278,10 +263,7 @@ export default function LandingPage() {
       </SectionWrapper>
 
       <SectionWrapper>
-        <section
-          id="reviews"
-          className="bg-gray-100 dark:bg-darkMode-2  py-16"
-        >
+        <section id="reviews" className="bg-gray-100 dark:bg-darkMode-2  py-16">
           <div className="container mx-auto px-4">
             <h2 className="text-4xl font-bold text-center mb-4">
               Testimonials
@@ -326,16 +308,16 @@ export default function LandingPage() {
                       //   className="w-5 h-5 text-yellow-400 fill-current"
                       // />
                       <motion.img
-                      loading="lazy"
-                      key={i}
-                      src={"/star.png"}
-                      alt="star"
-                      className="mx-px"
-                      width={20}
-                      height={20}
-                      whileHover={{ rotate: [0, 15, -15, 0], scale: 1.2 }} // Rotate effect on hover
-                      transition={{ duration: 0.3 }} // Transition for hover effect
-                    />
+                        loading="lazy"
+                        key={i}
+                        src={"/star.png"}
+                        alt="star"
+                        className="mx-px"
+                        width={20}
+                        height={20}
+                        whileHover={{ rotate: [0, 15, -15, 0], scale: 1.2 }} // Rotate effect on hover
+                        transition={{ duration: 0.3 }} // Transition for hover effect
+                      />
                     ))}
                   </div>
                 </motion.div>

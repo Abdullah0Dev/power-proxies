@@ -1,9 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import axios from "axios";
 import {
   Tooltip,
   TooltipContent,
@@ -22,14 +21,12 @@ import {
   Activity,
   Clock,
   Download,
-  Key,
   RotateCw,
   Zap,
   ArrowRight,
   XCircle,
 } from "lucide-react";
 import {
-  fetchClientPurchasedProxies,
   fetchConnectionResults,
   fetchSpeedTestData,
   getProxyVPNSetting,
@@ -43,6 +40,7 @@ import type {
   ApiError,
   ProxyData,
 } from "@/types";
+import Image from "next/image";
 
 interface LoadingStateProps {
   message: string;
@@ -101,11 +99,13 @@ export function ConnectionSpeedTestModal({
   onClose,
   imei,
 }: ConnectionSpeedTestModalProps) {
+  if (!imei) {
+    console.error("IMEI is missing");
+  }
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState<ConnectionTestResponse | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
-
-  const fetchData = async () => {
+  const fetchData = React.useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -132,7 +132,7 @@ export function ConnectionSpeedTestModal({
     } finally {
       setLoading(false);
     }
-  };
+  }, [imei]);
 
   React.useEffect(() => {
     if (isOpen) {
@@ -141,7 +141,7 @@ export function ConnectionSpeedTestModal({
       setResult(null);
       setError(null);
     }
-  }, [isOpen]);
+  }, [isOpen, fetchData]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -189,43 +189,45 @@ export function ConnectionSpeedTestModal({
 }
 
 export function SpeedTestModal({ isOpen, onClose, imei }: SpeedTestModalProps) {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<SpeedTestResult | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
 
-  const speedTestParams: SpeedTestParams = {
-    imei,
-  };
-
-  const fetchSpeedTest = async () => {
+  const fetchSpeedTest = React.useCallback(async () => {
+    if (!imei) return; // Ensure IMEI is provided
     setLoading(true);
     setError(null);
+
     try {
-      const data = await fetchSpeedTestData(speedTestParams);
+      console.log("Starting speed test for IMEI:", imei);
+      const data = await fetchSpeedTestData({ imei });
       setResult(data);
-    } catch (error) {
+      console.log("Speed test result:", data);
+    } catch (err) {
       setError({
         message:
-          error instanceof Error
-            ? error.message
-            : "Failed to perform speed test",
+          err instanceof Error ? err.message : "Failed to perform speed test",
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [imei]);
 
   React.useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !loading && !result) {
       fetchSpeedTest();
-    } else {
-      setResult(null);
-      setError(null);
     }
-  }, [isOpen]);
+  }, [isOpen, fetchSpeedTest, loading, result]);
+
+  const handleClose = () => {
+    // Reset state only when closing
+    setResult(null);
+    setError(null);
+    onClose();
+  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Speed Test Result</DialogTitle>
@@ -237,59 +239,57 @@ export function SpeedTestModal({ isOpen, onClose, imei }: SpeedTestModalProps) {
           <LoadingState message="Running speed test..." />
         ) : error ? (
           <ErrorState message={error.message} onRetry={fetchSpeedTest} />
-        ) : (
-          result && (
-            <div className="space-y-4">
-              <Card>
+        ) : result ? (
+          <div className="space-y-4">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="grid gap-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">IMEI</span>
+                    <span className="font-mono text-sm">{result.imei}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Nickname</span>
+                    <span className="text-sm">{result.nick}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="border-green-100 bg-green-50">
                 <CardContent className="pt-6">
-                  <div className="grid gap-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">IMEI</span>
-                      <span className="font-mono text-sm">{result.imei}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Nickname</span>
-                      <span className="text-sm">{result.nick}</span>
-                    </div>
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-green-600">
+                      Download
+                    </p>
+                    <p className="text-2xl font-bold text-green-700">
+                      {result.downloadSpeed}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
-              <div className="grid grid-cols-2 gap-4">
-                <Card className="border-green-100 bg-green-50">
-                  <CardContent className="pt-6">
-                    <div className="text-center">
-                      <p className="text-sm font-medium text-green-600">
-                        Download
-                      </p>
-                      <p className="text-2xl font-bold text-green-700">
-                        {result.downloadSpeed}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card className="border-blue-100 bg-blue-50">
-                  <CardContent className="pt-6">
-                    <div className="text-center">
-                      <p className="text-sm font-medium text-blue-600">
-                        Upload
-                      </p>
-                      <p className="text-2xl font-bold text-blue-700">
-                        {result.uploadSpeed}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-              <div className="mt-4">
-                <img
-                  src={result.resultImage}
-                  alt="Speed test result"
-                  className="w-full rounded-lg border"
-                />
-              </div>
+              <Card className="border-blue-100 bg-blue-50">
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-blue-600">Upload</p>
+                    <p className="text-2xl font-bold text-blue-700">
+                      {result.uploadSpeed}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          )
-        )}
+            <div className="mt-4">
+              <Image
+                width={520}
+                height={520}
+                src={result.resultImage}
+                alt="Speed test result"
+                className="w-full rounded-lg border"
+              />
+            </div>
+          </div>
+        ) : null}
       </DialogContent>
     </Dialog>
   );
@@ -299,8 +299,9 @@ export function RotateIPModal({ isOpen, onClose, imei }: RotateIPModalProps) {
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState<RotateProxyResponse | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
+  console.log(imei);
 
-  const fetchRotateProxy = async () => {
+  const fetchRotateProxy = React.useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -313,7 +314,7 @@ export function RotateIPModal({ isOpen, onClose, imei }: RotateIPModalProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [imei]); // Dependency on imei
 
   React.useEffect(() => {
     if (isOpen) {
@@ -322,7 +323,7 @@ export function RotateIPModal({ isOpen, onClose, imei }: RotateIPModalProps) {
       setResult(null);
       setError(null);
     }
-  }, [isOpen]);
+  }, [isOpen, fetchRotateProxy]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -381,6 +382,7 @@ export function RotateIPModal({ isOpen, onClose, imei }: RotateIPModalProps) {
     </Dialog>
   );
 }
+
 interface ProxyListRowProps {
   proxy: ProxyData;
 }
@@ -399,53 +401,7 @@ const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
     } else {
       console.log("Download URL not available");
     }
-
-    // const vpnSettings = `
-    //   [VPN]
-    //   Name=Proxy VPNƒ
-    //   Type=L2TP
-    //   Server=
-    //   Username=
-    //   Password=
-    //   L2TPIPsecPSK=your_preshared_key
-    // `;
-    // // http://188.245.37.125:7016/modem/bw_report_port/portpWBOgzOf
-
-    // const blob = new Blob([vpnSettings], { type: "text/plain" });
-    // const url = URL.createObjectURL(blob);
-    // const a = document.createElement("a");
-    // a.href = url;
-    // a.download = "vpn_settings.conf";
-    // document.body.appendChild(a);
-    // a.click();
-    // document.body.removeChild(a);
-    // URL.revokeObjectURL(url);
   };
-  interface ProxyCredentials {
-    username: string;
-    password: string;
-  }
-
-  interface UsageData {
-    assignedDate: string;
-    duration: string;
-    lastUsed: string;
-  }
-
-  interface ProxyData {
-    ID: string;
-    added_time: string;
-    external_IP: string;
-    is_online: string;
-    network_type: string;
-    operator: string;
-    port: { http: number; socks: number };
-    proxyCredentials: ProxyCredentials;
-    status: string;
-    usageData: UsageData;
-    validUntil: string;
-  }
-
   return (
     <TableRow className="hover:bg-blue-50 dark:hover:bg-darkMode-2/60 transition-colors duration-200">
       <TableCell className="py-4">

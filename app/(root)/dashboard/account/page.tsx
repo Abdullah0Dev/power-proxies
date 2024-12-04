@@ -28,6 +28,7 @@ import {
 import { MdOutlineManageHistory } from "react-icons/md";
 import Link from "next/link";
 import { UserResource } from "@clerk/types";
+import Image from "next/image";
 
 export default function AccountManagement() {
   const [copied, setCopied] = useState(false);
@@ -163,7 +164,9 @@ export default function AccountManagement() {
               aria-disabled
               className="space-y-4 relative overflow-clip"
             >
-              <img
+              <Image
+              width={500}
+              height={500}
                 src="/comming-soon.png"
                 className="absolute inset-0 m-auto scale-75  object-contain opacity-75"
                 alt="Coming Soon"

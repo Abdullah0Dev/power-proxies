@@ -203,7 +203,7 @@ const AdminPage = () => {
       socket.off("payment-success");
       socket.off("proxy-expired");
     };
-  }, []);
+  });
 
   useEffect(() => {
     if (eventData) {

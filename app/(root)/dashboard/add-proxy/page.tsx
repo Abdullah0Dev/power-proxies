@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import DashboardHeader from "@/components/component/dashboard-header";
 import Link from "next/link";
 import { plans } from "@/data";
+import Image from "next/image";
 
 interface Country {
   name: string;
@@ -112,7 +113,9 @@ export default function ProxyConfiguration() {
                     }`}
                     onClick={() => handleCountrySelect(country.name)}
                   >
-                    <img
+                    <Image
+                      width={320}
+                      height={320}
                       src={`https://flagcdn.com/w40/${country.code.toLowerCase()}.png`}
                       alt={`${country.name} flag`}
                       className="w-8 h-8 mb-2 rounded-sm"
@@ -134,7 +137,9 @@ export default function ProxyConfiguration() {
               </h3>
               <div className="flex space-x-4">
                 {restockingCountries.map((code) => (
-                  <img
+                  <Image
+                  width={320}
+                  height={320}
                     key={code}
                     src={`https://flagcdn.com/w40/${code.toLowerCase()}.png`}
                     alt={`${code} flag`}

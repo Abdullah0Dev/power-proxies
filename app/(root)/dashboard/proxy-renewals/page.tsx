@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,31 +21,79 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import DashboardHeader from "@/components/component/dashboard-header";
+import Image from "next/image";
+import { fetchLatestSubscription } from "@/actions/getProxyList";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Mock data for demonstration
 interface Proxy {
-  id: number;
+  imei: number; // imei
   country: string;
-  ports: number;
+  nick: string;
+  subscription: string;
+  billedTime: string;
+  nextBill: string;
   timeLeft: string;
   flag: string;
+  manageSubscription: string;
+  status: string;
 }
 
-const mockProxies: Proxy[] = [
-  { id: 1, country: "United States", ports: 2, timeLeft: "15d 7h", flag: "US" },
-  { id: 2, country: "Germany", ports: 1, timeLeft: "3d 12h", flag: "DE" },
-  { id: 3, country: "Japan", ports: 3, timeLeft: "27d 5h", flag: "JP" },
-  { id: 4, country: "United Kingdom", ports: 1, timeLeft: "1d 3h", flag: "GB" },
-  { id: 5, country: "France", ports: 2, timeLeft: "8d 19h", flag: "FR" },
+const mockProxies = [
+  {
+    IMEI: 1,
+    country: "United States",
+    ports: 2,
+    timeLeft: "15d 7h",
+    flag: "US",
+  },
+  { IMEI: 2, country: "Germany", ports: 1, timeLeft: "3d 12h", flag: "DE" },
+  { IMEI: 3, country: "Japan", ports: 3, timeLeft: "27d 5h", flag: "JP" },
+  {
+    IMEI: 4,
+    country: "United Kingdom",
+    ports: 1,
+
+    timeLeft: "1d 3h",
+    flag: "GB",
+  },
+  { IMEI: 5, country: "France", ports: 2, timeLeft: "8d 19h", flag: "FR" },
 ];
 
 export default function ProxyRenewals() {
+  const [latestSubscription, setLatestSubscription] = useState<Proxy[]>([]);
   const [selectedProxies, setSelectedProxies] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedCountry, setSelectedCountry] =
     useState<string>("All Countries");
   const [showExpiringOnly, setShowExpiringOnly] = useState<boolean>(false);
   const [donglesPerPage, setDonglesPerPage] = useState<string>("5");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchLatestSubscription("hello@devmindslab.com");
+
+      // // Map the fetched data to the Purchase interface
+      // const formattedPurchases = data.map((subscription: any) => ({
+      //   receiptID: subscription.receiptID,
+      //   purpose: subscription.purpose, // Set default to 'subscription'
+      //   imei: subscription.imei,
+      //   status: subscription.status,
+      //   price: subscription.price, // You may fetch dynamic pricing based on the subscription if available
+      //   date: subscription.date, // Convert timestamp to readable date
+      // }));
+
+      setLatestSubscription(data);
+      console.log(data);
+    };
+
+    fetchData();
+  }, []);
 
   const handleProxySelect = (proxyId: number): void => {
     setSelectedProxies((prev) =>
@@ -57,7 +105,7 @@ export default function ProxyRenewals() {
 
   const handleSelectAll = (checked: boolean): void => {
     if (checked) {
-      setSelectedProxies(mockProxies.map((proxy) => proxy.id));
+      setSelectedProxies(mockProxies.map((proxy) => proxy.IMEI));
     } else {
       setSelectedProxies([]);
     }
@@ -155,25 +203,34 @@ export default function ProxyRenewals() {
                       checked={selectedProxies.length === mockProxies.length}
                     />
                   </TableHead>
+
                   <TableHead>Country</TableHead>
-                  <TableHead>Ports</TableHead>
+                  <TableHead>IMEI</TableHead>
+                  <TableHead>Subscription</TableHead>
+                  <TableHead>Billed Time</TableHead>
+                  <TableHead>Next Bill</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Time Left</TableHead>
-                  <TableHead>Renew One Time</TableHead>
+                  <TableHead className="text-center">
+                    Subscription Details
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockProxies.length > 0 ? (
-                  mockProxies.map((proxy) => (
-                    <TableRow key={proxy.id}>
+                {latestSubscription.length > 0 ? (
+                  latestSubscription.map((proxy) => (
+                    <TableRow key={proxy.imei}>
                       <TableCell>
                         <Checkbox
-                          checked={selectedProxies.includes(proxy.id)}
-                          onCheckedChange={() => handleProxySelect(proxy.id)}
+                          checked={selectedProxies.includes(proxy.imei)}
+                          onCheckedChange={() => handleProxySelect(proxy.imei)}
                         />
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center">
-                          <img
+                          <Image
+                            width={320}
+                            height={320}
                             src={`https://flagcdn.com/w20/${proxy.flag.toLowerCase()}.png`}
                             alt={`${proxy.country} flag`}
                             className="mr-2 h-4 w-6"
@@ -181,11 +238,65 @@ export default function ProxyRenewals() {
                           {proxy.country}
                         </div>
                       </TableCell>
-                      <TableCell>{proxy.ports}</TableCell>
+                      <TableCell>{proxy.imei}</TableCell>
+                      <TableCell>{proxy.subscription}</TableCell>
+                      <TableCell>{proxy.billedTime}</TableCell>
+                      <TableCell>{proxy.nextBill}</TableCell>
+                      <TableCell>{proxy.status}</TableCell>
                       <TableCell>{proxy.timeLeft}</TableCell>
-                      <TableCell>
-                        <Button variant="outline" size="sm">
-                          Renew
+                      <TableCell className="flex gap-x-3">
+                        <TooltipProvider>
+                          {proxy.subscription === "monthly" ? (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Button
+                                  variant="outline"
+                                  className="py-px px-5"
+                                  size="sm"
+                                >
+                                  Downgrade
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Downgrade proxy plan to weekly</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          ) : (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Button
+                                  variant="outline"
+                                  className="py-px px-8"
+                                  size="sm"
+                                >
+                                  Upgrade
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Upgrade proxy plan to monthly</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </TooltipProvider>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Button
+                                variant="outline"
+                                className="py-px px-6"
+                                size="sm"
+                              >
+                                Cancel
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Cancel Proxy Subscription</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+
+                        <Button variant="outline" className="w-[60%]" size="sm">
+                          Manage
                         </Button>
                       </TableCell>
                     </TableRow>

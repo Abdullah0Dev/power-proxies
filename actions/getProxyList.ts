@@ -37,7 +37,7 @@ interface ConnectionTestResponse {
 
 export async function fetchAdminSideUserData() {
   const response = await axios.get(
-    `https://powerproxies-backups.onrender.com/test-actions/show-user-info`,
+    `http://localhost:4000/test-actions/show-user-info`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -102,10 +102,10 @@ export async function fetchLatestSubscriptionAndPayment(email: string) {
   }
 }
 
-export async function fetchLatestPayments(email: string) {
+export async function fetchLatestSubscription(email: string) {
   try {
     const response = await axios.get(
-      `https://powerproxies-backups.onrender.com/payment/one-time-payments`,
+      `http://localhost:4000/payment/manage-subscription`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -116,30 +116,37 @@ export async function fetchLatestPayments(email: string) {
       }
     );
 
-    // Assuming the response contains the formatted subscription data
-    const payments = response.data.oneTimePayments;
+    // Retrieve the unified list of purchases
+    const subscriptions = response.data.subscriptions;
 
-    if (payments && payments.length > 0) {
-      // Map over the payments to return them as an array of purchase objects
-      const purchases = payments.map((payment: any) => {
+    if (subscriptions && subscriptions.length > 0) {
+      // Map over the subscriptions to format the data
+      const formattedSubscriptions = subscriptions.map((subscription: any) => {
+        const billedTime = `${new Date(
+          subscription.billedTime * 1000
+        ).toLocaleDateString()} `;
+        const nextBill = `${new Date(
+          subscription.nextBill * 1000
+        ).toLocaleDateString()} `;
         return {
-          receiptID: payment.id,
-          purpose: "Test", // This is static ('payment')
-          imei: payment.imei || "jsd",
-          status: payment.status,
-          price: payment.amount,
-          date: `${payment.created} `, // Display billing period
+          id: subscription.id,
+          status: subscription.status,
+          billedTime: billedTime,
+          nextBill: nextBill,
+          imei: subscription.imei, // Access IMEI from metadata
+          country: subscription.country,
+          nick: subscription.nick, // needs changes
+          timeLeft: subscription.timeLeft, /// needs changes
+          flag: subscription.flag,
+          subscription: subscription.subscription,
         };
       });
+      console.log("Formatted Subscriptions", formattedSubscriptions);
 
-      console.log("Formatted Payments", purchases);
-
-      return purchases;
-    } else {
-      throw new Error("No payments found for this email.");
+      return formattedSubscriptions;
     }
   } catch (error) {
-    console.error("Error fetching payment:", error);
+    console.error("Error fetching subscriptions:", error);
     throw error;
   }
 }
@@ -286,7 +293,9 @@ export async function fetchLatestPurchases() {
   const data = await response.data;
   return data;
 }
-export async function getProxyVPNSetting(portID: string) {
+export const getProxyVPNSetting = async (
+  portID: string
+): Promise<{ downloadUrl?: string }> => {
   const response = await axios.get(
     `https://powerproxies-backups.onrender.com/test-actions/ovpn/${portID}`,
     {
@@ -297,7 +306,7 @@ export async function getProxyVPNSetting(portID: string) {
   );
   const data = await response.data;
   return data;
-}
+};
 
 export async function fetchUserInfo() {
   const response = await fetch(`${process.env.BASE_URL}/show-user-info`);
@@ -376,7 +385,7 @@ export async function fetchSpeedTestData({
 }: SpeedTestParams): Promise<SpeedTestResult> {
   try {
     const response = await axios.post(
-      `https://proxy-test-iqka.onrender.com/speed-test/`,
+      `http://localhost:4000/test-actions/speed-test/`,
       {
         imei,
       },

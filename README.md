@@ -44,6 +44,7 @@ Backend and the webb app
 by using proxysmart coding
 documentation about this can be found on their website https://proxysmart.org/wiki/v2:readme
 
+
 <!--
 ! what to do?
 1. plan what am going to work on
@@ -94,4 +95,7 @@ how many people use payment process using Willie vs coingate
 https://youtu.be/pB3hX7le20c?list=PL6C03BCFE87398A78&t=2318
 
 recover code:G6JTHDD7R87S84N9893VL85V - williow
+pass: @#$2T#@*kSE234
  -->
+
+

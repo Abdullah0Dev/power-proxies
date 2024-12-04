@@ -1,6 +1,6 @@
 "use client";
-import React, { ReactNode, useEffect, useState } from "react";
-import { io, Socket } from "socket.io-client";
+import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 import {
   Table,
   TableBody,
@@ -34,8 +34,12 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Header } from "@/components/admin";
-import { fetchAdminSideUserData } from "@/actions/getProxyList";
-type UserDataType = {
+import {
+  fetchAdminSideUserData,
+  getProxyVPNSetting,
+} from "@/actions/getProxyList";
+import AdminListRow from "@/components/admin/AdminListRow";
+export type UserDataType = {
   ID: string;
   assignedUser: {
     email: string | null;
@@ -50,6 +54,7 @@ type UserDataType = {
   port: {
     http: number;
     socks: number;
+    portID: string;
   };
   proxyCredentials: {
     username: string;
@@ -65,29 +70,52 @@ const socket = io("https://powerproxies-backups.onrender.com");
 const ProxyPage = () => {
   const [usersData, setUsersData] = useState<UserDataType[]>([]);
   const [notification, setNotification] = useState("");
+
+  interface Proxy {
+    port: {
+      portID: string;
+    };
+  } 
+  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  const handleDownloadVPNSettings = async (proxy: Proxy): Promise<void> => {
+    const proxyId = proxy.port.portID;
+
+    try {
+      setLoadingStates((prev) => ({ ...prev, [proxyId]: true }));
+      const data = await getProxyVPNSetting(proxyId);
+
+      if (data?.downloadUrl) {
+        window.location.assign(data.downloadUrl);
+      } else {
+        throw new Error("Download URL not available");
+      }
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "An unexpected error occurred";
+      console.error(errorMessage);
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, [proxyId]: false }));
+    }
+  };
+ 
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetchAdminSideUserData();
-      socket.on("payment-success", (data) => {
-        console.log("notification received", data);
-        setNotification(data?.message);
-        // cleanup on component unmount
-        return () => {
-          socket.off("payment-success");
-        };
-      });
-      socket.on("proxy-expired", (data) => {
-        console.log("notification received", data);
-        setNotification(data?.message);
-        // cleanup on component unmount
-        return () => {
-          socket.off("proxy-expired");
-        };
-      });
-      console.log(`users data`, response);
       setUsersData(response);
     };
+
+    socket.on("payment-success", (data) => setNotification(data?.message));
+    socket.on("proxy-expired", (data) => setNotification(data?.message));
+
     fetchData();
+
+    return () => {
+      socket.off("payment-success");
+      socket.off("proxy-expired");
+    };
   }, []);
 
   // Define msToTime with a proper type
@@ -165,129 +193,7 @@ const ProxyPage = () => {
         </TableHeader>
         <TableBody>
           {usersData.map((item, index) => (
-            <TableRow key={index} className="text-center">
-              <TableCell className="font-medium">{item?.nickname}</TableCell>
-              <TableCell>{item?.ID}</TableCell>
-              <TableCell>
-                {item?.proxyCredentials?.username} <br />
-                {item?.proxyCredentials?.password}
-              </TableCell>
-              <TableCell className=" ">
-                <div className="flex items-center  justify-between">
-                  <h3> {item?.port?.http}</h3> <h3> {item?.port?.socks}</h3>
-                </div>
-              </TableCell>
-              <TableCell>
-                {" "}
-                <Switch defaultChecked={item?.status === "available"} />{" "}
-              </TableCell>
-              <TableCell>
-                {item?.assignedUser?.last_sale &&
-                typeof item?.assignedUser?.last_sale === "string"
-                  ? // Ensure `split("T")[1]` exists before trying to split it further
-                    item?.assignedUser?.last_sale
-                      .split("T")[1]
-                      ?.split(".")[0] || "No time available"
-                  : "No recent sales"}
-              </TableCell>
-              {/* time_left_for_user */}
-              <TableCell>
-                {" "}
-                {item.status === "in-use"
-                  ? remainingTimeForUser(index)
-                  : "available"}
-              </TableCell>
-              <TableCell>$ {item?.assignedUser?.total_income}</TableCell>
-              <TableCell className="text-blue-300">{item?.status}</TableCell>
-              {/* actions */}
-              <TableCell className="py-4">
-                <div className="flex items-center space-x-2">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          className="bg-green-100 text-green-600 hover:bg-green-200 shadow-sm"
-                          onClick={() => console.log("log testing")}
-                        >
-                          <Activity className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Speed Test</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          className="bg-blue-100 text-blue-600 hover:bg-blue-200 shadow-sm"
-                          onClick={() => console.log("log testing")}
-                        >
-                          <Zap className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Connection Speed Test</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          className="bg-purple-100 text-purple-600 hover:bg-purple-200 shadow-sm"
-                          onClick={() => console.log("log testing")}
-                        >
-                          <Download className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Download VPN Settings</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          className="bg-orange-100 text-orange-600 hover:bg-orange-200 shadow-sm"
-                          onClick={() => console.log("log testing")}
-                        >
-                          <RotateCw className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Rotate IP</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-                <SpeedTestModal
-                  isOpen={false}
-                  onClose={() => console.log("on close")}
-                  imei={"asdf"}
-                />
-                <ConnectionSpeedTestModal
-                  isOpen={false}
-                  onClose={() => console.log("on close")}
-                  imei={"asdf"}
-                />
-                <RotateIPModal
-                  isOpen={false}
-                  imei={"asdf"}
-                  onClose={() => console.log("on close")}
-                />
-              </TableCell>
-            </TableRow>
+            <AdminListRow index={index} key={index} item={item} usersData={usersData} />
           ))}
         </TableBody>
       </Table>

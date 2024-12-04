@@ -6,13 +6,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"; 
+} from "@/components/ui/table";
 import ProxyListRow from "@/components/component/proxy-list-row";
 import DashboardHeader from "@/components/component/dashboard-header";
 import { ProxyData, ProxyListTableProps } from "@/types";
 import { fetchClientPurchasedProxies } from "@/actions/getProxyList";
 
-const ProxyListTable: FC<ProxyListTableProps> = () => {
+const ProxyListTable: FC = () => {
   const [clientProxies, setClientProxies] = useState<ProxyData[]>([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -48,11 +48,11 @@ const ProxyListTable: FC<ProxyListTableProps> = () => {
           </TableHeader>
           <TableBody>
             {clientProxies.map((proxy, index) => (
-              <ProxyListRow key={index}  proxy={proxy} />
+              <ProxyListRow key={index} proxy={proxy} />
             ))}
           </TableBody>
         </Table>
-    </div>
+      </div>
     </>
   );
 };
