@@ -14,6 +14,11 @@ const nextConfig = {
         hostname:  "flagcdn.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname:  "www.speedtest.net",
+        pathname: "**",
+      },
     ],
   },
 };

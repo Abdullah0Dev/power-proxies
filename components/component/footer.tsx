@@ -37,7 +37,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#features"
+                  href="/#features"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   Features
@@ -45,7 +45,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#pricing"
+                  href="/#pricing"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   Pricing
@@ -53,7 +53,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#faq"
+                  href="/#faq"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   FAQ

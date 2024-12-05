@@ -129,7 +129,8 @@ export async function fetchLatestSubscription(email: string) {
           subscription.nextBill * 1000
         ).toLocaleDateString()} `;
         return {
-          id: subscription.id,
+          sub: subscription.sub,
+          subscriptionItem: subscription.subscriptionItem,
           status: subscription.status,
           billedTime: billedTime,
           nextBill: nextBill,
@@ -138,6 +139,7 @@ export async function fetchLatestSubscription(email: string) {
           nick: subscription.nick, // needs changes
           timeLeft: subscription.timeLeft, /// needs changes
           flag: subscription.flag,
+          customerID: subscription.customerID,
           subscription: subscription.subscription,
         };
       });
@@ -180,7 +182,91 @@ export async function fetchClientPurchasedProxies() {
   const data = await response.data;
   return data;
 }
+// manage billing
+export async function cancelProxySubscription(subscriptionId: string) {
+  // Ensure subscriptionId exists before making the request
+  if (!subscriptionId) {
+    throw new Error("subscriptionId is required.");
+  }
 
+  // Make the POST request
+  try {
+    const response = await axios.post(
+      "http://localhost:4000/payment/stripe-cancel-subscription",
+      { subscriptionId }, // subscriptionId in the request body
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Return the response data
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error managing the subscription:", error);
+    throw error;
+  }
+}
+export async function upgradeProxySubscription(
+  subscriptionId: string,
+  subscriptionItem: string
+) {
+  // Ensure subscriptionId exists before making the request
+  if (!subscriptionId || !subscriptionItem) {
+    throw new Error("subscriptionId is required.");
+  }
+
+  // Make the POST request
+  try {
+    const response = await axios.post(
+      "http://localhost:4000/payment/stripe-upgrade-subscription",
+      { subscriptionId, subscriptionItem }, // subscriptionId in the request body
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Return the response data
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error managing the subscription:", error);
+    throw error;
+  }
+}
+export async function downgradeProxySubscription(
+  subscriptionId: string,
+  subscriptionItem: string
+) {
+  // Ensure subscriptionId exists before making the request
+  if (!subscriptionId || !subscriptionItem) {
+    throw new Error("subscriptionId is required.");
+  }
+
+  // Make the POST request
+  try {
+    const response = await axios.post(
+      "http://localhost:4000/payment/stripe-downgrade-subscription",
+      { subscriptionId, subscriptionItem }, // subscriptionId in the request body
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Return the response data
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error managing the subscription:", error);
+    throw error;
+  }
+}
 export async function addEmailToDatabase(email: string) {
   // Fetch the current user and extract the email
   // const user = await currentUser();
@@ -247,6 +333,24 @@ export async function handleSubscriptionLink(email: string, priceId: string) {
     }
   }
 }
+export const managePaymentInfo = async (
+  customerId: string
+): Promise<{ url?: string }> => {
+  const response = await axios.post(
+    `http://localhost:4000/payment/stripe-manage-billing-info`,
+    {
+      customerId,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await response.data;
+  return data;
+};
+
 export async function handlePaymentTestLink(email: string) {
   // Validate input
   if (!email) {

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { Check, Star } from "lucide-react";
 import Features from "@/components/component/features-list";
-import { clientLogos, pricingPlans, testimonials, faqs } from "@/data/index";
+import { clientLogos, pricingPlans, testimonials, faqs, plans } from "@/data/index";
 import Link from "next/link";
 import {
   Accordion,
@@ -48,7 +48,7 @@ export default function LandingPage() {
       </motion.div>
     );
   };
-
+ 
   return (
     <motion.div className="min-h-screen dark:bg-darkMode-1 ">
       <Spotlight className="h-[80vh] w-[50vw] top-10 left-full" fill="blue" />

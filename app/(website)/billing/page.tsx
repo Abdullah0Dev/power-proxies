@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { CreditCard, Bitcoin, Globe, Shield, Zap } from "lucide-react";
@@ -36,14 +36,29 @@ const BillingPage = () => {
     setUserEmail(storedEmail);
   }, []);
   // const userEmail = "abdulah@pro.com";
-  const [selectedPlan, setSelectedPlan] = useState(plans[1]); // Default to "7 Days" plan
+  const searchParams = useSearchParams();
+  const durationParam = searchParams.get("duration");
+  const [duration, setDuration] = useState(
+    durationParam ? durationParam : plans[1].duration
+  );
+  const [selectedPlan, setSelectedPlan] = useState(plans[1]);
   const [rotation, setRotation] = useState("5");
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
   const [loadingPaymentLink, setLoadingPaymentLink] = useState(false);
+  useEffect(() => {
+    const plan = plans.find((p) => p.value === duration);
+    if (plan) {
+      setSelectedPlan(plan); // Update selected plan
+    }
+  }, []);
+
   const handlePlanChange = (value: string) => {
     const plan = plans.find((p) => p.value === value);
-    if (plan) setSelectedPlan(plan);
+    if (plan) {
+      setSelectedPlan(plan); // Update selected plan
+    }
   };
+
   const rotations = [
     { value: "1", label: "1 minute" },
     { value: "3", label: "3 minutes" },
@@ -82,7 +97,6 @@ const BillingPage = () => {
       if (selectedPlan.duration === "day") {
         subscriptionData = await handlePaymentTestLink(userEmail as string);
         console.log("Bruh, what's happing");
-        
       } else {
         subscriptionData = await handleSubscriptionLink(
           userEmail as string,
@@ -135,20 +149,17 @@ const BillingPage = () => {
                     </Label>
                     <Select
                       onValueChange={handlePlanChange}
-                      value={selectedPlan.value}
+                      value={selectedPlan.value} // Use selectedPlan value
                     >
                       <SelectTrigger id="duration" className="w-full">
                         <SelectValue placeholder="Select duration" />
                       </SelectTrigger>
                       <SelectContent>
-                        {plans.map((plan) => {
-                          console.log(selectedPlan.link);
-                          return (
-                            <SelectItem key={plan.value} value={plan.value}>
-                              {plan.label} - €{plan.price}
-                            </SelectItem>
-                          );
-                        })}
+                        {plans.map((plan) => (
+                          <SelectItem key={plan.value} value={plan.value}>
+                            {plan.label} - €{plan.price}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>

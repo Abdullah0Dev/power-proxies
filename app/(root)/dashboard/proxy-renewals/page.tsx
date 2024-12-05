@@ -22,7 +22,13 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import DashboardHeader from "@/components/component/dashboard-header";
 import Image from "next/image";
-import { fetchLatestSubscription } from "@/actions/getProxyList";
+import {
+  cancelProxySubscription,
+  downgradeProxySubscription,
+  fetchLatestSubscription,
+  managePaymentInfo,
+  upgradeProxySubscription,
+} from "@/actions/getProxyList";
 import {
   Tooltip,
   TooltipContent,
@@ -42,6 +48,9 @@ interface Proxy {
   flag: string;
   manageSubscription: string;
   status: string;
+  customerID: string;
+  sub: string;
+  subscriptionItem: string;
 }
 
 const mockProxies = [
@@ -73,27 +82,87 @@ export default function ProxyRenewals() {
     useState<string>("All Countries");
   const [showExpiringOnly, setShowExpiringOnly] = useState<boolean>(false);
   const [donglesPerPage, setDonglesPerPage] = useState<string>("5");
+  const [loadingStates, setLoadingStates] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchLatestSubscription("hello@devmindslab.com");
-
-      // // Map the fetched data to the Purchase interface
-      // const formattedPurchases = data.map((subscription: any) => ({
-      //   receiptID: subscription.receiptID,
-      //   purpose: subscription.purpose, // Set default to 'subscription'
-      //   imei: subscription.imei,
-      //   status: subscription.status,
-      //   price: subscription.price, // You may fetch dynamic pricing based on the subscription if available
-      //   date: subscription.date, // Convert timestamp to readable date
-      // }));
-
       setLatestSubscription(data);
       console.log(data);
     };
 
     fetchData();
   }, []);
+
+  const handleMangeSubscription = async (customerId: string): Promise<void> => {
+    try {
+      setLoadingStates(true);
+      const data = await managePaymentInfo(customerId);
+
+      if (data?.url) {
+        window.location.assign(data.url);
+      } else {
+        throw new Error("Download URL not available");
+      }
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "An unexpected error occurred";
+      console.error(errorMessage);
+    } finally {
+      setLoadingStates(false);
+    }
+  };
+  const handleCancelProxySubscription = async (
+    subscriptionId: string
+  ): Promise<void> => {
+    try {
+      setLoadingStates(true);
+      const data = await cancelProxySubscription(subscriptionId);
+      console.log(data, "canceled");
+
+      // return data;
+    } catch (err: unknown) {
+      console.log("ERROR", err);
+    } finally {
+      setLoadingStates(false);
+    }
+  };
+  const handleUpgradeProxySubscription = async (
+    subscriptionId: string,
+    subscriptionItem: string
+  ): Promise<void> => {
+    try {
+      setLoadingStates(true);
+      const data = await upgradeProxySubscription(
+        subscriptionId,
+        subscriptionItem
+      );
+      console.log(data, "upgraded");
+      // return data;
+    } catch (err: unknown) {
+      console.log("ERROR", err);
+    } finally {
+      setLoadingStates(false);
+    }
+  };
+  const handleDowngradeProxySubscription = async (
+    subscriptionId: string,
+    subscriptionItem: string
+  ): Promise<void> => {
+    try {
+      setLoadingStates(true);
+      const data = await downgradeProxySubscription(
+        subscriptionId,
+        subscriptionItem
+      );
+      console.log(data, "downgraded");
+      // return data;
+    } catch (err: unknown) {
+      console.log("ERROR", err);
+    } finally {
+      setLoadingStates(false);
+    }
+  };
 
   const handleProxySelect = (proxyId: number): void => {
     setSelectedProxies((prev) =>
@@ -205,12 +274,14 @@ export default function ProxyRenewals() {
                   </TableHead>
 
                   <TableHead>Country</TableHead>
-                  <TableHead>IMEI</TableHead>
+                  <TableHead className="min-w-[180px] text-center">
+                    IMEI
+                  </TableHead>
                   <TableHead>Subscription</TableHead>
-                  <TableHead>Billed Time</TableHead>
+                  <TableHead className="min-w-[120px] ">Billed Time</TableHead>
                   <TableHead>Next Bill</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Time Left</TableHead>
+                  <TableHead className="min-w-[120px] ">Time Left</TableHead>
                   <TableHead className="text-center">
                     Subscription Details
                   </TableHead>
@@ -238,12 +309,12 @@ export default function ProxyRenewals() {
                           {proxy.country}
                         </div>
                       </TableCell>
-                      <TableCell>{proxy.imei}</TableCell>
-                      <TableCell>{proxy.subscription}</TableCell>
-                      <TableCell>{proxy.billedTime}</TableCell>
-                      <TableCell>{proxy.nextBill}</TableCell>
-                      <TableCell>{proxy.status}</TableCell>
-                      <TableCell>{proxy.timeLeft}</TableCell>
+                      <TableCell className=" text-center">{proxy.imei}</TableCell>
+                      <TableCell className=" text-center">{proxy.subscription}</TableCell>
+                      <TableCell className=" text-center">{proxy.billedTime}</TableCell>
+                      <TableCell className=" text-center">{proxy.nextBill}</TableCell>
+                      <TableCell className=" text-center">{proxy.status}</TableCell>
+                      <TableCell className=" text-center">{proxy.timeLeft}</TableCell>
                       <TableCell className="flex gap-x-3">
                         <TooltipProvider>
                           {proxy.subscription === "monthly" ? (
@@ -253,6 +324,13 @@ export default function ProxyRenewals() {
                                   variant="outline"
                                   className="py-px px-5"
                                   size="sm"
+                                  onClick={() =>
+                                    handleDowngradeProxySubscription(
+                                      proxy.sub,
+                                      proxy.subscriptionItem
+                                    )
+                                  }
+                                  disabled={loadingStates}
                                 >
                                   Downgrade
                                 </Button>
@@ -265,6 +343,13 @@ export default function ProxyRenewals() {
                             <Tooltip>
                               <TooltipTrigger>
                                 <Button
+                                  onClick={() =>
+                                    handleUpgradeProxySubscription(
+                                      proxy.sub,
+                                      proxy.subscriptionItem
+                                    )
+                                  }
+                                  disabled={loadingStates}
                                   variant="outline"
                                   className="py-px px-8"
                                   size="sm"
@@ -285,6 +370,10 @@ export default function ProxyRenewals() {
                                 variant="outline"
                                 className="py-px px-6"
                                 size="sm"
+                                disabled={loadingStates}
+                                onClick={() =>
+                                  handleCancelProxySubscription(proxy.sub)
+                                }
                               >
                                 Cancel
                               </Button>
@@ -295,7 +384,15 @@ export default function ProxyRenewals() {
                           </Tooltip>
                         </TooltipProvider>
 
-                        <Button variant="outline" className="w-[60%]" size="sm">
+                        <Button
+                          onClick={() =>
+                            handleMangeSubscription(proxy.customerID)
+                          }
+                          variant="outline"
+                          className="w-[60%]"
+                          size="sm"
+                          disabled={loadingStates}
+                        >
                           Manage
                         </Button>
                       </TableCell>

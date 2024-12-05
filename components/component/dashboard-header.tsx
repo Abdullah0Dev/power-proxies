@@ -18,7 +18,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ title }) => {
       <div className="flex space-x-2">
         <div className="flex items-center space-x-4">
           <div className="text-sm">
-            Balance: <span className="font-semibold">$0</span>
+          
           </div>
           <Button
             asChild={true}

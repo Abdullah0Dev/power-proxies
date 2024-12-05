@@ -86,10 +86,10 @@ export const ProfileInfo = [
 ];
 export const pricingPlans = [
   {
-    name: "Basic",
-    description: "Mobile proxy, unlimited browsing, AI suggestions",
-    price: "$1",
-    period: "/day",
+    name: "Basic - Test",
+    description: "Mobile proxy, unlimited browsing, AI suggestions - Test our proxy for 24 hours",
+    price: "$5",
+    period: "/Day (24 hours)",
     duration: "1",
     features: [
       "Access to mobile proxy with no cost",
@@ -101,7 +101,7 @@ export const pricingPlans = [
   {
     name: "Premium",
     description: "High-speed proxy, advanced analytics, priority support",
-    price: "$9.99",
+    price: "$25",
     period: "/week",
     duration: "7",
     features: [
@@ -114,7 +114,7 @@ export const pricingPlans = [
   {
     name: "Enterprise",
     description: "Custom proxies, dedicated support, unlimited data",
-    price: "$30",
+    price: "$65",
     duration: "30",
     period: "/month",
     features: [
