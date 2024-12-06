@@ -37,7 +37,7 @@ interface ConnectionTestResponse {
 
 export async function fetchAdminSideUserData() {
   const response = await axios.get(
-    `http://localhost:4000/test-actions/show-user-info`,
+    `https://powerproxies-backups.onrender.comtest-actions/show-user-info`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -105,7 +105,7 @@ export async function fetchLatestSubscriptionAndPayment(email: string) {
 export async function fetchLatestSubscription(email: string) {
   try {
     const response = await axios.get(
-      `http://localhost:4000/payment/manage-subscription`,
+      `https://powerproxies-backups.onrender.compayment/manage-subscription`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -182,6 +182,52 @@ export async function fetchClientPurchasedProxies() {
   const data = await response.data;
   return data;
 }
+export async function fetchMonthlyData() {
+  try {
+    const response = await axios.get(
+      "https://proxy-test-iqka.onrender.com/web-statistics/last-30-days",
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log(response.data?.data?.total);
+    const visitorData = response.data?.data?.total;
+    const total = visitorData.reduce(
+      (acc: number, item: number[]) => acc + item[1],
+      0
+    );
+    console.log(`total visitors`, total);
+
+    return total;
+  } catch (error) {
+    console.log(error);
+
+    return error;
+  }
+}
+export async function fetchUserCountry() {
+  try {
+    const response = await axios.get(
+      "https://proxy-test-iqka.onrender.com/web-statistics/user-country",
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const countries = await response.data?.data;
+    console.log(response.data?.data);
+    return countries;
+  } catch (error) {
+    console.log(error);
+
+    return error;
+  }
+}
 // manage billing
 export async function cancelProxySubscription(subscriptionId: string) {
   // Ensure subscriptionId exists before making the request
@@ -192,7 +238,7 @@ export async function cancelProxySubscription(subscriptionId: string) {
   // Make the POST request
   try {
     const response = await axios.post(
-      "http://localhost:4000/payment/stripe-cancel-subscription",
+      "https://powerproxies-backups.onrender.compayment/stripe-cancel-subscription",
       { subscriptionId }, // subscriptionId in the request body
       {
         headers: {
@@ -221,7 +267,7 @@ export async function upgradeProxySubscription(
   // Make the POST request
   try {
     const response = await axios.post(
-      "http://localhost:4000/payment/stripe-upgrade-subscription",
+      "https://powerproxies-backups.onrender.compayment/stripe-upgrade-subscription",
       { subscriptionId, subscriptionItem }, // subscriptionId in the request body
       {
         headers: {
@@ -250,7 +296,7 @@ export async function downgradeProxySubscription(
   // Make the POST request
   try {
     const response = await axios.post(
-      "http://localhost:4000/payment/stripe-downgrade-subscription",
+      "https://powerproxies-backups.onrender.compayment/stripe-downgrade-subscription",
       { subscriptionId, subscriptionItem }, // subscriptionId in the request body
       {
         headers: {
@@ -337,7 +383,7 @@ export const managePaymentInfo = async (
   customerId: string
 ): Promise<{ url?: string }> => {
   const response = await axios.post(
-    `http://localhost:4000/payment/stripe-manage-billing-info`,
+    `https://powerproxies-backups.onrender.compayment/stripe-manage-billing-info`,
     {
       customerId,
     },
@@ -420,7 +466,7 @@ export async function fetchUserInfo() {
   return data;
 }
 
-export const fetchMonthlyData = async () => {
+export const fetchMonthlyData2 = async () => {
   try {
     const response = await axios.get(
       "https://powerproxies-backups.onrender.com/web-statistics/last-30-days",
@@ -430,7 +476,7 @@ export const fetchMonthlyData = async () => {
         },
       }
     );
-    return "test";
+    return response.data;
   } catch (error) {
     console.log(error);
 
@@ -489,7 +535,7 @@ export async function fetchSpeedTestData({
 }: SpeedTestParams): Promise<SpeedTestResult> {
   try {
     const response = await axios.post(
-      `http://localhost:4000/test-actions/speed-test/`,
+      `https://powerproxies-backups.onrender.comtest-actions/speed-test/`,
       {
         imei,
       },

@@ -41,7 +41,7 @@ import { UserButton, useUser } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import React from "react";
-
+import { SignOutButton } from "@clerk/nextjs";
 // Types for menu items
 interface MenuItem {
   title: string;
@@ -108,9 +108,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ user }) => {
             height={50}
             className="max-w-full h-auto"
           />
-          {open && (
-            <span className="text-  font-bold text-xl">PowerProxy</span>
-          )}
+          {open && <span className="text-  font-bold text-xl">PowerProxy</span>}
         </div>
 
         {/* Proxy Management Section */}
@@ -127,9 +125,9 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ user }) => {
                       href={item.link === "main" ? "/dashboard" : item.link}
                       className={
                         item.link === "main" && pathnameList.length === 2
-                          ? "text-blue-600 bg-blue-50"
+                          ? "text-blue-600 bg-blue-50 pointer-events-none"
                           : pathnameList.includes(item.link.split("/")[2])
-                          ? "text-blue-600 bg-blue-50"
+                          ? "text-blue-600 bg-blue-50 pointer-events-none"
                           : "hover:text-blue-600 hover:bg-blue-50"
                       }
                     >
@@ -156,8 +154,10 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ user }) => {
                     <a
                       href={item.link}
                       className={
-                        pathnameList.includes(item.link.split("/")[2])
-                          ? "text-blue-600 bg-blue-50"
+                        item.link === "main" && pathnameList.length === 2
+                          ? "text-blue-600 bg-blue-50 pointer-events-none"
+                          : pathnameList.includes(item.link.split("/")[2])
+                          ? "text-blue-600 bg-blue-50 pointer-events-none"
                           : "hover:text-blue-600 hover:bg-blue-50"
                       }
                     >
@@ -183,7 +183,13 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ user }) => {
                   <SidebarMenuButton asChild>
                     <a
                       href={item.link}
-                      className="hover:text-blue-600 hover:bg-blue-50"
+                      className={
+                        item.link === "main" && pathnameList.length === 2
+                          ? "text-blue-600 bg-blue-50 pointer-events-none"
+                          : pathnameList.includes(item.link.split("/")[2])
+                          ? "text-blue-600 bg-blue-50 pointer-events-none"
+                          : "hover:text-blue-600 hover:bg-blue-50"
+                      }
                     >
                       <item.icon className="size-4" />
                       <span>{item.title}</span>
@@ -253,25 +259,25 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ user }) => {
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
                     <Link href="/dashboard/account">
-                      <DropdownMenuItem>
+                      <DropdownMenuItem className="cursor-pointer">
                         <BadgeCheck />
                         Account
                       </DropdownMenuItem>
                     </Link>
                     <Link href="/dashboard/proxy-renewals">
-                      <DropdownMenuItem>
+                      <DropdownMenuItem className="cursor-pointer">
                         <CreditCard />
                         Billing
                       </DropdownMenuItem>
                     </Link>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
-                  <Link href="/" onClick={() => alert("duh")}>
-                    <DropdownMenuItem>
+                  <SignOutButton redirectUrl="/">
+                    <DropdownMenuItem className="cursor-pointer">
                       <LogOut />
                       Log out
                     </DropdownMenuItem>
-                  </Link>
+                  </SignOutButton>
                 </DropdownMenuContent>
               </DropdownMenu>
             </SidebarMenuItem>

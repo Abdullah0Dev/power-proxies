@@ -53,26 +53,8 @@ interface Proxy {
   subscriptionItem: string;
 }
 
-const mockProxies = [
-  {
-    IMEI: 1,
-    country: "United States",
-    ports: 2,
-    timeLeft: "15d 7h",
-    flag: "US",
-  },
-  { IMEI: 2, country: "Germany", ports: 1, timeLeft: "3d 12h", flag: "DE" },
-  { IMEI: 3, country: "Japan", ports: 3, timeLeft: "27d 5h", flag: "JP" },
-  {
-    IMEI: 4,
-    country: "United Kingdom",
-    ports: 1,
-
-    timeLeft: "1d 3h",
-    flag: "GB",
-  },
-  { IMEI: 5, country: "France", ports: 2, timeLeft: "8d 19h", flag: "FR" },
-];
+const CACHE_KEY = "proxyRenewalsData";
+const CACHE_EXPIRY_TIME = 1000 * 60; // 1 minute in milliseconds
 
 export default function ProxyRenewals() {
   const [latestSubscription, setLatestSubscription] = useState<Proxy[]>([]);
@@ -80,18 +62,49 @@ export default function ProxyRenewals() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedCountry, setSelectedCountry] =
     useState<string>("All Countries");
-  const [showExpiringOnly, setShowExpiringOnly] = useState<boolean>(false);
   const [donglesPerPage, setDonglesPerPage] = useState<string>("5");
   const [loadingStates, setLoadingStates] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchLatestSubscription("hello@devmindslab.com");
-      setLatestSubscription(data);
-      console.log(data);
+      try {
+        const cachedData = localStorage.getItem(CACHE_KEY);
+
+        if (cachedData) {
+          const parsedData = JSON.parse(cachedData);
+          const cacheTimestamp = parsedData.timestamp;
+
+          // Use cached data if it's not expired
+          if (Date.now() - cacheTimestamp < CACHE_EXPIRY_TIME) {
+            setLatestSubscription(parsedData.proxyData);
+            setLoading(false);
+            return;
+          }
+        }
+
+        // Fetch new data if no cache or cache expired
+        const data = await fetchLatestSubscription("hello@devmindslab.com");
+        setLatestSubscription(data);
+        const cacheData = {
+          proxyData: data,
+          timestamp: Date.now(),
+        };
+        localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+      } catch (error) {
+        console.error("Error fetching proxies:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
+
+    // Refresh every 1 minute
+    const intervalId = setInterval(fetchData, CACHE_EXPIRY_TIME);
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
   }, []);
 
   const handleMangeSubscription = async (customerId: string): Promise<void> => {
@@ -174,12 +187,30 @@ export default function ProxyRenewals() {
 
   const handleSelectAll = (checked: boolean): void => {
     if (checked) {
-      setSelectedProxies(mockProxies.map((proxy) => proxy.IMEI));
+      setSelectedProxies(filteredProxies.map((proxy) => proxy.imei));
     } else {
       setSelectedProxies([]);
     }
   };
+  const filteredProxies = latestSubscription.filter(
+    (proxy) =>
+      proxy.imei.toString().includes(searchTerm) ||
+      proxy.country.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
+  const totalPages = Math.ceil(filteredProxies.length / Number(donglesPerPage));
+  const paginatedProxies = filteredProxies.slice(
+    (currentPage - 1) * Number(donglesPerPage),
+    currentPage * Number(donglesPerPage)
+  );
+
+  const handlePageChange = (direction: "next" | "prev") => {
+    if (direction === "next" && currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    } else if (direction === "prev" && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
   return (
     <>
       <DashboardHeader title="Proxy Renewals" />
@@ -200,13 +231,14 @@ export default function ProxyRenewals() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <Input
                     type="text"
-                    placeholder="Search by name or country"
+                    placeholder="Search by IMEI or country"
                     className="pl-10"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
               </div>
+
               <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full md:w-auto">
                 <Select
                   value={selectedCountry}
@@ -217,50 +249,10 @@ export default function ProxyRenewals() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="All Countries">All Countries</SelectItem>
-                    <SelectItem value="United States">United States</SelectItem>
-                    <SelectItem value="Germany">Germany</SelectItem>
-                    <SelectItem value="Japan">Japan</SelectItem>
-                    <SelectItem value="United Kingdom">
-                      United Kingdom
-                    </SelectItem>
-                    <SelectItem value="France">France</SelectItem>
+                    <SelectItem value="Netherlands">Netherlands</SelectItem>
                   </SelectContent>
                 </Select>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="expiring-soon"
-                    checked={showExpiringOnly}
-                    onCheckedChange={(checked) =>
-                      setShowExpiringOnly(!!checked)
-                    }
-                  />
-                  <label
-                    htmlFor="expiring-soon"
-                    className="text-sm text-gray-700"
-                  >
-                    Display Expiring Soon Only
-                  </label>
-                </div>
               </div>
-            </div>
-
-            <div className="flex space-x-2 mb-6">
-              <Button
-                variant="default"
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={() => console.log("Add 30d to selected dongles")}
-                disabled={selectedProxies.length === 0}
-              >
-                Add 30d to Selected Dongles
-              </Button>
-              <Button
-                variant="outline"
-                className="border-blue-600 text-blue-600 hover:bg-blue-50"
-                onClick={() => console.log("Add 7d to selected dongles")}
-                disabled={selectedProxies.length === 0}
-              >
-                Add 7d to Selected Dongles
-              </Button>
             </div>
 
             <Table>
@@ -269,7 +261,9 @@ export default function ProxyRenewals() {
                   <TableHead className="w-[50px]">
                     <Checkbox
                       onCheckedChange={(checked) => handleSelectAll(!!checked)}
-                      checked={selectedProxies.length === mockProxies.length}
+                      checked={
+                        selectedProxies.length === filteredProxies.length
+                      }
                     />
                   </TableHead>
 
@@ -278,18 +272,23 @@ export default function ProxyRenewals() {
                     IMEI
                   </TableHead>
                   <TableHead>Subscription</TableHead>
-                  <TableHead className="min-w-[120px] ">Billed Time</TableHead>
+                  <TableHead className="min-w-[120px] text-center ">
+                    Billed Time
+                  </TableHead>
                   <TableHead>Next Bill</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead className="min-w-[120px] ">Time Left</TableHead>
+                  <TableHead className="min-w-[120px] text-center ">
+                    Time Left
+                  </TableHead>
                   <TableHead className="text-center">
                     Subscription Details
                   </TableHead>
                 </TableRow>
               </TableHeader>
+
               <TableBody>
-                {latestSubscription.length > 0 ? (
-                  latestSubscription.map((proxy) => (
+                {filteredProxies.length > 0 ? (
+                  paginatedProxies.map((proxy) => (
                     <TableRow key={proxy.imei}>
                       <TableCell>
                         <Checkbox
@@ -309,12 +308,24 @@ export default function ProxyRenewals() {
                           {proxy.country}
                         </div>
                       </TableCell>
-                      <TableCell className=" text-center">{proxy.imei}</TableCell>
-                      <TableCell className=" text-center">{proxy.subscription}</TableCell>
-                      <TableCell className=" text-center">{proxy.billedTime}</TableCell>
-                      <TableCell className=" text-center">{proxy.nextBill}</TableCell>
-                      <TableCell className=" text-center">{proxy.status}</TableCell>
-                      <TableCell className=" text-center">{proxy.timeLeft}</TableCell>
+                      <TableCell className=" text-center">
+                        {proxy.imei}
+                      </TableCell>
+                      <TableCell className=" text-center">
+                        {proxy.subscription}
+                      </TableCell>
+                      <TableCell className=" text-center">
+                        {proxy.billedTime}
+                      </TableCell>
+                      <TableCell className=" text-center">
+                        {proxy.nextBill}
+                      </TableCell>
+                      <TableCell className=" text-center">
+                        {proxy.status}
+                      </TableCell>
+                      <TableCell className=" text-center">
+                        {proxy.timeLeft}
+                      </TableCell>
                       <TableCell className="flex gap-x-3">
                         <TooltipProvider>
                           {proxy.subscription === "monthly" ? (
@@ -410,15 +421,27 @@ export default function ProxyRenewals() {
 
             <div className="flex justify-between items-center mt-4">
               <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm" disabled>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage === 1}
+                  onClick={() => handlePageChange("prev")}
+                >
                   <ChevronLeft className="h-4 w-4 mr-2" />
                   Previous
                 </Button>
-                <Button variant="outline" size="sm" disabled>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage === totalPages}
+                  onClick={() => handlePageChange("next")}
+                >
                   Next
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
-                <span className="text-sm text-gray-600">Page 1 of 1</span>
+                <span className="text-sm text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">Dongles per page:</span>

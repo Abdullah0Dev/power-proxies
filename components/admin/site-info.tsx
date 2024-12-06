@@ -13,6 +13,7 @@ import axios from "axios";
 import AnimatedCounter from "../component/AnimatedCounter";
 import {
   fetchAdminSideUserData,
+  fetchMonthlyData,
   fetchSalesOverview,
 } from "@/actions/getProxyList";
 type SiteInfoType = {
@@ -27,25 +28,9 @@ const SiteInfo: React.FC<SiteInfoType> = ({
 }) => {
   const [monthlyVisitors, setMonthlyVisitors] = useState(0);
   useEffect(() => {
-    const fetchMonthlyData = async () => {
+    const fetchMonthlyDataVisitors = async () => {
       try {
-        const response = await axios.get(
-          "https://proxy-test-iqka.onrender.com/web-statistics/last-30-days",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        console.log(response.data?.data?.total);
-        const visitorData = response.data?.data?.total;
-        const total = visitorData.reduce(
-          (acc: number, item: number[]) => acc + item[1],
-          0
-        );
-        console.log(`total visitors`, total);
-
+        const total = await fetchMonthlyData();
         setMonthlyVisitors(total ?? 3);
       } catch (error) {
         console.log(error);
@@ -53,7 +38,7 @@ const SiteInfo: React.FC<SiteInfoType> = ({
         return error;
       }
     };
-    fetchMonthlyData();
+    fetchMonthlyDataVisitors();
   }, [monthlyVisitors]);
   return (
     // Visitors, Total Revenue, Sales,

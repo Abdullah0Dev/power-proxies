@@ -20,6 +20,7 @@ import {
   ChartTooltipContent,
 } from "../ui/chart";
 import axios from "axios";
+import { fetchUserCountry } from "@/actions/getProxyList";
 export const description = "A mixed bar chart";
 // user-country
 type CountryType = {
@@ -34,26 +35,18 @@ const UserLocation = () => {
   const [userCountry, setUserCountry] = useState<CountryType[]>([]);
 
   useEffect(() => {
-    const fetchMonthlyData = async () => {
+    const fetchUserCountriesData = async () => {
       try {
-        const response = await axios.get(
-          "https://proxy-test-iqka.onrender.com/web-statistics/user-country",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        console.log(response.data?.data);
-        setUserCountry(response.data?.data);
+        const countries = await fetchUserCountry();
+        setUserCountry(countries);
       } catch (error) {
         console.log(error);
 
         return error;
       }
     };
-    fetchMonthlyData();
-  }, []);
+    fetchUserCountriesData();
+  }, [userCountry]);
   const chartData = userCountry.map((item) => ({
     country: item.iso,
     visitors: item.count,
@@ -84,6 +77,13 @@ const UserLocation = () => {
       color: "hsl(var(--chart-5))",
     },
   } satisfies ChartConfig;
+
+  if (userCountry.length === 0) {
+    // Show fallback UI if no sales data is available
+    return (
+      <p className="text-muted-foreground">No recent visitors country data.</p>
+    );
+  }
 
   return (
     <div>

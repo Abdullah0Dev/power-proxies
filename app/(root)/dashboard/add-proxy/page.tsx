@@ -253,8 +253,9 @@ export default function ProxyConfiguration() {
             <div className="space-y-4">
               <div className="pt-4">
                 <Button
+                
                   onClick={handlePayment}
-                  disabled={loadingPaymentLink} // Disable button while loading
+                  disabled={loadingPaymentLink || !selectedCountry} // Disable button while loading
                   className={`w-full ${
                     loadingPaymentLink
                       ? "bg-gray-400 cursor-not-allowed"

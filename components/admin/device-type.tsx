@@ -58,27 +58,25 @@ const DeviceType = () => {
     };
     fetchMonthlyData();
   }, []);
-  /*
-{
-  "success": true,
-  "data": [
-    {
-      "deviceType": "desktop",
-      "count": 576
-    },
-    {
-      "deviceType": "mobile",
-      "count": 4
-    }
-  ]
-}
-*/
   const chartData = deviceType.map((item) => ({
     device: item.deviceType,
     visitors: item.count,
     fill: `var(--color-${item.deviceType})`,
   }));
-  const totalVisitors = deviceType.reduce((prev, device) => prev + device.count, 0);
+  const totalVisitors = deviceType.reduce(
+    (prev, device) => prev + device.count,
+    0
+  );
+
+  if (deviceType.length === 0) {
+    // Show fallback UI if no sales data is available
+    return (
+      <p className="text-muted-foreground">
+        No recent visitors Device type data.
+      </p>
+    );
+  }
+
   return (
     <div className="w">
       <ChartContainer

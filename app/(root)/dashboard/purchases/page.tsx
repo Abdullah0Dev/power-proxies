@@ -28,41 +28,48 @@ interface Purchase {
   receiptID: string;
   purpose: "test" | "subscription";
   imei: string;
-  status: "pending" | "completed" | "failed"; // Optional: Use specific statuses
-  price: string; // Consider using a `number` type if it's a numeric value
-  date: string; // If this is a date object, consider using `Date` instead of `string`
+  status: "pending" | "completed" | "failed";
+  price: string;
+  date: string;
 }
 
-// receipt id, purpose(test, subscription), imei, status, created at
 export default function PurchasesPage() {
-  const [invoicesPerPage, setInvoicesPerPage] = useState<string>("10");
+  const [invoicesPerPage, setInvoicesPerPage] = useState<string>("5");
   const [purchases, setPurchases] = useState<Purchase[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchLatestSubscriptionAndPayment(
-        "hello@devmindslab.com"
-      );
+      const cachedData = localStorage.getItem("purchases");
+      const cacheTime = localStorage.getItem("cacheTime");
+      const currentTime = new Date().getTime();
+      const cacheValidity = 60 * 1000; // Cache valid for 1 minute
 
-      // Map the fetched data to the Purchase interface
-      const formattedPurchases = data.map((subscription: any) => ({
-        receiptID: subscription.receiptID,
-        purpose: subscription.purpose, // Set default to 'subscription'
-        imei: subscription.imei,
-        status: subscription.status,
-        price: subscription.price, // You may fetch dynamic pricing based on the subscription if available
-        date: subscription.date, // Convert timestamp to readable date
-      }));
+      if (cachedData && cacheTime && currentTime - parseInt(cacheTime) < cacheValidity) {
+        setPurchases(JSON.parse(cachedData));
+      } else {
+        const data = await fetchLatestSubscriptionAndPayment("hello@devmindslab.com");
 
-      setPurchases(formattedPurchases);
+        const formattedPurchases = data.map((subscription: any) => ({
+          receiptID: subscription.receiptID,
+          purpose: subscription.purpose,
+          imei: subscription.imei,
+          status: subscription.status,
+          price: subscription.price,
+          date: subscription.date,
+        }));
+
+        setPurchases(formattedPurchases);
+        localStorage.setItem("purchases", JSON.stringify(formattedPurchases));
+        localStorage.setItem("cacheTime", currentTime.toString());
+      }
     };
 
     fetchData();
   }, []);
 
-  // download invoice
   const downloadAsExcel = (purchase: Purchase) => {
-    // define the worksheet data:
     const worksheetData = [
       {
         "Receipt ID": purchase.receiptID,
@@ -73,18 +80,37 @@ export default function PurchasesPage() {
         Date: purchase.date,
       },
     ];
-    // create teh worksheet and workbook
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Purchase");
-    // Genereate the file and trigger download btn
     XLSX.writeFile(workbook, `Purchase_${purchase.receiptID}.xlsx`);
   };
+
+  const filteredPurchases = purchases.filter((purchase) =>
+    purchase.receiptID.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    purchase.imei.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    purchase.purpose.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    purchase.status.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredPurchases.length / Number(invoicesPerPage));
+  const paginatedPurchases = filteredPurchases.slice(
+    (currentPage - 1) * Number(invoicesPerPage),
+    currentPage * Number(invoicesPerPage)
+  );
+
+  const handlePageChange = (direction: "next" | "prev") => {
+    if (direction === "next" && currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    } else if (direction === "prev" && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <DashboardHeader title="Purchase History" />
-
-      <h1 className="text-3xl font-bold text-blue-900"></h1>
+ 
 
       <Card className="w-12/12 mx-auto">
         <CardHeader>
@@ -104,11 +130,9 @@ export default function PurchasesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {purchases.map((purchase, index) => (
+              {paginatedPurchases.map((purchase, index) => (
                 <TableRow key={index}>
-                  <TableCell className="font-medium">
-                    {purchase.receiptID}
-                  </TableCell>
+                  <TableCell className="font-medium">{purchase.receiptID}</TableCell>
                   <TableCell>{purchase.imei}</TableCell>
                   <TableCell>{purchase.purpose}</TableCell>
                   <TableCell>{purchase.status}</TableCell>
@@ -118,7 +142,7 @@ export default function PurchasesPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-blue-600 hover:text-blue-800 hover:bg-blue-100"
+                      className="border-blue-600/50 border text-blue-600 dark:hover:text-blue-500 dark:hover:bg-transparent hover:bg-blue-50"
                       onClick={() => downloadAsExcel(purchase)}
                     >
                       <Download className="mr-2 h-4 w-4" />
@@ -135,7 +159,9 @@ export default function PurchasesPage() {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-blue-600 text-blue-600 hover:bg-blue-50"
+                className="border-blue-600 text-blue-600 dark:hover:text-blue-500 dark:hover:bg-transparent hover:bg-blue-50"
+                disabled={currentPage === 1}
+                onClick={() => handlePageChange("prev")}
               >
                 <ChevronLeft className="h-4 w-4 mr-2" />
                 Previous
@@ -143,12 +169,16 @@ export default function PurchasesPage() {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-blue-600 text-blue-600 hover:bg-blue-50"
+                className="border-blue-600 text-blue-600 dark:hover:text-blue-500 dark:hover:bg-transparent hover:bg-blue-50"
+                disabled={currentPage === totalPages}
+                onClick={() => handlePageChange("next")}
               >
                 Next
                 <ChevronRight className="h-4 w-4 ml-2" />
               </Button>
-              <span className="text-sm text-gray-600">Page 1 of 1</span>
+              <span className="text-sm text-gray-600">
+                Page {currentPage} of {totalPages}
+              </span>
             </div>
             <div className="flex items-center space-x-2">
               <p className="text-sm text-gray-600">Invoices per page</p>
