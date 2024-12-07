@@ -1,44 +1,21 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import {
   Table,
   TableBody,
   TableCaption,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Switch } from "@/components/ui/switch";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
-import { Activity, Download, RotateCw, Zap } from "lucide-react";
-import {
-  ConnectionSpeedTestModal,
-  RotateIPModal,
-  SpeedTestModal,
-} from "@/components/component/proxy-list-row";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { Header } from "@/components/admin";
-import {
-  fetchAdminSideUserData,
-  getProxyVPNSetting,
-} from "@/actions/getProxyList";
+import { fetchAdminSideUserData } from "@/actions/getProxyList";
 import AdminListRow from "@/components/admin/AdminListRow";
+import { useRouter } from "next/navigation"; // Use Next.js router for navigation
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+
 export type UserDataType = {
   ID: string;
   assignedUser: {
@@ -66,41 +43,16 @@ export type UserDataType = {
   network_type: string;
   is_online: string;
 };
+
 const socket = io("https://powerproxies-backups.onrender.com");
+
 const ProxyPage = () => {
   const [usersData, setUsersData] = useState<UserDataType[]>([]);
   const [notification, setNotification] = useState("");
+  const [currentPage, setCurrentPage] = useState(1); // Pagination state
+  const [itemsPerPage] = useState(10); // Set items per page
+  const router = useRouter();
 
-  interface Proxy {
-    port: {
-      portID: string;
-    };
-  } 
-  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>(
-    {}
-  );
-
-  const handleDownloadVPNSettings = async (proxy: Proxy): Promise<void> => {
-    const proxyId = proxy.port.portID;
-
-    try {
-      setLoadingStates((prev) => ({ ...prev, [proxyId]: true }));
-      const data = await getProxyVPNSetting(proxyId);
-
-      if (data?.downloadUrl) {
-        window.location.assign(data.downloadUrl);
-      } else {
-        throw new Error("Download URL not available");
-      }
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : "An unexpected error occurred";
-      console.error(errorMessage);
-    } finally {
-      setLoadingStates((prev) => ({ ...prev, [proxyId]: false }));
-    }
-  };
- 
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetchAdminSideUserData();
@@ -118,82 +70,53 @@ const ProxyPage = () => {
     };
   }, []);
 
-  // Define msToTime with a proper type
-  const msToTime = (duration: number): string => {
-    const seconds = Math.floor((duration / 1000) % 60),
-      minutes = Math.floor((duration / (1000 * 60)) % 60),
-      hours = Math.floor((duration / (1000 * 60 * 60)) % 24),
-      days = Math.floor(duration / (1000 * 60 * 60 * 24));
+  // Calculate paginated data
+  const paginatedData = usersData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
-    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Optionally fetch new data here if server-side pagination is needed
   };
 
-  // Define remainingTimeForUser with a proper return type
-  const remainingTimeForUser = (index: number): string | undefined => {
-    if (index < 0 || index >= usersData.length) {
-      console.log("Invalid index");
-      return;
-    }
-
-    const validUntil = new Date(usersData[index]?.validUntil);
-    const lastSale = new Date(
-      usersData[index]?.assignedUser?.last_sale ?? Date.now()
-    );
-
-    // Ensure the validUntil date is valid before calculation
-    if (isNaN(validUntil.getTime())) {
-      console.log("Invalid validUntil date");
-      return;
-    }
-
-    // const elapsedTime = Date.now() - lastSale; // Time elapsed since last sale in milliseconds
-    const remainingTime = validUntil.getTime() - Date.now(); // Time remaining until validity expires in milliseconds
-
-    // Convert the elapsed and remaining times to a human-readable format
-    const remainingTimeFormatted = msToTime(remainingTime);
-    return remainingTimeFormatted;
-  };
   return (
-    <div className=" w-auto  h-full ">
+    <div className="w-auto h-full">
       <Header />
-      <Table className="">
-        <TableCaption>
-          <PaginationDemo />{" "}
+      <Table>
+        <TableCaption className="xl:pb-24">
+          <PaginationDemo
+            currentPage={currentPage}
+            totalItems={usersData.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={handlePageChange}
+          />
         </TableCaption>
         <TableHeader>
-          <TableRow className=" ">
+          <TableRow>
             <TableHead className="w-[120px] text-center">Nickname</TableHead>
             <TableHead className="w-[150px] text-center">IMEI</TableHead>
             <TableHead className="min-w-[160px] text-center">
-              proxy login <br /> proxy password
+              Proxy Login / Proxy Password
             </TableHead>
-            <TableHead className="min-w-[150px] text-center">
-              Port <br />{" "}
-              <div className="flex items-center font-semibold justify-between">
-                <h3> http</h3> | <h3> socks</h3>
-              </div>
-            </TableHead>
-            <TableHead className="min-w-[120px] text-center">
-              list for sale
-            </TableHead>
-            <TableHead className="min-w-[200px] text-center ">
-              last sale
-            </TableHead>
-            <TableHead className="min-w-[200px] text-center ">
-              time left for user
-            </TableHead>
-            <TableHead className="min-w-[120px] text-center">
-              Total Income
-            </TableHead>
-            <TableHead className="min-w-[120px] text-center">status</TableHead>
-            <TableHead className="min-w-[140px] text-center">
-              Actions{" "}
-            </TableHead>
+            <TableHead className="min-w-[150px] text-center">Port (HTTP/Socks)</TableHead>
+            <TableHead className="min-w-[120px] text-center">List for Sale</TableHead>
+            <TableHead className="min-w-[200px] text-center">Last Sale</TableHead>
+            <TableHead className="min-w-[200px] text-center">Time Left for User</TableHead>
+            <TableHead className="min-w-[120px] text-center">Total Income</TableHead>
+            <TableHead className="min-w-[120px] text-center">Status</TableHead>
+            <TableHead className="min-w-[140px] text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {usersData.map((item, index) => (
-            <AdminListRow index={index} key={index} item={item} usersData={usersData} />
+          {paginatedData.map((item, index) => (
+            <AdminListRow
+              index={index}
+              key={item.ID} // Use unique key for better performance
+              item={item}
+              usersData={usersData}
+            />
           ))}
         </TableBody>
       </Table>
@@ -203,29 +126,46 @@ const ProxyPage = () => {
 
 export default ProxyPage;
 
-function PaginationDemo() {
+function PaginationDemo({
+  currentPage,
+  totalItems,
+  itemsPerPage,
+  onPageChange,
+}: {
+  currentPage: number;
+  totalItems: number;
+  itemsPerPage: number;
+  onPageChange: (page: number) => void;
+}) {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const handlePrevious = () => {
+    if (currentPage > 1) onPageChange(currentPage - 1);
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) onPageChange(currentPage + 1);
+  };
+
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious href="#" />
+          <PaginationPrevious href="#" onClick={handlePrevious} />
         </PaginationItem>
+        {[...Array(totalPages)].map((_, index) => (
+          <PaginationItem key={index}>
+            <PaginationLink
+              href="#"
+              isActive={currentPage === index + 1}
+              onClick={() => onPageChange(index + 1)}
+            >
+              {index + 1}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
         <PaginationItem>
-          <PaginationLink href="# " isActive>
-            1
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">2</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">3</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext href="#" />
+          <PaginationNext href="#" onClick={handleNext} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>

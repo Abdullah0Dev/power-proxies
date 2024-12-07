@@ -44,7 +44,6 @@ Backend and the webb app
 by using proxysmart coding
 documentation about this can be found on their website https://proxysmart.org/wiki/v2:readme
 
-
 <!--
 ! what to do?
 1. plan what am going to work on
@@ -96,6 +95,21 @@ https://youtu.be/pB3hX7le20c?list=PL6C03BCFE87398A78&t=2318
 
 recover code:G6JTHDD7R87S84N9893VL85V - williow
 pass: @#$2T#@*kSE234
+
+! next plans inshallah
+//1. make this last sale item works on proxy-info
+2. make sure the time for user work probably
+//3. make sure no one can access the admin side unless the client email
+4. ask the client about this random proxy to give it a real stuff
+//5. make the admin page make it just its item fits the height of the screen and he can switch between 
+// 6. make the logout button on the admin sidebar works
+//7. make the logo clickable on the sidebar and navigate to home scree
+//8. remove this server switch for now
+9. make sure the data load probably in its time
+   ? backend
+  // 1. remove unnecessary code
+  // 2. make the code looks more cleaner and ensure every route have a good handling
+  // 3. make the web analiss dynamic
+   * change the url to client's website url
+   3. ***Deploy the Website on the server***
  -->
-
-

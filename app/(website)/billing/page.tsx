@@ -35,6 +35,8 @@ const BillingPage = () => {
     const storedEmail = localStorage.getItem("email");
     setUserEmail(storedEmail);
   }, []);
+  console.log("user email", userEmail);
+
   // const userEmail = "abdulah@pro.com";
   const searchParams = useSearchParams();
   const durationParam = searchParams.get("duration");

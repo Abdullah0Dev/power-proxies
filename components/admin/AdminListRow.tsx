@@ -117,7 +117,21 @@ const AdminListRow: React.FC<AdminListRowProps> = ({
     const remainingTimeFormatted = msToTime(remainingTime);
     return remainingTimeFormatted;
   };
+  const lastSale = (index: number) => {
+    if(usersData[index]?.assignedUser?.last_sale !== null) {
+      const lastSaleTime = new Date(
+        usersData[index]?.assignedUser?.last_sale ?? Date.now()
+      );
+      return lastSaleTime.toDateString();
+    }else {
+      return "No return sales"
+    }
+ 
+  };
 
+  const lastSaleTime = new Date(
+    usersData[4]?.assignedUser?.last_sale ?? Date.now()
+  );
   return (
     <TableRow className="text-center">
       <TableCell className="font-medium">{item?.nickname}</TableCell>
@@ -135,11 +149,12 @@ const AdminListRow: React.FC<AdminListRowProps> = ({
         <Switch defaultChecked={item?.status === "available"} />
       </TableCell>
       <TableCell>
-        {typeof item?.assignedUser?.last_sale === "string" &&
+        {/* {typeof item?.assignedUser?.last_sale === "string" &&
         item?.assignedUser?.last_sale
           ? item?.assignedUser?.last_sale.split("T")[1]?.split(".")[0] ||
             "No time available"
-          : "No recent sales"}
+          : "No recent sales"} */}
+        {lastSale(index)}
       </TableCell>
       <TableCell>
         {item.status === "in-use" ? remainingTimeForUser(index) : "available"}

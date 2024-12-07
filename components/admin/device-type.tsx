@@ -10,6 +10,7 @@ import {
 } from "../ui/chart";
 import { PieSectorDataItem } from "recharts/types/polar/Pie";
 import axios from "axios";
+import AnimatedCounter from "../component/AnimatedCounter";
 export const description = "A pie chart with a label";
 // /web-statistics/device-type
 const chartData = [
@@ -41,7 +42,7 @@ const DeviceType = () => {
     const fetchMonthlyData = async () => {
       try {
         const response = await axios.get(
-          "https://proxy-test-iqka.onrender.com/web-statistics/device-type",
+          "http://localhost:4000/web-statistics/device-type",
           {
             headers: {
               "Content-Type": "application/json",

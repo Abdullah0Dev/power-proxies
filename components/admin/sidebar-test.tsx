@@ -21,6 +21,7 @@ import {
   Icon,
 } from "lucide-react";
 import Image from "next/image";
+import { SignOutButton } from "@clerk/nextjs";
 
 type MenuItem = {
   id: number;
@@ -51,7 +52,12 @@ const TestSidebar: React.FC<TestSidebarProps> = ({
   const [isCollapsible, setIsCollapsible] = useState(false);
   const [ActiveTab, setActiveTab] = useState(2);
   const pathname = usePathname();
-
+  const router = useRouter();
+  const handleLogout = async () => {
+    await localStorage.removeItem("email");
+    await localStorage.removeItem("userData");
+    router.push("/");
+  };
   useEffect(() => {
     if (pathname === "/admin") {
       setActiveTab(1);
@@ -113,7 +119,7 @@ const TestSidebar: React.FC<TestSidebarProps> = ({
       >
         <div className="flex flex-col">
           <div className="flex items-center justify-between relative">
-            <div className="flex items-center relative pl-1 gap-4">
+            <Link href={"/"} className="flex items-center relative pl-1 gap-4">
               <Image
                 src={"/logo.png"}
                 alt={"logo"}
@@ -131,7 +137,7 @@ const TestSidebar: React.FC<TestSidebarProps> = ({
               >
                 PowerProxies
               </h1>
-            </div>
+            </Link>
             {isCollapsible && (
               <button
                 className={collapseIconClasses}
@@ -252,14 +258,16 @@ const TestSidebar: React.FC<TestSidebarProps> = ({
               })}
             </div>
           </div>
-
-          <div
+        </SheetContent>
+        <SignOutButton redirectUrl="/">
+          <button
             className={`${getNavItemClasses({
-              icon: Icon,
-              id: 5,
-              label: "/bluh",
-              link: "323",
+              icon: LogOut,
+              id: 3,
+              label: "Logout",
+              link: "/",
             })} px-3 py-3`}
+            onClick={handleLogout}
           >
             <div style={{ width: "2.5rem" }}>
               <LogOut />
@@ -271,26 +279,8 @@ const TestSidebar: React.FC<TestSidebarProps> = ({
                 Logout
               </span>
             )}
-          </div>
-        </SheetContent>
-
-        <div
-          className={`${getNavItemClasses({
-            icon: Icon,
-            id: 5,
-            label: "/bluh",
-            link: "323",
-          })} px-3 py-3`}
-        >
-          <div style={{ width: "2.5rem" }}>
-            <LogOut />
-          </div>
-          {!toggleCollapse && (
-            <span className={classNames("text-md font-medium text-text-light")}>
-              Logout
-            </span>
-          )}
-        </div>
+          </button>
+        </SignOutButton>
       </div>
     </Sheet>
   );

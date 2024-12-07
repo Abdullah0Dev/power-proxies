@@ -95,7 +95,7 @@ interface SalesTypeDataItem {
   sale_period: string;
   sale_amount: number;
 }
-
+ 
 interface ProcessedChartDataItem {
   rentType: string;
   sales: number;

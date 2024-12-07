@@ -19,6 +19,11 @@ const nextConfig = {
         hostname:  "www.speedtest.net",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname:  "via.placeholder.com",
+        pathname: "**",
+      },
     ],
   },
 };

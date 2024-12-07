@@ -37,7 +37,7 @@ interface ConnectionTestResponse {
 
 export async function fetchAdminSideUserData() {
   const response = await axios.get(
-    `https://powerproxies-backups.onrender.comtest-actions/show-user-info`,
+    `https://powerproxies-backups.onrender.com/test-actions/show-user-info`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -105,7 +105,7 @@ export async function fetchLatestSubscriptionAndPayment(email: string) {
 export async function fetchLatestSubscription(email: string) {
   try {
     const response = await axios.get(
-      `https://powerproxies-backups.onrender.compayment/manage-subscription`,
+      `https://powerproxies-backups.onrender.com/payment/manage-subscription`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -185,7 +185,7 @@ export async function fetchClientPurchasedProxies() {
 export async function fetchMonthlyData() {
   try {
     const response = await axios.get(
-      "https://proxy-test-iqka.onrender.com/web-statistics/last-30-days",
+      "https://powerproxies-backups.onrender.com/web-statistics/last-30-days",
       {
         headers: {
           "Content-Type": "application/json",
@@ -211,7 +211,7 @@ export async function fetchMonthlyData() {
 export async function fetchUserCountry() {
   try {
     const response = await axios.get(
-      "https://proxy-test-iqka.onrender.com/web-statistics/user-country",
+      "https://powerproxies-backups.onrender.com/web-statistics/user-country",
       {
         headers: {
           "Content-Type": "application/json",
@@ -238,7 +238,7 @@ export async function cancelProxySubscription(subscriptionId: string) {
   // Make the POST request
   try {
     const response = await axios.post(
-      "https://powerproxies-backups.onrender.compayment/stripe-cancel-subscription",
+      "https://powerproxies-backups.onrender.com/payment/stripe-cancel-subscription",
       { subscriptionId }, // subscriptionId in the request body
       {
         headers: {
@@ -267,7 +267,7 @@ export async function upgradeProxySubscription(
   // Make the POST request
   try {
     const response = await axios.post(
-      "https://powerproxies-backups.onrender.compayment/stripe-upgrade-subscription",
+      "https://powerproxies-backups.onrender.com/payment/stripe-upgrade-subscription",
       { subscriptionId, subscriptionItem }, // subscriptionId in the request body
       {
         headers: {
@@ -296,7 +296,7 @@ export async function downgradeProxySubscription(
   // Make the POST request
   try {
     const response = await axios.post(
-      "https://powerproxies-backups.onrender.compayment/stripe-downgrade-subscription",
+      "https://powerproxies-backups.onrender.com/payment/stripe-downgrade-subscription",
       { subscriptionId, subscriptionItem }, // subscriptionId in the request body
       {
         headers: {
@@ -383,7 +383,7 @@ export const managePaymentInfo = async (
   customerId: string
 ): Promise<{ url?: string }> => {
   const response = await axios.post(
-    `https://powerproxies-backups.onrender.compayment/stripe-manage-billing-info`,
+    `https://powerproxies-backups.onrender.com/payment/stripe-manage-billing-info`,
     {
       customerId,
     },
@@ -529,13 +529,13 @@ export async function rotateProxy(imei: string): Promise<RotateProxyResponse> {
     throw new Error("An unexpected error occurred");
   }
 }
-const BASE_DEV_URL = `https://proxy-test-iqka.onrender.com`;
+const BASE_DEV_URL = `https://proxy-test-iqka.onrender.com/`;
 export async function fetchSpeedTestData({
   imei,
 }: SpeedTestParams): Promise<SpeedTestResult> {
   try {
     const response = await axios.post(
-      `https://powerproxies-backups.onrender.comtest-actions/speed-test/`,
+      `https://powerproxies-backups.onrender.com/test-actions/speed-test/`,
       {
         imei,
       },

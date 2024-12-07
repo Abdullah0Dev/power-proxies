@@ -12,7 +12,7 @@ import ProxyListRow from "@/components/component/proxy-list-row";
 import DashboardHeader from "@/components/component/dashboard-header";
 import { ProxyData } from "@/types";
 import { fetchClientPurchasedProxies } from "@/actions/getProxyList";
-import Loading from "./component/Loading";
+import Loading from "./component/Loading"; 
 
 const CACHE_KEY = "clientProxies";
 const CACHE_EXPIRY_TIME = 1000 * 60; // 1 hour in milliseconds
@@ -20,7 +20,6 @@ const CACHE_EXPIRY_TIME = 1000 * 60; // 1 hour in milliseconds
 const ProxyListTable: FC = () => {
   const [clientProxies, setClientProxies] = useState<ProxyData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true); // Loading state
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -69,7 +68,7 @@ const ProxyListTable: FC = () => {
           <div className="flex justify-center items-center min-h-[60vh]">
             <Loading />
           </div>
-        ) : clientProxies.length > 0 ? (
+        ) : clientProxies?.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-100 dark:bg-darkMode-2">

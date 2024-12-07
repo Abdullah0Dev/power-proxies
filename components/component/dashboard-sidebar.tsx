@@ -42,6 +42,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import React from "react";
 import { SignOutButton } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 // Types for menu items
 interface MenuItem {
   title: string;
@@ -81,8 +82,13 @@ interface AppSidebarProps {
 export const AppSidebar: React.FC<AppSidebarProps> = ({ user }) => {
   const { open } = useSidebar();
   const pathname = usePathname();
+  const router = useRouter();
   const pathnameList = pathname.split("/");
-
+  const handleLogout = async () => {
+    await localStorage.removeItem("email");
+    await localStorage.removeItem("userData");
+    router.push("/");
+  };
   const userName = `${user?.firstName} ${user?.lastName}`;
   const userEmail = user?.emailAddresses?.[0]?.emailAddress || "";
   const userImage = user?.imageUrl || "";
@@ -99,7 +105,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ user }) => {
     <Sidebar collapsible="icon">
       <SidebarContent className="bg-white dark:bg-darkMode-2">
         {/* Logo */}
-        <div className="p-4 flex items-center gap-2">
+        <Link href={"/"} className="p-4 flex items-center gap-2">
           <Image
             priority
             src="/logo.png"
@@ -109,7 +115,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ user }) => {
             className="max-w-full h-auto"
           />
           {open && <span className="text-  font-bold text-xl">PowerProxy</span>}
-        </div>
+        </Link>
 
         {/* Proxy Management Section */}
         <SidebarGroup>
@@ -273,7 +279,10 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ user }) => {
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <SignOutButton redirectUrl="/">
-                    <DropdownMenuItem className="cursor-pointer">
+                    <DropdownMenuItem
+                      onClick={handleLogout}
+                      className="cursor-pointer"
+                    >
                       <LogOut />
                       Log out
                     </DropdownMenuItem>

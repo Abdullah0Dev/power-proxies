@@ -1,10 +1,9 @@
 "use client";
+
 import { TrendingUp } from "lucide-react";
 import countries from "i18n-iso-countries";
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
 import React, { useEffect, useState } from "react";
-import ReactCountryFlag from "react-country-flag";
-
 import {
   Card,
   CardContent,
@@ -21,65 +20,63 @@ import {
 } from "../ui/chart";
 import axios from "axios";
 import { fetchUserCountry } from "@/actions/getProxyList";
-export const description = "A mixed bar chart";
-// user-country
+
+countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
+
 type CountryType = {
-  userCountry: String;
-  count: Number;
-  country: String;
-  iso: String;
-  latitude: Number;
-  longitude: Number;
+  userCountry: string;
+  count: number;
+  country: string;
+  iso: string;
+  latitude: number;
+  longitude: number;
 };
+
 const UserLocation = () => {
   const [userCountry, setUserCountry] = useState<CountryType[]>([]);
 
   useEffect(() => {
     const fetchUserCountriesData = async () => {
       try {
-        const countries = await fetchUserCountry();
-        setUserCountry(countries);
-      } catch (error) {
-        console.log(error);
+        const countriesData = await fetchUserCountry();
 
-        return error;
+        // Ensure valid ISO codes
+        const validCountries = countriesData.map((item: CountryType) => ({
+          ...item,
+          iso: countries.getAlpha2Code(item.country, "en") || "unknown",
+        }));
+
+        setUserCountry(validCountries);
+      } catch (error) {
+        console.log("Error fetching user countries:", error);
       }
     };
-    fetchUserCountriesData();
-  }, [userCountry]);
-  const chartData = userCountry.map((item) => ({
-    country: item.iso,
-    visitors: item.count,
-    fill: `var(--color-${item.iso})`,
-  }));
-  const chartConfig = {
-    visitors: {
-      label: "Visitors",
-    },
-    EG: {
-      label: "Egypt",
-      color: "hsl(var(--chart-1))",
-    },
-    NL: {
-      label: "NL",
-      color: "hsl(var(--chart-2))",
-    },
-    fr: {
-      label: "France",
-      color: "hsl(var(--chart-3))",
-    },
-    US: {
-      label: "US",
-      color: "hsl(var(--chart-4))",
-    },
-    other: {
-      label: "Other",
-      color: "hsl(var(--chart-5))",
-    },
-  } satisfies ChartConfig;
 
-  if (userCountry.length === 0) {
-    // Show fallback UI if no sales data is available
+    fetchUserCountriesData();
+  }, []);
+
+  // Filter out invalid data
+  const chartData = userCountry
+    .filter((item) => item.iso !== "unknown" && item.count > 0)
+    .map((item, index) => ({
+      country: item.iso,
+      visitors: item.count,
+      fill: `hsl(var(--chart-${index + 1}))`, // Use index-based color
+    }));
+
+  // Dynamic chartConfig
+  const chartConfig = chartData.reduce(
+    (acc, { country }) => ({
+      ...acc,
+      [country]: {
+        label: countries.getName(country, "en") || country,
+        color: `hsl(var(--chart-${country}))`,
+      },
+    }),
+    {}
+  ) satisfies ChartConfig;
+
+  if (chartData.length === 0) {
     return (
       <p className="text-muted-foreground">No recent visitors country data.</p>
     );
@@ -87,7 +84,6 @@ const UserLocation = () => {
 
   return (
     <div>
-      {" "}
       <ChartContainer config={chartConfig}>
         <BarChart
           accessibilityLayer
@@ -103,15 +99,17 @@ const UserLocation = () => {
             tickLine={false}
             tickMargin={10}
             axisLine={false}
-            tickFormatter={(value) =>
-              chartConfig[value as keyof typeof chartConfig]?.label.slice(0, 6)
-            }
+            tickFormatter={(value) => value} // ISO codes directly
           />
+          {/* 
+          <ChartTooltipContent
+                formatter={(value, name, props) =>
+                  `${props.payload.countryName}: ${value} visitors`
+                }
+              />
+          */}
           <XAxis dataKey="visitors" type="number" hide />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent hideLabel />}
-          />
+          <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
           <Bar dataKey="visitors" layout="vertical" radius={5} />
         </BarChart>
       </ChartContainer>

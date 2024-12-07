@@ -1,19 +1,44 @@
 "use client";
-import { UserButton, useUser } from "@clerk/clerk-react";
+import { SignOutButton, UserButton, useUser } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { LayoutDashboard } from "lucide-react";
+import { DotIcon, LayoutDashboard, LogOutIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { DropdownMenu } from "../ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-export default function Navbar() {
+interface NavbarProps {
+  user: {
+    firstName: string;
+    lastName: string;
+    imageUrl?: string;
+    emailAddresses: { emailAddress: string }[];
+  };
+}
+
+const Navbar: React.FC<NavbarProps> = ({ user }) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const { isSignedIn } = useUser();
   const router = useRouter();
 
+  const userName = `${user?.firstName} ${user?.lastName}`;
+  const userEmail = user?.emailAddresses?.[0]?.emailAddress || "";
+  const userImage = user?.imageUrl || "";
+
+  const data = {
+    user: {
+      name: userName,
+      email: userEmail,
+      avatar: userImage,
+    },
+  };
+
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  const toggleProfileMenu = () => setIsProfileOpen((prev) => !prev);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -79,15 +104,84 @@ export default function Navbar() {
           </div>
           <div className="hidden md:flex items-center space-x-4">
             {isSignedIn ? (
-              <UserButton>
-                <UserButton.MenuItems>
-                  <UserButton.Action
-                    label="Dashboard"
-                    labelIcon={<LayoutDashboard className="size-4" />}
-                    onClick={() => router.push("/dashboard")}
-                  />
-                </UserButton.MenuItems>
-              </UserButton>
+              <div className="">
+                <div className="relative">
+                  {/* user info */}
+
+                  <button
+                    onClick={toggleProfileMenu}
+                    className="flex items-center space-x-2"
+                  >
+                    <img
+                      src={data.user.avatar}
+                      alt="User Avatar"
+                      className="h-11 w-11 rounded-full"
+                    />
+                  </button>
+
+                  {isProfileOpen && (
+                    <div className="absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-md">
+                      <div className="flex items-center justify-start">
+                        <DropdownMenu>
+                          <div className="flex-1 px-8 py-4">
+                            <div className="flex items-center space-y-2">
+                              <div className="flex items-center space-x-2">
+                                <div className="flex items-center">
+                                  <Avatar className="h-12 w-12">
+                                    <AvatarImage
+                                      src={data.user.avatar}
+                                      alt="Avatar"
+                                    />
+                                    <AvatarFallback>
+                                      {data.user.name}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div className="ml-4 text-start space-y-px">
+                                    <p className="text-sm text-black font-medium leading-none">
+                                      {data.user.name}
+                                    </p>
+                                    <p className="text-sm text-muted-foreground">
+                                      {data.user.email}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </DropdownMenu>
+                        <hr className="h-px bg-black" />
+                      </div>
+                      <button
+                        className=" px-4 py-4 flex items-center gap-x-5 text-gray-700 w-full hover:bg-gray-100"
+                        onClick={() => router.push("/dashboard")}
+                      >
+                        <LayoutDashboard className="size-4" />
+                        <p className=" text-sm text-[##7A7A7A]">Dashboard</p>
+                      </button>
+                      <SignOutButton redirectUrl="/">
+                        <button
+                          className=" px-4 py-4 flex items-center gap-x-5 text-gray-700 w-full hover:bg-gray-100"
+                          onClick={async () => {
+                            try {
+                              // Clear AsyncStorage email
+                              await localStorage.removeItem("email");
+                              // Add any other sign-out logic here if necessary
+
+                              // Redirect to login page
+                              // router.push("/sign-in");
+                            } catch (error) {
+                              console.error("Error during sign-out:", error);
+                            }
+                          }}
+                        >
+                          <LogOutIcon className="size-4" />
+                          <p className=" text-sm text-[##7A7A7A]">Log out</p>
+                        </button>
+                      </SignOutButton>
+                    </div>
+                  )}
+                </div>
+              </div>
             ) : (
               <>
                 <Link
@@ -203,4 +297,6 @@ export default function Navbar() {
       </AnimatePresence>
     </motion.nav>
   );
-}
+};
+
+export default Navbar;
