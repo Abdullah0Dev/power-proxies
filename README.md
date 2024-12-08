@@ -95,7 +95,11 @@ https://youtu.be/pB3hX7le20c?list=PL6C03BCFE87398A78&t=2318
 
 recover code:G6JTHDD7R87S84N9893VL85V - williow
 pass: @#$2T#@*kSE234
+? Hostinger root password: VPS setup
 
+  root password: VPS@#$owe@#$932iw
+VPS host name: srv660985.hstgr.cloud
+passphrase ssh keys: Secure#@e9e 
 ! next plans inshallah
 //1. make this last sale item works on proxy-info
 2. make sure the time for user work probably
