@@ -75,7 +75,7 @@ export default function RootLayout({
         <body className="light:bg-gray-100">
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >
