@@ -102,7 +102,7 @@ VPS host name: srv660985.hstgr.cloud
 passphrase ssh keys: Secure#@e9e 
 ! next plans inshallah
 //1. make this last sale item works on proxy-info
-2. make sure the time for user work probably
+//2. make sure the time for user work probably
 //3. make sure no one can access the admin side unless the client email
 4. ask the client about this random proxy to give it a real stuff
 //5. make the admin page make it just its item fits the height of the screen and he can switch between 
@@ -110,6 +110,7 @@ passphrase ssh keys: Secure#@e9e
 //7. make the logo clickable on the sidebar and navigate to home scree
 //8. remove this server switch for now
 9. make sure the data load probably in its time
+10. change trusted by industry leaders images logo
    ? backend
   // 1. remove unnecessary code
   // 2. make the code looks more cleaner and ensure every route have a good handling

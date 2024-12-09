@@ -38,7 +38,7 @@ const faqs: FAQ[] = [
   {
     question: "How extensive is PowerProxies' global proxy network?",
     answer:
-      "PowerProxies boasts a comprehensive global proxy network with access to over 195 countries. Our top locations include the USA, UK, Germany, Brazil, Canada, Indonesia, Russia, India, Ukraine, and Australia. When using PowerProxies mobile proxies, you can select specific locations down to the country or city level. Please note, however, that due to regulatory complexities, we currently do not offer proxy servers within the State of Texas.",
+      "PowerProxies boasts a comprehensive global proxy network with access to over 195 countries. Our top locations include Netherlands and we're expanding to  the USA, UK, Germany, Brazil, Canada, Indonesia, Russia, India, Ukraine, and Australia soon. When using PowerProxies mobile proxies, you can select specific locations down to the country or city level. Please note, however, that due to regulatory complexities, we currently do not offer proxy servers within the State of Texas.",
   },
   {
     question: "Can you explain your IP rotation system?",

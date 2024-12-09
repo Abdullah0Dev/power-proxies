@@ -5,7 +5,13 @@ import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { Check, Star } from "lucide-react";
 import Features from "@/components/component/features-list";
-import { clientLogos, pricingPlans, testimonials, faqs, plans } from "@/data/index";
+import {
+  clientLogos,
+  pricingPlans,
+  testimonials,
+  faqs,
+  plans,
+} from "@/data/index";
 import Link from "next/link";
 import {
   Accordion,
@@ -48,7 +54,7 @@ export default function LandingPage() {
       </motion.div>
     );
   };
- 
+
   return (
     <motion.div className="min-h-screen dark:bg-darkMode-1 ">
       <Spotlight className="h-[80vh] w-[50vw] top-10 left-full" fill="blue" />
@@ -128,35 +134,6 @@ export default function LandingPage() {
           </div>
         </header>
       </div>
-
-      <SectionWrapper>
-        <section className="bg-white dark:bg-black/80 py-16">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">
-              Trusted by Industry Leaders
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-              {clientLogos.map((client, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="flex items-center justify-center"
-                >
-                  <Image
-                    src={"/yourlogo-IwLN6Qx9.png"}
-                    alt={client.name}
-                    width={120}
-                    height={60}
-                    className="max-w-full h-auto"
-                  />
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </SectionWrapper>
 
       <Features />
 

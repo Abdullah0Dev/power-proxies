@@ -42,7 +42,7 @@ const DeviceType = () => {
     const fetchMonthlyData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/web-statistics/device-type",
+          "https://powerproxies-backups.onrender.com/web-statistics/device-type",
           {
             headers: {
               "Content-Type": "application/json",
@@ -115,7 +115,7 @@ const DeviceType = () => {
                         y={viewBox.cy}
                         className="fill-foreground text-3xl font-bold"
                       >
-                        {totalVisitors}
+                        {totalVisitors.toLocaleString()}
                       </tspan>
                       <tspan
                         x={viewBox.cx}

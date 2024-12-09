@@ -21,9 +21,19 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ user }) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
+  const [theme, setTheme] = useState("light");
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const { isSignedIn } = useUser();
   const router = useRouter();
+  useEffect(() => {
+    const fetchTheme = async () => {
+      const savedTheme = await localStorage.getItem("theme");
+      if (savedTheme) {
+        setTheme(savedTheme);
+      }
+    };
+    fetchTheme();
+  }, [theme]);
 
   const userName = `${user?.firstName} ${user?.lastName}`;
   const userEmail = user?.emailAddresses?.[0]?.emailAddress || "";
@@ -62,7 +72,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
       initial={{ backgroundColor: "rgba(255, 255, 255, 0)" }}
       animate={{
         backgroundColor: isScrolled
-          ? "rgba(255, 255, 255, 1)"
+          ? "#2563EB"
           : "rgba(255, 255, 255, 0)",
       }}
       transition={{ duration: 0.3 }}
@@ -72,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
           <Link
             href="/"
             className={`flex gap-4 items-center text-2xl font-bold transition-colors duration-300 ${
-              isScrolled ? "text-blue-900" : "text-white"
+              isScrolled ? "text-white  dark:text-white " : "text-white"
             }`}
           >
             <Image
@@ -93,7 +103,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
                   href={`#${text.toLowerCase()}`}
                   className={`transition-colors duration-300 ${
                     isScrolled
-                      ? "text-blue-900 hover:text-blue-700"
+                      ? "text-white/90  dark:text-white  hover:text-blue-200 dark:hover:text-white/80"
                       : "text-white hover:text-teal-300"
                   }`}
                 >
@@ -120,7 +130,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
                   </button>
 
                   {isProfileOpen && (
-                    <div className="absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-md">
+                    <div className="absolute dark:bg-darkMode-1 right-0 mt-2 w-80 bg-white shadow-lg rounded-md">
                       <div className="flex items-center justify-start">
                         <DropdownMenu>
                           <div className="flex-1 px-8 py-4">
@@ -137,7 +147,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
                                     </AvatarFallback>
                                   </Avatar>
                                   <div className="ml-4 text-start space-y-px">
-                                    <p className="text-sm text-black font-medium leading-none">
+                                    <p className="text-sm text-black dark:text-darkMode-4 font-medium leading-none">
                                       {data.user.name}
                                     </p>
                                     <p className="text-sm text-muted-foreground">
@@ -152,7 +162,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
                         <hr className="h-px bg-black" />
                       </div>
                       <button
-                        className=" px-4 py-4 flex items-center gap-x-5 text-gray-700 w-full hover:bg-gray-100"
+                        className=" px-4 py-4 flex items-center gap-x-5 text-gray-700 dark:text-darkMode-4/70 w-full hover:bg-gray-100 dark:hover:bg-darkMode-2 "
                         onClick={() => router.push("/dashboard")}
                       >
                         <LayoutDashboard className="size-4" />
@@ -160,7 +170,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
                       </button>
                       <SignOutButton redirectUrl="/">
                         <button
-                          className=" px-4 py-4 flex items-center gap-x-5 text-gray-700 w-full hover:bg-gray-100"
+                          className=" px-4 py-4 flex items-center dark:hover:bg-darkMode-2 dark:text-darkMode-4/70 gap-x-5 text-gray-700 w-full hover:bg-gray-100"
                           onClick={async () => {
                             try {
                               // Clear AsyncStorage email

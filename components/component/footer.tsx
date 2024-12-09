@@ -1,29 +1,71 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { Switch } from "../ui/switch";
+import { useEffect, useState } from "react";
+import { ModeToggle } from "./ModeToggle";
 
 export default function Footer() {
+  const [theme, setTheme] = useState("light");
+
+  // Set theme based on localStorage or default to light
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      setTheme(savedTheme);
+    }
+  }, []);
+
+  // Apply the theme to the body when it changes
+  useEffect(() => {
+    if (theme === "dark") {
+      document.body.classList.add("dark");
+      document.body.classList.remove("light");
+    } else {
+      document.body.classList.add("light");
+      document.body.classList.remove("dark");
+    }
+    console.log("theme:", theme);
+  }, [theme]);
+
+  // Toggle theme function
+  const toggleTheme = async () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    await localStorage.setItem("theme", newTheme); // Save to localStorage for persistence
+  };
+
   return (
     <footer className="bg-blue-900 text-white py-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <Link
-              href="/"
-              className={`mb-3 flex items-center text-2xl font-bold transition-colors duration-300 `}
-            >
-              <Image
-                src={"/logo.png"}
-                alt={"logo"}
-                width={40}
-                height={40}
-                className="max-w-full h-auto"
-              />
-              <span className="">PowerProxy</span>
-            </Link>
-            <p className="text-gray-300">
-              Unlock the power of mobile proxies for your business needs.
-            </p>
+          <div className="">
+            <div>
+              <Link
+                href="/"
+                className={`mb-3 flex items-center text-2xl font-bold transition-colors duration-300 `}
+              >
+                <Image
+                  src={"/logo.png"}
+                  alt={"logo"}
+                  width={40}
+                  height={40}
+                  className="max-w-full h-auto"
+                />
+                <span className="">PowerProxy</span>
+              </Link>
+              <p className="text-gray-300">
+                Unlock the power of mobile proxies for your business needs.
+              </p>
+            </div>
+            <div className="flex gap-x-4 md:mt-7">
+              <h3 className="text-gray-300 text-sm font-semibold">
+             Toggle Theme:
+              </h3>
+              <ModeToggle />
+            </div>
           </div>
+
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
@@ -128,7 +170,7 @@ export default function Footer() {
         </div>
         <div className="flex justify-between items-center mt-8 pt-8 border-t border-gray-400 text-center">
           <p className="text-gray-300">
-            &copy; 2024 MobileProxies. All rights reserved.
+            &copy; 2024 PowerProxies. All rights reserved.
           </p>
           <ul className="flex gap-4 items-center text-xs">
             <li>
