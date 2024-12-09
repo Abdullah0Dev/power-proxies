@@ -1,6 +1,6 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Latest5PurchasedType } from "@/app/(root)/admin/page";
+import { Latest5PurchasedType } from "./adminPage";
 
 const LatestSales: React.FC<Latest5PurchasedType> = ({ lastSales }) => {
   // Ensure `lastSales` is always an array
