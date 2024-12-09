@@ -11,7 +11,7 @@ import { FaChartLine } from "react-icons/fa";
 import UserLocation from "./user-location";
 import DeviceType from "./device-type";
 import LatestSales from "./latest-sales";
-import { Latest5PurchasedType } from "@/app/(root)/admin/page";
+import { Latest5PurchasedType } from "./adminPage";
 // const chartData = [
 //   { rentType: "monthly", sales: 275, fill: "var(--color-monthly)" },
 //   { rentType: "weekly", sales: 200, fill: "var(--color-weekly)" },
