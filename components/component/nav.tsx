@@ -71,9 +71,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
       className="fixed top-0 left-0 right-0 z-50 px-4 py-2"
       initial={{ backgroundColor: "rgba(255, 255, 255, 0)" }}
       animate={{
-        backgroundColor: isScrolled
-          ? "#2563EB"
-          : "rgba(255, 255, 255, 0)",
+        backgroundColor: isScrolled ? "#2563EB" : "rgba(255, 255, 255, 0)",
       }}
       transition={{ duration: 0.3 }}
     >
@@ -198,7 +196,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
                   href="/sign-up"
                   className={`transition-colors duration-300 ${
                     isScrolled
-                      ? "text-blue-900 hover:text-blue-700"
+                      ? "text-blue-200 hover:text-teal-300"
                       : "text-white hover:text-teal-300"
                   }`}
                 >
