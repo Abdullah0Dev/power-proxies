@@ -325,7 +325,8 @@ export default function LandingPage() {
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
-              ))}
+              ))} 
+              
             </Accordion>
           </div>
         </div>
