@@ -13,10 +13,10 @@ interface ClientSideStorageProps {
 }
 
 const ClientSideStorage = ({
-  fullName = "Bruh",
+  fullName = "",
   userImage = "Bruh",
-  userName = "Bruh",
-  userEmail = "Bruh",
+  userName = "",
+  userEmail = "",
   isGoogleAuth = false,
   email,
 }: ClientSideStorageProps) => {
