@@ -139,6 +139,7 @@ export default function LandingPage() {
 
       <SectionWrapper>
         <section
+        
           id="pricing"
           className="light:bg-white dark:bg-darkMode-1/80 py-16"
         >
@@ -325,8 +326,7 @@ export default function LandingPage() {
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
-              ))} 
-              
+              ))}
             </Accordion>
           </div>
         </div>

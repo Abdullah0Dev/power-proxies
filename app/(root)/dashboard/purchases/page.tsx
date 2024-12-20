@@ -38,19 +38,15 @@ export default function PurchasesPage() {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const cachedData = localStorage.getItem("purchases");
-      const cacheTime = localStorage.getItem("cacheTime");
-      const currentTime = new Date().getTime();
-      const cacheValidity = 60 * 1000; // Cache valid for 1 minute
-
-      if (cachedData && cacheTime && currentTime - parseInt(cacheTime) < cacheValidity) {
-        setPurchases(JSON.parse(cachedData));
-      } else {
-        const data = await fetchLatestSubscriptionAndPayment("hello@devmindslab.com");
-
+      const storedEmail = sessionStorage.getItem("email");
+      console.log(storedEmail + " Email");
+      setUserEmail(storedEmail);
+      const data = await fetchLatestSubscriptionAndPayment(storedEmail as string);
+      if (data) {
         const formattedPurchases = data.map((subscription: any) => ({
           receiptID: subscription.receiptID,
           purpose: subscription.purpose,
@@ -61,8 +57,7 @@ export default function PurchasesPage() {
         }));
 
         setPurchases(formattedPurchases);
-        localStorage.setItem("purchases", JSON.stringify(formattedPurchases));
-        localStorage.setItem("cacheTime", currentTime.toString());
+        console.log(data);
       }
     };
 
@@ -86,14 +81,17 @@ export default function PurchasesPage() {
     XLSX.writeFile(workbook, `Purchase_${purchase.receiptID}.xlsx`);
   };
 
-  const filteredPurchases = purchases.filter((purchase) =>
-    purchase.receiptID.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    purchase.imei.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    purchase.purpose.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    purchase.status.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPurchases = purchases.filter(
+    (purchase) =>
+      purchase.receiptID.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      purchase.imei.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      purchase.purpose.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      purchase.status.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const totalPages = Math.ceil(filteredPurchases.length / Number(invoicesPerPage));
+  const totalPages = Math.ceil(
+    filteredPurchases.length / Number(invoicesPerPage)
+  );
   const paginatedPurchases = filteredPurchases.slice(
     (currentPage - 1) * Number(invoicesPerPage),
     currentPage * Number(invoicesPerPage)
@@ -110,7 +108,6 @@ export default function PurchasesPage() {
   return (
     <div className="space-y-8">
       <DashboardHeader title="Purchase History" />
- 
 
       <Card className="w-12/12 mx-auto">
         <CardHeader>
@@ -132,7 +129,9 @@ export default function PurchasesPage() {
             <TableBody>
               {paginatedPurchases.map((purchase, index) => (
                 <TableRow key={index}>
-                  <TableCell className="font-medium">{purchase.receiptID}</TableCell>
+                  <TableCell className="font-medium">
+                    {purchase.receiptID}
+                  </TableCell>
                   <TableCell>{purchase.imei}</TableCell>
                   <TableCell>{purchase.purpose}</TableCell>
                   <TableCell>{purchase.status}</TableCell>

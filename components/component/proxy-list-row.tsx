@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import {
   Tooltip,
   TooltipContent,
@@ -41,6 +44,7 @@ import type {
   ProxyData,
 } from "@/types";
 import Image from "next/image";
+import CopyToClip from "./CopyToClip";
 
 interface LoadingStateProps {
   message: string;
@@ -391,6 +395,7 @@ const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
   const [rotateModalOpen, setRotateModalOpen] = useState(false);
   const [speedTestModalOpen, setSpeedTestModalOpen] = useState(false);
   const [connectionTestModalOpen, setConnectionTestModalOpen] = useState(false);
+  console.log(proxy?.port.socks + " asdf");
 
   const handleDownloadVPNSettings = async () => {
     const data = await getProxyVPNSetting(proxy.port.portID);
@@ -422,29 +427,31 @@ const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
       <TableCell className="py-4">
         <div className="font-medium">{proxy?.operator}</div>
       </TableCell>
-      <TableCell className="py-4 font-mono">{proxy?.external_IP}</TableCell>
+      <TableCell className="py-4 font-mono">
+        <CopyToClip>{proxy?.external_IP}</CopyToClip>
+      </TableCell>
       <TableCell className="py-4">
         <div className="flex flex-  space-y-1">
           <div className="flex flex-col gap-y-2 w-32 items-center ">
             <div className="flex gap-x-6">
               <p className="font-bold"> HTTP </p>
-              <p className="">{proxy?.port.http}</p>
+              <CopyToClip className="">{proxy?.port.http}</CopyToClip>
             </div>
             {/* <span className="h-px w-full bg-slate-500" /> */}
             {`\n`}
             <div className="flex gap-x-6">
               <p className="font-bold"> SOCKS </p>
-              <p className="">{proxy?.port.socks}</p>
+              <CopyToClip>{proxy?.port.socks}</CopyToClip>
             </div>
           </div>
         </div>
       </TableCell>
       <TableCell className="">
         <div className="flex items-center justify-center">
-          <span className=" max-w-[100px]">
-            {proxy?.proxyCredentials.username}/{" "}
-            {proxy?.proxyCredentials.username}
-          </span>
+          <p className=" max-w-[100px] flex flex-wrap gap-x-1">
+            <CopyToClip>{proxy?.proxyCredentials.username} </CopyToClip> /{" "}
+            <CopyToClip>{proxy?.proxyCredentials.username}</CopyToClip>
+          </p>
         </div>
       </TableCell>
       <TableCell>
@@ -545,6 +552,8 @@ const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
           onClose={() => setRotateModalOpen(false)}
         />
       </TableCell>
+
+      <ToastContainer />
     </TableRow>
   );
 };

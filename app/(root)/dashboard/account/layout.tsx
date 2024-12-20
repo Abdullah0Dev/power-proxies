@@ -4,7 +4,11 @@ import React from "react";
 import AccountManagement from "./page";
 import ClientSideStorage from "@/components/component/ClientSideStorage";
 
-export default async function Layout() {
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const user = await currentUser();
 
   if (!user) {
@@ -37,7 +41,7 @@ export default async function Layout() {
   // This ensures that we only send plain objects with serializable data
   return (
     <main>
-      <AccountManagement />
+      {children}
       <ClientSideStorage
         fullName={userName}
         userImage={userImage}

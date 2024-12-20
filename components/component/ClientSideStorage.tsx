@@ -23,6 +23,7 @@ const ClientSideStorage = ({
   useEffect(() => {
     if (email) {
       localStorage.setItem("email", email);
+      sessionStorage.setItem("email", email);
     }
     if (fullName && userImage && userName && userEmail !== undefined) {
       // Storing data in localStorage as a serialized JSON string

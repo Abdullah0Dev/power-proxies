@@ -110,7 +110,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ user }) => {
             priority
             src="/logo.png"
             alt="logo"
-            width={45}
+            width={50}
             height={50}
             className="max-w-full h-auto"
           />

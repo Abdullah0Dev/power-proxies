@@ -29,6 +29,7 @@ import { MdOutlineManageHistory } from "react-icons/md";
 import Link from "next/link";
 import { UserResource } from "@clerk/types";
 import Image from "next/image";
+import Loading from "@/components/component/Loading";
 
 export default function AccountManagement() {
   const [copied, setCopied] = useState(false);
@@ -45,9 +46,16 @@ export default function AccountManagement() {
     if (storedUserData) {
       setUserData(JSON.parse(storedUserData)); // Parse the data into an object
     }
+    // console.log(storedUserData);
+    
   }, []);
 
-  if (!userData) return <div>Loading...</div>; // Show loading state if userData is null
+  if (!userData)
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <Loading />
+      </div>
+    ); // Show loading state if userData is null
 
   // Destructure the user data
   const { fullName, userEmail, isGoogleAuth } = userData;
@@ -165,10 +173,10 @@ export default function AccountManagement() {
               className="space-y-4 relative overflow-clip"
             >
               <Image
-              width={500}
-              height={500}
+                width={500}
+                height={500}
                 src="/comming-soon.png"
-                className="absolute inset-0 m-auto scale-75  object-contain opacity-75"
+                className="absolute w-auto h-auto inset-0 m-auto object-contain opacity-75"
                 alt="Coming Soon"
               />
               <div className="blur-sm">

@@ -41,9 +41,9 @@ export default function ProxyConfiguration() {
   const router = useRouter();
 
   useEffect(() => {
-    const storedEmail = localStorage.getItem("email");
+    const storedEmail = sessionStorage.getItem("email");
     setUserEmail(storedEmail);
-  }, []);
+  }, [userEmail]);
 
   const handlePlanChange = (value: string) => {
     const plan = plans.find((p) => p.value === value);
@@ -71,6 +71,8 @@ export default function ProxyConfiguration() {
           selectedPlan.priceId
         );
       }
+      console.log(`Subscription Data`, subscriptionData);
+      console.log(`Email Data`, userEmail);
 
       // Redirect to the Stripe Checkout URL
       if (subscriptionData.url) {
@@ -253,7 +255,6 @@ export default function ProxyConfiguration() {
             <div className="space-y-4">
               <div className="pt-4">
                 <Button
-                
                   onClick={handlePayment}
                   disabled={loadingPaymentLink || !selectedCountry} // Disable button while loading
                   className={`w-full ${

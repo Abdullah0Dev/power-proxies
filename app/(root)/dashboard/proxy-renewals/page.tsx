@@ -35,6 +35,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import Loading from "@/components/component/Loading";
 
 // Mock data for demonstration
 interface Proxy {
@@ -53,9 +54,6 @@ interface Proxy {
   subscriptionItem: string;
 }
 
-const CACHE_KEY = "proxyRenewalsData";
-const CACHE_EXPIRY_TIME = 1000 * 60; // 1 minute in milliseconds
-
 export default function ProxyRenewals() {
   const [latestSubscription, setLatestSubscription] = useState<Proxy[]>([]);
   const [selectedProxies, setSelectedProxies] = useState<number[]>([]);
@@ -66,32 +64,25 @@ export default function ProxyRenewals() {
   const [loadingStates, setLoadingStates] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  // If the email is still being fetched, show a loading state
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const cachedData = localStorage.getItem(CACHE_KEY);
+        setLoading(true);
+        const storedEmail = await sessionStorage.getItem("email");
 
-        if (cachedData) {
-          const parsedData = JSON.parse(cachedData);
-          const cacheTimestamp = parsedData.timestamp;
-
-          // Use cached data if it's not expired
-          if (Date.now() - cacheTimestamp < CACHE_EXPIRY_TIME) {
-            setLatestSubscription(parsedData.proxyData);
-            setLoading(false);
-            return;
-          }
+        console.log(storedEmail);
+        if (storedEmail) {
+          setUserEmail(storedEmail);
         }
 
         // Fetch new data if no cache or cache expired
-        const data = await fetchLatestSubscription("hello@devmindslab.com");
+        const data = await fetchLatestSubscription(storedEmail as string);
         setLatestSubscription(data);
-        const cacheData = {
-          proxyData: data,
-          timestamp: Date.now(),
-        };
-        localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+        console.log(storedEmail + "email asdf");
       } catch (error) {
         console.error("Error fetching proxies:", error);
       } finally {
@@ -100,13 +91,17 @@ export default function ProxyRenewals() {
     };
 
     fetchData();
+  }, [userEmail]);
 
-    // Refresh every 1 minute
-    const intervalId = setInterval(fetchData, CACHE_EXPIRY_TIME);
+  // if (!userEmail) {
+  //   console.log(userEmail + "user email");
 
-    return () => clearInterval(intervalId); // Cleanup interval on unmount
-  }, []);
-
+  //   return (
+  //     <div className="flex justify-center items-center min-h-[60vh]">
+  //       <Loading />
+  //     </div>
+  //   );
+  // }
   const handleMangeSubscription = async (customerId: string): Promise<void> => {
     try {
       setLoadingStates(true);
@@ -192,10 +187,10 @@ export default function ProxyRenewals() {
       setSelectedProxies([]);
     }
   };
-  const filteredProxies = latestSubscription.filter(
+  const filteredProxies = (latestSubscription || []).filter(
     (proxy) =>
-      proxy.imei.toString().includes(searchTerm) ||
-      proxy.country.toLowerCase().includes(searchTerm.toLowerCase())
+      proxy?.imei?.toString()?.includes(searchTerm) ||
+      proxy?.country?.toLowerCase()?.includes(searchTerm.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredProxies.length / Number(donglesPerPage));
@@ -378,13 +373,13 @@ export default function ProxyRenewals() {
                           <Tooltip>
                             <TooltipTrigger>
                               <Button
+                                onClick={() =>
+                                  handleCancelProxySubscription(proxy.sub)
+                                }
                                 variant="outline"
                                 className="py-px px-6"
                                 size="sm"
                                 disabled={loadingStates}
-                                onClick={() =>
-                                  handleCancelProxySubscription(proxy.sub)
-                                }
                               >
                                 Cancel
                               </Button>

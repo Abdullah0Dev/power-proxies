@@ -35,7 +35,7 @@ export const metadata: Metadata = {
       {
         url: "/logo.png",
         width: 800,
-        height: 600,
+        height: 800,
         alt: "Power Proxy Logo",
       },
     ],
@@ -75,7 +75,7 @@ export default function RootLayout({
         <body className="light:bg-gray-100">
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >

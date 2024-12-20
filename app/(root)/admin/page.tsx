@@ -4,6 +4,7 @@ import TestSidebar from "@/components/admin/sidebar-test";
 import { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
 import AdminPage from "@/components/admin/adminPage";
+import Loading from "@/components/component/Loading";
 
 const AdminMainPage = () => {
   const [toggleCollapse, setToggleCollapse] = useState(false);
@@ -20,7 +21,11 @@ const AdminMainPage = () => {
 
   // If the email is still being fetched, show a loading state
   if (!userEmail) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <Loading />
+      </div>
+    );
   }
   if (userEmail !== "Sanderdeking@gmail.com") {
     redirect("/404");

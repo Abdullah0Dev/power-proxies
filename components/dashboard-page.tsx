@@ -1,5 +1,5 @@
 "use client";
-
+import * as XLSX from "xlsx";
 import React, { FC, useEffect, useState } from "react";
 import {
   Table,
@@ -12,42 +12,18 @@ import ProxyListRow from "@/components/component/proxy-list-row";
 import DashboardHeader from "@/components/component/dashboard-header";
 import { ProxyData } from "@/types";
 import { fetchClientPurchasedProxies } from "@/actions/getProxyList";
-import Loading from "./component/Loading"; 
-
-const CACHE_KEY = "clientProxies";
-const CACHE_EXPIRY_TIME = 1000 * 60; // 1 hour in milliseconds
+import Loading from "./component/Loading";
 
 const ProxyListTable: FC = () => {
   const [clientProxies, setClientProxies] = useState<ProxyData[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true); // Loading state
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Loading state
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const cachedData = localStorage.getItem(CACHE_KEY);
-
-        if (cachedData) {
-          const parsedData = JSON.parse(cachedData);
-          const cacheTimestamp = parsedData.timestamp;
-
-          // Check if cache has expired
-          if (Date.now() - cacheTimestamp < CACHE_EXPIRY_TIME) {
-            // Use cached data if it's not expired
-            setClientProxies(parsedData.proxyData);
-            setIsLoading(false);
-            return;
-          }
-        }
-
+        setIsLoading(true);
         // Fetch new data if no cache or cache has expired
         const fetchedProxies = await fetchClientPurchasedProxies();
         const proxyData = fetchedProxies[0]?.proxyData || [];
-
-        // Store fetched data in localStorage with timestamp
-        const cacheData = {
-          proxyData: proxyData,
-          timestamp: Date.now(),
-        };
-        localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
 
         setClientProxies(proxyData);
       } catch (error) {
@@ -60,9 +36,32 @@ const ProxyListTable: FC = () => {
     fetchData();
   }, []);
 
+  const downloadAsExcel = (purchasedProxy: ProxyData[]) => {
+    const worksheetData = purchasedProxy.map((proxy) => ({
+      "Receipt ID": proxy.ID,
+      status: proxy.status,
+      Operator: proxy.operator,
+      "Network Type	": proxy.network_type,
+      "External IP": proxy.external_IP,
+      "Ports HTTP": proxy.port.http,
+      "Ports SOCKS": proxy.port.socks,
+      "Proxy Username": proxy.proxyCredentials.username,
+      "Proxy Password": proxy.proxyCredentials.password,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "purchasedProxy");
+    XLSX.writeFile(workbook, `purchasedProxies_${new Date().toISOString()}.xlsx`);
+  };
+  console.log("client data:", clientProxies);
+
   return (
     <>
-      <DashboardHeader title="Proxy List" />
+      <DashboardHeader
+        title="Proxy List"
+        handleExportProxies={() => downloadAsExcel(clientProxies)}
+      />
       <div className="custom-scrollbar overflow-x-auto dark:bg-darkMode-1 bg-white rounded-lg shadow">
         {isLoading ? (
           <div className="flex justify-center items-center min-h-[60vh]">
