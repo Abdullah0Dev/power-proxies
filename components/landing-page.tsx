@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
-import { Check, Star } from "lucide-react";
+import { Check, CircleChevronLeft, Star } from "lucide-react";
 import Features from "@/components/component/features-list";
 import {
   clientLogos,
@@ -11,6 +11,7 @@ import {
   testimonials,
   faqs,
   plans,
+  useCases,
 } from "@/data/index";
 import Link from "next/link";
 import {
@@ -121,14 +122,28 @@ export default function LandingPage() {
               </Link>
             </div>
             <div className="md:w-1/2 flex justify-center items-center">
-              <div className="relative w-[30vw] max-xl:w-[40vw] max-sm:w-[86vw] max-lg:w-[78vw]">
+              {/* Display the SVG frame */}
+              <div className="relative w-64 h-auto">
                 <Image
-                  src="/5g-proxy-DWArAP9q.png"
+                  src="/frame.svg"
                   alt="Mobile frame"
-                  width={320}
-                  height={640}
+                  width={256}
+                  height={512}
                   className="w-full h-auto"
                 />
+
+                {/* Overlay the video */}
+                <div className="absolute top-[8px] left-[13px] w-[90%] h-[97%] overflow-hidden rounded-lg">
+                  <video
+                    ref={videoRef}
+                    src="/videos/proxy-speed-test.mp4"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover rounded-[25px]"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -139,7 +154,6 @@ export default function LandingPage() {
 
       <SectionWrapper>
         <section
-        
           id="pricing"
           className="light:bg-white dark:bg-darkMode-1/80 py-16"
         >
@@ -297,6 +311,43 @@ export default function LandingPage() {
                         transition={{ duration: 0.3 }} // Transition for hover effect
                       />
                     ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </SectionWrapper>
+      <SectionWrapper>
+        <section
+          id="use-cases"
+          className="bg-gray-100 dark:bg-darkMode-2  py-16"
+        >
+          <div className="container mx-auto px-4">
+            <h2 className="text-4xl font-bold text-center mb-4">Use Cases</h2>
+            <p className="text-xl text-center text-gray-600 mb-12">
+              How customers using our Mobile Proxy
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {useCases.map((useCase, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="bg-white dark:bg-darkMode-1  rounded-lg flex items-start  gap-x-5 shadow-lg p-6"
+                >
+                  <div className="flex items-center bg-gradient-to-r from-blue-400 to-blue-400 justify-center   text-white p-4 rounded-xl">
+                    <useCase.icon size={32} />
+                  </div>
+
+                  <div className="flex items-start justify-start flex-col ">
+                    <h3 className="font-bold dark: capitalize white:text-white text-xl">
+                      {useCase.title}
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400  mb-4">
+                      {useCase.desc}
+                    </p>
                   </div>
                 </motion.div>
               ))}

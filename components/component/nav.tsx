@@ -75,11 +75,12 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
       }}
       transition={{ duration: 0.3 }}
     >
-      <div className="container mx-auto">
+        {/* xl:px-20 */}
+      <div className="container mx-auto "> 
         <div className="flex justify-between items-center">
           <Link
             href="/"
-            className={`flex gap-4 items-center text-2xl font-bold transition-colors duration-300 ${
+            className={`flex gap-4 items-center xl:text-3xl text-2xl font-bold transition-colors duration-300 ${
               isScrolled ? "text-white  dark:text-white " : "text-white"
             }`}
           >
@@ -93,7 +94,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
             />
             <span>PowerProxy</span>
           </Link>
-          <div className="hidden md:flex space-x-4">
+          <div className="hidden md:flex text-xl xl:space-x-10 space-x-4">
             {["Home", "Features", "Pricing", "Reviews", "FAQ"].map(
               (text, idx) => (
                 <Link

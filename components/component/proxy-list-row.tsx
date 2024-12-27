@@ -67,12 +67,6 @@ interface ConnectionSpeedTestModalProps {
   imei: string;
 }
 
-interface RotateIPModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  imei: string;
-}
-
 function LoadingState({ message }: LoadingStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-8">
@@ -299,103 +293,14 @@ export function SpeedTestModal({ isOpen, onClose, imei }: SpeedTestModalProps) {
   );
 }
 
-export function RotateIPModal({ isOpen, onClose, imei }: RotateIPModalProps) {
-  const [loading, setLoading] = useState(true);
-  const [result, setResult] = useState<RotateProxyResponse | null>(null);
-  const [error, setError] = useState<ApiError | null>(null);
-  console.log(imei);
-
-  const fetchRotateProxy = React.useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await rotateProxy(imei);
-      setResult(data);
-    } catch (error) {
-      setError({
-        message: error instanceof Error ? error.message : "Failed to rotate IP",
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [imei]); // Dependency on imei
-
-  React.useEffect(() => {
-    if (isOpen) {
-      fetchRotateProxy();
-    } else {
-      setResult(null);
-      setError(null);
-    }
-  }, [isOpen, fetchRotateProxy]);
-
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>IP Rotation Result</DialogTitle>
-          <DialogDescription>
-            The IP rotation process has been initiated
-          </DialogDescription>
-        </DialogHeader>
-        {loading ? (
-          <LoadingState message="Rotating IP..." />
-        ) : error ? (
-          <ErrorState message={error.message} onRetry={fetchRotateProxy} />
-        ) : (
-          result && (
-            <div className="space-y-4">
-              <Card className="border-green-100 bg-green-50">
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Status</span>
-                    <Badge
-                      variant="outline"
-                      className="bg-green-100 text-green-800"
-                    >
-                      {String(result.result)}
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
-              {result.EXT_IP1 && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between space-x-4">
-                    <div className="flex-1 space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        Previous IP
-                      </p>
-                      <p className="text-sm text-muted-foreground font-mono">
-                        {result.EXT_IP1}
-                      </p>
-                    </div>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                    <div className="flex-1 space-y-1">
-                      <p className="text-sm font-medium leading-none">New IP</p>
-                      <p className="text-sm text-muted-foreground font-mono">
-                        {result.EXT_IP2}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )
-        )}
-      </DialogContent>
-    </Dialog>
-  );
-}
-
 interface ProxyListRowProps {
   proxy: ProxyData;
 }
 
 const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
-  const [rotateModalOpen, setRotateModalOpen] = useState(false);
   const [speedTestModalOpen, setSpeedTestModalOpen] = useState(false);
   const [connectionTestModalOpen, setConnectionTestModalOpen] = useState(false);
-  console.log(proxy?.port.socks + " asdf");
+  // console.log(proxy?.port.socks + "  ");
 
   const handleDownloadVPNSettings = async () => {
     const data = await getProxyVPNSetting(proxy.port.portID);
@@ -518,23 +423,6 @@ const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="bg-orange-100 text-orange-600 hover:bg-orange-200 shadow-sm"
-                  onClick={() => setRotateModalOpen(true)}
-                >
-                  <RotateCw className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Rotate IP</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </div>
         <SpeedTestModal
           isOpen={speedTestModalOpen}
@@ -545,11 +433,6 @@ const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
           isOpen={connectionTestModalOpen}
           onClose={() => setConnectionTestModalOpen(false)}
           imei={proxy.ID}
-        />
-        <RotateIPModal
-          isOpen={rotateModalOpen}
-          imei={proxy.ID}
-          onClose={() => setRotateModalOpen(false)}
         />
       </TableCell>
 

@@ -1,3 +1,12 @@
+import {
+  ChartSpline,
+  Globe,
+  Instagram,
+  KeyRound,
+  LockKeyhole,
+  UsersRound,
+} from "lucide-react";
+
 export const clientLogos = [
   { name: "Company 1", src: "yourlogo-IwLN6Qx9.png" },
   { name: "Company 2", src: "yourlogo-IwLN6Qx9.png" },
@@ -87,7 +96,8 @@ export const ProfileInfo = [
 export const pricingPlans = [
   {
     name: "Basic - Test",
-    description: "Mobile proxy, unlimited browsing, AI suggestions - Test our proxy for 24 hours",
+    description:
+      "Mobile proxy, unlimited browsing, AI suggestions - Test our proxy for 24 hours",
     price: "$5",
     period: "/Day (24 hours)",
     duration: "1",
@@ -192,5 +202,38 @@ export const faqs = [
     question: "Can you explain your IP rotation system?",
     answer:
       "Our IP rotation system offers three modes to suit your needs: \n\n1. **Same IP up to Rotation**: Use the same IP for a set duration, provided it stays online. If it goes offline, a new IP is automatically assigned. \n2. **Hold IP if Connection Lost (Sticky IP)**: This feature allows you to maintain your IP for a designated time, even if you briefly lose connection, ensuring continuity. \n3. **Rotating - New IP on Each Request**: Get a new IP for every request you make, ensuring high anonymity and security with each new website or page accessed.",
+  },
+];
+
+export const useCases = [
+  {
+    title: "Social Media Management",
+    desc: "Mobile Internet help manage multiple social media accounts without getting banned.",
+    icon: Instagram,
+  },
+  {
+    title: "Market Research & SEO Analysis",
+    desc: "Mobile Internet improve online shop marketing and SEO by enabling accurate location-based searches, testing ads, and avoiding IP blocks.",
+    icon: ChartSpline,
+  },
+  {
+    title: "Multi Account Creation",
+    desc: "Mobile Internet allow the creation of multiple accounts without IP bans by providing different IP addresses for each account.",
+    icon: UsersRound,
+  },
+  {
+    title: "Privacy & Anonymity",
+    desc: "Mobile Proxies hide your IP address and location, enhancing privacy and anonymity online by preventing tracking and profiling.",
+    icon: LockKeyhole,
+  },
+  {
+    title: "Bypass Censorship & Geoblocking",
+    desc: "Mobile Proxies help bypass internet censorship and geoblocking by masking your real location.",
+    icon: KeyRound,
+  },
+  {
+    title: "Web Scraping & Data Collection",
+    desc: "Mobile Proxy enable efficient web scraping and data collection by rotating IP addresses, preventing detection and blocking by websites.",
+    icon: Globe,
   },
 ];
