@@ -118,7 +118,7 @@ const FeatureItem: React.FC<FeatureItemProps> = ({ feature, index }) => {
             alt={feature.title}
             width={feature.width || 400}
             height={feature.width || 400}
-            objectFit="cover"
+            style={{ objectFit: "cover" }} // Moved objectFit to style
             className="rounded-xl"
           />
         )}

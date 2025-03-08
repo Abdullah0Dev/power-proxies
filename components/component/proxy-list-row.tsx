@@ -66,7 +66,6 @@ interface ConnectionSpeedTestModalProps {
   onClose: () => void;
   imei: string;
 }
-
 interface RotateIPModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -299,6 +298,7 @@ export function SpeedTestModal({ isOpen, onClose, imei }: SpeedTestModalProps) {
   );
 }
 
+
 export function RotateIPModal({ isOpen, onClose, imei }: RotateIPModalProps) {
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState<RotateProxyResponse | null>(null);
@@ -387,15 +387,15 @@ export function RotateIPModal({ isOpen, onClose, imei }: RotateIPModalProps) {
   );
 }
 
+
 interface ProxyListRowProps {
   proxy: ProxyData;
 }
 
 const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
-  const [rotateModalOpen, setRotateModalOpen] = useState(false);
   const [speedTestModalOpen, setSpeedTestModalOpen] = useState(false);
   const [connectionTestModalOpen, setConnectionTestModalOpen] = useState(false);
-  console.log(proxy?.port.socks + " asdf");
+  // console.log(proxy?.port.socks + "  ");
 
   const handleDownloadVPNSettings = async () => {
     const data = await getProxyVPNSetting(proxy.port.portID);
@@ -518,23 +518,6 @@ const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="bg-orange-100 text-orange-600 hover:bg-orange-200 shadow-sm"
-                  onClick={() => setRotateModalOpen(true)}
-                >
-                  <RotateCw className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Rotate IP</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </div>
         <SpeedTestModal
           isOpen={speedTestModalOpen}
@@ -545,11 +528,6 @@ const ProxyListRow: React.FC<ProxyListRowProps> = ({ proxy }) => {
           isOpen={connectionTestModalOpen}
           onClose={() => setConnectionTestModalOpen(false)}
           imei={proxy.ID}
-        />
-        <RotateIPModal
-          isOpen={rotateModalOpen}
-          imei={proxy.ID}
-          onClose={() => setRotateModalOpen(false)}
         />
       </TableCell>
 

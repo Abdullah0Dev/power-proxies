@@ -37,7 +37,7 @@ interface ConnectionTestResponse {
 
 export async function fetchAdminSideUserData() {
   const response = await axios.get(
-    `https://powerproxies-backups.onrender.com/test-actions/show-user-info`,
+    `https://api.powerproxy.io/test-actions/show-user-info`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -50,7 +50,7 @@ export async function fetchAdminSideUserData() {
 export async function fetchLatestSubscriptionAndPayment(email: string) {
   try {
     const response = await axios.get(
-      `https://powerproxies-backups.onrender.com/payment/purchases`,
+      `https://api.powerproxy.io/payment/purchases`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -105,7 +105,7 @@ export async function fetchLatestSubscriptionAndPayment(email: string) {
 export async function fetchLatestSubscription(email: string) {
   try {
     const response = await axios.get(
-      `https://powerproxies-backups.onrender.com/payment/manage-subscription`,
+      `https://api.powerproxy.io/payment/manage-subscription`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -155,7 +155,7 @@ export async function fetchLatestSubscription(email: string) {
 
 export async function fetchSalesOverview() {
   const response = await axios.get(
-    `https://powerproxies-backups.onrender.com/test-actions/sales-overview`,
+    `https://api.powerproxy.io/test-actions/sales-overview`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -169,7 +169,7 @@ export async function fetchClientPurchasedProxies() {
   const user = await currentUser();
   const email = user?.emailAddresses[0].emailAddress;
   const response = await axios.post(
-    `https://powerproxies-backups.onrender.com/test-actions/client-proxy-info/`,
+    `https://api.powerproxy.io/test-actions/client-proxy-info/`,
     {
       email,
     },
@@ -185,7 +185,7 @@ export async function fetchClientPurchasedProxies() {
 export async function fetchMonthlyData() {
   try {
     const response = await axios.get(
-      "https://powerproxies-backups.onrender.com/web-statistics/last-30-days",
+      "https://api.powerproxy.io/web-statistics/last-30-days",
       {
         headers: {
           "Content-Type": "application/json",
@@ -211,7 +211,7 @@ export async function fetchMonthlyData() {
 export async function fetchUserCountry() {
   try {
     const response = await axios.get(
-      "https://powerproxies-backups.onrender.com/web-statistics/user-country",
+      "https://api.powerproxy.io/web-statistics/user-country",
       {
         headers: {
           "Content-Type": "application/json",
@@ -238,7 +238,7 @@ export async function cancelProxySubscription(subscriptionId: string) {
   // Make the POST request
   try {
     const response = await axios.post(
-      "https://powerproxies-backups.onrender.com/payment/stripe-cancel-subscription",
+      "https://api.powerproxy.io/payment/stripe-cancel-subscription",
       { subscriptionId }, // subscriptionId in the request body
       {
         headers: {
@@ -267,7 +267,7 @@ export async function upgradeProxySubscription(
   // Make the POST request
   try {
     const response = await axios.post(
-      "https://powerproxies-backups.onrender.com/payment/stripe-upgrade-subscription",
+      "https://api.powerproxy.io/payment/stripe-upgrade-subscription",
       { subscriptionId, subscriptionItem }, // subscriptionId in the request body
       {
         headers: {
@@ -296,7 +296,7 @@ export async function downgradeProxySubscription(
   // Make the POST request
   try {
     const response = await axios.post(
-      "https://powerproxies-backups.onrender.com/payment/stripe-downgrade-subscription",
+      "https://api.powerproxy.io/payment/stripe-downgrade-subscription",
       { subscriptionId, subscriptionItem }, // subscriptionId in the request body
       {
         headers: {
@@ -326,7 +326,7 @@ export async function addEmailToDatabase(email: string) {
   // Make the POST request
   try {
     const response = await axios.post(
-      "https://powerproxies-backups.onrender.com/test-actions/new-client-email/",
+      "https://api.powerproxy.io/test-actions/new-client-email/",
       { email }, // Email in the request body
       {
         headers: {
@@ -353,7 +353,7 @@ export async function handleSubscriptionLink(email: string, priceId: string) {
   try {
     // Send the POST request
     const response = await axios.post(
-      "https://powerproxies-backups.onrender.com/payment/create-subscription",
+      "https://api.powerproxy.io/payment/create-subscription",
       {
         email,
         priceId,
@@ -383,7 +383,7 @@ export const managePaymentInfo = async (
   customerId: string
 ): Promise<{ url?: string }> => {
   const response = await axios.post(
-    `https://powerproxies-backups.onrender.com/payment/stripe-manage-billing-info`,
+    `https://api.powerproxy.io/payment/stripe-manage-billing-info`,
     {
       customerId,
     },
@@ -406,7 +406,7 @@ export async function handlePaymentTestLink(email: string) {
   try {
     // Send the POST request
     const response = await axios.post(
-      "https://powerproxies-backups.onrender.com/payment/create-payment-session",
+      "https://api.powerproxy.io/payment/create-payment-session",
       {
         email,
       },
@@ -433,7 +433,7 @@ export async function handlePaymentTestLink(email: string) {
 
 export async function fetchLatestPurchases() {
   const response = await axios.get(
-    `https://powerproxies-backups.onrender.com/test-actions/sales-overview/`,
+    `https://api.powerproxy.io/test-actions/sales-overview/`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -447,7 +447,7 @@ export const getProxyVPNSetting = async (
   portID: string
 ): Promise<{ downloadUrl?: string }> => {
   const response = await axios.get(
-    `https://powerproxies-backups.onrender.com/test-actions/ovpn/${portID}`,
+    `https://api.powerproxy.io/test-actions/ovpn/${portID}`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -459,7 +459,7 @@ export const getProxyVPNSetting = async (
 };
 
 export async function fetchUserInfo() {
-  const response = await fetch(`${process.env.BASE_URL}/show-user-info`);
+  const response = await fetch(`https://api.powerproxy.io/test-actions/show-user-info`);
   const data = await response.json();
   // console.log(data.userStatus);
 
@@ -469,7 +469,7 @@ export async function fetchUserInfo() {
 export const fetchMonthlyData2 = async () => {
   try {
     const response = await axios.get(
-      "https://powerproxies-backups.onrender.com/web-statistics/last-30-days",
+      "https://api.powerproxy.io/web-statistics/last-30-days",
       {
         headers: {
           "Content-Type": "application/json",
@@ -486,7 +486,7 @@ export const fetchMonthlyData2 = async () => {
 export async function rotateProxy(imei: string): Promise<RotateProxyResponse> {
   try {
     const response = await fetch(
-      `${process.env.BASE_URL}/rotate-ip/860191063669325`,
+      `https://api.powerproxy.io/test-actions/rotate-ip/${imei}`,
       {
         method: "POST",
       }
@@ -528,14 +528,13 @@ export async function rotateProxy(imei: string): Promise<RotateProxyResponse> {
     // Handle non-Error objects
     throw new Error("An unexpected error occurred");
   }
-}
-const BASE_DEV_URL = `https://proxy-test-iqka.onrender.com/`;
+} 
 export async function fetchSpeedTestData({
   imei,
 }: SpeedTestParams): Promise<SpeedTestResult> {
   try {
     const response = await axios.post(
-      `https://powerproxies-backups.onrender.com/test-actions/speed-test/`,
+      `https://api.powerproxy.io/test-actions/speed-test/`,
       {
         imei,
       },
@@ -596,7 +595,7 @@ export async function fetchConnectionResults(
   imei: string
 ): Promise<ConnectionTestResponse> {
   const response = await fetch(
-    `${process.env.BASE_URL}/connection-results/860191063669325`
+    `https://api.powerproxy.io/test-actions/connection-results/${imei}`
   );
 
   const html = await response.text();
